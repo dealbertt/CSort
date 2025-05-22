@@ -8,6 +8,10 @@
 #define WINDOW_WIDTH 1600 
 #define WINDOW_HEIGHT 900
 
+// draw | | | |  bars: each bar is width w, separation is w/2
+// thus n bars need n * w + (n-1) * w/2 width
+
+
 
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
@@ -40,8 +44,11 @@ int initProgram(){
     return 0;
 }
 int main(){
-    std::cout << "Hello World" << std::endl; 
-    initProgram();
+
+    if(initProgram() == -1){
+        std::cout << "Error initializing the components of the program" << std::endl;
+        exit(1);
+    }
 
     return 0;
 }
