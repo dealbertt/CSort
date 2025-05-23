@@ -16,6 +16,17 @@ extern size_t accessesCount;
 
 extern Config config;
 
+class Delay{
+    protected:
+        int duration;
+
+    public:
+        void setDelay(int newDuration){ duration = newDuration;}
+        int getDuration() const {return duration;}
+        void delay();
+
+};
+
 class ArrayItem{
     public:
         typedef int valueType;
@@ -71,10 +82,7 @@ class Array{
 
         struct Access{
             uint32_t index;
-            //For color;
-            uint8_t r;
-            uint8_t g;
-            uint8_t b;
+            uint8_t color; //Index that is used to then show the color
         };
 
         Access access1, access2;
@@ -84,12 +92,15 @@ class Array{
 
     public:
         std::mutex MtxArray;
+        Delay *sortDelay;
+        bool needRepaint;
 
     public:
         Array(size_t size, ArrayItem::valueType maxValue) {
             sArray.resize(size);
             sArray_maxSize = maxValue;
             sorted = false;
+            needRepaint = false;
         }
 
 
@@ -97,6 +108,7 @@ class Array{
         Array();
 
         bool isSorted() const {return sorted;}
+        void setSorted(bool newSorted){sorted = newSorted;}
         void onAccess();
 
         size_t getSize() const {return sArray.size();}
@@ -122,10 +134,14 @@ class Array{
         }
 
         void swap(size_t firstIndex, size_t secondIndex){
+            MtxArray.lock();
             assert(firstIndex < sArray.size());
             assert(secondIndex < sArray.size());
 
+            onAccess();
             std::swap(sArray[firstIndex], sArray[secondIndex]);
+            onAccess();
+            MtxArray.unlock();
         }
 
         const ArrayItem &operator [](size_t i){

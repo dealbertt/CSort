@@ -2,12 +2,13 @@
 #include "../include/array.hpp"
 void BubbleSort(class Array &array){
     for(size_t i = 0; i < array.getSize(); i ++){
-        for(size_t j = 0; j < array.getSize() - 1; i++){
-            if(array[j] < array[j + 1]){
+        for(size_t j = 0; j < array.getSize() - 1; j++){
+            if(array[j] > array[j + 1]){
                 array.swap(j, j + 1);
             }
         }
     }
+    array.setSorted(true);
 } 
 
 

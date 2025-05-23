@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <thread>
 #include "../include/array.hpp"
 
 size_t compareCount = 0;
@@ -9,8 +10,12 @@ Array::Array(){
 
 }
 
+void Delay::delay(){
+     std::this_thread::sleep_for(std::chrono::milliseconds(duration));
+}
+
 void ArrayItem::onAccess(const ArrayItem &item){
-    std::cout << "Play some sound here based on item of value: " << item.value << std::endl;
+
 }
 
 void ArrayItem::onComparison(ArrayItem &first, ArrayItem &second){
@@ -28,10 +33,14 @@ void Array::FillArray(){
                                                                                  //
     size_t size = getSize();
 
-    MtxArray.lock();
     for(size_t i = 0; i < size; i++){
         ArrayItem::valueType guess = dist(gen);
         sArray[i] = ArrayItem(guess);
     }
-    MtxArray.unlock();
+}
+
+void Array::onAccess(){
+    needRepaint = true;
+    //sortDelay->delay();
+    std::this_thread::sleep_for(std::chrono::microseconds(500));
 }

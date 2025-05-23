@@ -4,12 +4,14 @@
 #include <iostream>
 #include <SDL3/SDL.h>
 #include <memory>
+#include <thread>
+#include <functional>
 
 #include "../include/config.hpp" 
 #include "../include/array.hpp" 
 #include "../include/sorting.hpp" 
 #include "../include/sortView.hpp" 
-#define SDL_HINT_NO_SIGNAL_HANDLERS   "SDL_NO_SIGNAL_HANDLERS"
+
 
 // draw | | | |  bars: each bar is width w, separation is w/2
 // thus n bars need n * w + (n-1) * w/2 width
@@ -59,8 +61,6 @@ int main(){
     ViewObject object; 
 
     object.sArray = std::make_unique<Array>(config.numberElements, config.windowHeigth);
-    object.sArray->FillArray();
-
-    object.paint();
+    object.executeSort();
     return 0;
 }

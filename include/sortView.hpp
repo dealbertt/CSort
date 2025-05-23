@@ -12,6 +12,7 @@ class ViewObject{
         std::vector<SDL_FRect> rectArray;
 
     void paint();
+    void executeSort();
 };
 
 #endif
