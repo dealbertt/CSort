@@ -21,37 +21,39 @@ class ArrayItem{
 
     public:
         ArrayItem() {}
-        const valueType &getValue() { return value;}
+        explicit ArrayItem(const valueType& value) : value(value) {}
+        const valueType &getValue() const { return value;}
 
         //DEFINE OPERATORS TO ALLOW TO PLAY SOUDS
-        bool operator == (ArrayItem &item) const{
+        bool operator == (const ArrayItem &item) const{
             //onComparisons
+
             return value == item.value;
         } 
 
-        bool operator != (ArrayItem &item) const{
+        bool operator != (const ArrayItem &item) const{
             //onComparisons
             return value != item.value;
         } 
         
-        bool operator < (ArrayItem &item) const{
+        bool operator < (const ArrayItem &item) const{
             //onComparisons
             return value < item.value;
         } 
 
-        bool operator <= (ArrayItem &item) const{
+        bool operator <= (const ArrayItem &item) const{
             //onComparisons
-            return value < item.value;
+            return value <= item.value;
         } 
 
-        bool operator > (ArrayItem &item) const{
+        bool operator > (const ArrayItem &item) const{
             //onComparisons
             return value > item.value;
         } 
 
-        bool operator >= (ArrayItem &item) const{
+        bool operator >= (const ArrayItem &item) const{
             //onComparisons
-            return value > item.value;
+            return value >= item.value;
         } 
 
         static void onComparison(ArrayItem &first, ArrayItem &second);
@@ -76,8 +78,13 @@ class Array{
 
         bool sorted;
 
-    public: //Variables
-        std::mutex arrayMtx;
+    public:
+        Array(size_t size) {
+            sArray.resize(size);
+            sArray_maxSize = size;
+            sorted = false;
+        }
+
 
     public: //Functions
         Array();
@@ -113,5 +120,14 @@ class Array{
 
             std::swap(sArray[firstIndex], sArray[secondIndex]);
         }
+
+        const ArrayItem &operator [](size_t i){
+            assert(i < sArray.size());
+
+            return sArray[i];
+        } 
+
+        void FillArray();
+
 };
 #endif

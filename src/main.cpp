@@ -4,15 +4,16 @@
 #include <iostream>
 #include <SDL3/SDL.h>
 
+#include "../include/config.hpp" 
+#include "../include/array.hpp" 
+#include "../include/sorting.hpp" 
+#include "../include/sortView.hpp" 
 #define SDL_HINT_NO_SIGNAL_HANDLERS   "SDL_NO_SIGNAL_HANDLERS"
-#define WINDOW_WIDTH 1600 
-#define WINDOW_HEIGHT 900
 
 // draw | | | |  bars: each bar is width w, separation is w/2
 // thus n bars need n * w + (n-1) * w/2 width
 
-
-
+Config config;
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 
@@ -21,12 +22,17 @@ int initProgram(){
         std::cout << "Error trying to initialize SDL" << std::endl;
         return -1;
     }
+    config = *readConfiguration("config/config.txt");
+    
+    std::cout << "Window Width: " << config.windowWidth << std::endl;
+    std::cout << "Window Height: " << config.windowHeigth << std::endl;
 
-    window = SDL_CreateWindow("CSort", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE);
+    window = SDL_CreateWindow("CSort", config.windowWidth, config.windowHeigth, 0);
     if(window == NULL){
         std::cout << "Error trying to create SDL_Window" << std::endl;
         return -1;
     }
+
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
     std::cout << "Window created successfully!" << std::endl;
 
@@ -40,7 +46,6 @@ int initProgram(){
     std::cout << "Renderer created successfully!" << std::endl;
 
     SDL_RenderPresent(renderer);
-    SDL_Delay(2000);
     return 0;
 }
 int main(){
@@ -50,5 +55,11 @@ int main(){
         exit(1);
     }
 
+    ViewObject object; 
+
+    object.sArray = Array(config.numberElements);
+    object.sArray.FillArray();
+
+    object.paint();
     return 0;
 }
