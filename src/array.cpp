@@ -28,8 +28,10 @@ void Array::FillArray(){
                                                                                  //
     size_t size = getSize();
 
+    MtxArray.lock();
     for(size_t i = 0; i < size; i++){
         ArrayItem::valueType guess = dist(gen);
         sArray[i] = ArrayItem(guess);
     }
+    MtxArray.unlock();
 }

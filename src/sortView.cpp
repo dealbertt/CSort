@@ -10,24 +10,30 @@ extern SDL_Renderer *renderer;
 extern SDL_Window *window;
 
 void ViewObject::paint(){
-    if(sArray.getSize() == 0){
+if(sArray->getSize() == 0){
         return;
     } 
 
-    size_t size = sArray.getSize();
+    size_t size = sArray->getSize();
     size_t width = config.windowWidth;
     //size_t heigth = config.windowHeigth;
 
     
+
     //float wbar = static_cast<float>(config.windowWidth) / size;
     float wbar = (width - (size - 1)) / (double)size;
+    if(static_cast<int>(size) >  config.windowWidth){
+        wbar = 1;
+    }
 
     float x = 0;
+    
+    sArray->MtxArray.lock();
     for(size_t i = 0; i < size; i++){
-        SDL_FRect rect = {x, static_cast<float>(config.windowHeigth - sArray.getItemMutable(i).getValue()), wbar, static_cast<float>(sArray.getItemMutable(i).getValue())};
+        SDL_FRect rect = {x, static_cast<float>(config.windowHeigth - sArray->getItemMutable(i).getValue()), wbar, static_cast<float>(sArray->getItemMutable(i).getValue())};
         rectArray.push_back(rect);
         
-        std::cout << "Value:" << sArray.getItemMutable(i).getValue() << std::endl;
+        std::cout << "Value:" << sArray->getItemMutable(i).getValue() << std::endl;
         x += wbar + 2;
     }
 

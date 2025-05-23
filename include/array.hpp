@@ -8,9 +8,13 @@
 #include <vector>
 #include <mutex>
 
+#include "config.hpp"
+
 extern size_t compareCount;
 
 extern size_t accessesCount;
+
+extern Config config;
 
 class ArrayItem{
     public:
@@ -79,9 +83,12 @@ class Array{
         bool sorted;
 
     public:
-        Array(size_t size) {
+        std::mutex MtxArray;
+
+    public:
+        Array(size_t size, ArrayItem::valueType maxValue) {
             sArray.resize(size);
-            sArray_maxSize = size;
+            sArray_maxSize = maxValue;
             sorted = false;
         }
 

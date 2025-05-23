@@ -3,6 +3,7 @@
 #include <SDL3/SDL_render.h>
 #include <iostream>
 #include <SDL3/SDL.h>
+#include <memory>
 
 #include "../include/config.hpp" 
 #include "../include/array.hpp" 
@@ -57,8 +58,8 @@ int main(){
 
     ViewObject object; 
 
-    object.sArray = Array(config.numberElements);
-    object.sArray.FillArray();
+    object.sArray = std::make_unique<Array>(config.numberElements, config.windowHeigth);
+    object.sArray->FillArray();
 
     object.paint();
     return 0;
