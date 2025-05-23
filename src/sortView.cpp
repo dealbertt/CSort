@@ -15,11 +15,13 @@ void ViewObject::paint(){
     } 
 
     size_t size = sArray.getSize();
-    //size_t width = config.windowWidth;
+    size_t width = config.windowWidth;
     //size_t heigth = config.windowHeigth;
 
     
-    float wbar = static_cast<float>(config.windowWidth) / size;
+    //float wbar = static_cast<float>(config.windowWidth) / size;
+    float wbar = (width - (size - 1)) / (double)size;
+
     float x = 0;
     for(size_t i = 0; i < size; i++){
         SDL_FRect rect = {x, static_cast<float>(config.windowHeigth - sArray.getItemMutable(i).getValue()), wbar, static_cast<float>(sArray.getItemMutable(i).getValue())};
