@@ -20,3 +20,6 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 clean:
 	rm -rf $(OBJ_DIR) $(TARGET)
 
+remake:
+	make clean
+	make

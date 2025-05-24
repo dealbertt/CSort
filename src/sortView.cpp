@@ -8,8 +8,16 @@
 
 void ViewObject::paint(){
     size_t size = array.getSize();
+    if(size == 0){
+        return;
+    }
+
+    float width = static_cast<float>(config.windowWidth);
+    wbar = (width - (size - 1)) / (double)size;
+    if(static_cast<int>(size) >  config.windowWidth){
+        wbar = 1;
+    }
     float x = 0;
-    wbar = 1;
 
     SDL_SetRenderDrawColor(&renderer, 0, 0, 0, 255);
     SDL_RenderClear(&renderer);
