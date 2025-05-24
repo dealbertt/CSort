@@ -8,7 +8,7 @@ size_t compareCount = 0;
 size_t accessesCount = 0;
 
 void Delay::delay(){
-     std::this_thread::sleep_for(std::chrono::milliseconds(duration));
+     std::this_thread::sleep_for(std::chrono::microseconds(duration));
 }
 
 void ArrayItem::onAccess(const ArrayItem &item){

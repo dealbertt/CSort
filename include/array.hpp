@@ -103,6 +103,7 @@ class Array{
             sArray_maxSize = maxValue;
             sorted = false;
             needRepaint = false;
+            sortDelay->setDelay(500);
         }
 
 
@@ -144,7 +145,7 @@ class Array{
             std::swap(sArray[firstIndex], sArray[secondIndex]);
             onAccess();
             MtxArray.unlock();
-            std::this_thread::sleep_for(std::chrono::microseconds(500));
+            sortDelay->delay();
         }
 
         const ArrayItem &operator [](size_t i){
