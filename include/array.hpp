@@ -2,8 +2,10 @@
 #define ARRAY_HPP
 
 #include <cassert>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <thread>
 #include <utility>
 #include <vector>
 #include <mutex>
@@ -142,6 +144,7 @@ class Array{
             std::swap(sArray[firstIndex], sArray[secondIndex]);
             onAccess();
             MtxArray.unlock();
+            std::this_thread::sleep_for(std::chrono::microseconds(500));
         }
 
         const ArrayItem &operator [](size_t i){

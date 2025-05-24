@@ -1,5 +1,4 @@
 #include <iostream>
-#include <memory>
 #include <csignal>
 
 #include <SDL2/SDL.h>
@@ -63,7 +62,11 @@ int main(){
 
     Array array(config.numberElements, config.windowHeigth);
     array.FillArray();
-    BubbleSort(array);
+
+    //Typeshit
+    ViewObject object(array, *renderer);
+
+    object.executeSort();
 
     cleanUp();
     return 0;

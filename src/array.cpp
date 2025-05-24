@@ -39,5 +39,5 @@ void Array::FillArray(){
 void Array::onAccess(){
     needRepaint = true;
     //sortDelay->delay();
-    std::this_thread::sleep_for(std::chrono::microseconds(500));
+    //std::this_thread::sleep_for(std::chrono::microseconds(5));
 }
