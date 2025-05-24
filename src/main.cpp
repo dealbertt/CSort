@@ -34,7 +34,7 @@ int initProgram(){
     config = *readConfiguration("config/config.txt");
     
 
-    window = SDL_CreateWindow("CSort", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, config.windowWidth, config.windowHeigth, SDL_WINDOW_VULKAN);
+    window = SDL_CreateWindow("CSort", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, config.windowWidth, config.windowHeigth,SDL_WINDOW_VULKAN);
     if(window == NULL){
         std::cout << "Error trying to create SDL_Window" << std::endl;
         return -1;
@@ -61,10 +61,10 @@ int main(){
         exit(1);
     }
 
-    ViewObject object; 
+    Array array(config.numberElements, config.windowHeigth);
+    array.FillArray();
+    BubbleSort(array);
 
-    object.sArray = std::make_unique<Array>(config.numberElements, config.windowHeigth);
-    object.executeSort();
     cleanUp();
     return 0;
 }

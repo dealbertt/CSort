@@ -6,9 +6,11 @@ void BubbleSort(class Array &array){
             if(array[j] > array[j + 1]){
                 array.swap(j, j + 1);
             }
+            std::cout << "j: " << j << std::endl;
         }
     }
     array.setSorted(true);
+    std::cout << "DOne sorting" << std::endl;
 } 
 
 

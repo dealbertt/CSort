@@ -6,9 +6,6 @@
 size_t compareCount = 0;
 
 size_t accessesCount = 0;
-Array::Array(){
-
-}
 
 void Delay::delay(){
      std::this_thread::sleep_for(std::chrono::milliseconds(duration));
@@ -42,4 +39,5 @@ void Array::FillArray(){
 void Array::onAccess(){
     needRepaint = true;
     //sortDelay->delay();
+    std::this_thread::sleep_for(std::chrono::microseconds(500));
 }
