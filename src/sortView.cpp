@@ -16,7 +16,6 @@ if(sArray->getSize() == 0){
         return;
     } 
 
-    rectArray.clear();
     size_t size = sArray->getSize();
     size_t width = config.windowWidth;
     //size_t heigth = config.windowHeigth;
@@ -31,22 +30,18 @@ if(sArray->getSize() == 0){
 
     float x = 0;
     
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+
     sArray->MtxArray.lock();
     for(size_t i = 0; i < size; i++){
         SDL_FRect rect = {x, static_cast<float>(config.windowHeigth - sArray->getItemMutable(i).getValue()), wbar, static_cast<float>(sArray->getItemMutable(i).getValue())};
-        rectArray.push_back(rect);
         
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_RenderFillRect(renderer, &rect);
         x += wbar + 2;
     }
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
-    
-    for (const auto& member : rectArray) {
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderFillRect(renderer, &member);
-        //rectsToRender.push_back(member.rect);
-    }
     SDL_RenderPresent(renderer);
     sArray->MtxArray.unlock();
 }
@@ -56,6 +51,7 @@ void ViewObject::executeSort(){
     sArray->FillArray();
     std::thread sortThread(BubbleSort, std::ref(*sArray)); 
     sortThread.detach();
+
     while(!sArray->isSorted()){
 
         if(sArray->needRepaint){
