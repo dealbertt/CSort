@@ -1,13 +1,11 @@
 #include <iostream>
 #include <memory>
 #include <csignal>
-#include <thread>
-#include <functional>
 
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_init.h>
-#include <SDL3/SDL_video.h>
-#include <SDL3/SDL_render.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_error.h>
 
 #include "../include/config.hpp" 
 #include "../include/array.hpp" 
@@ -24,35 +22,32 @@ SDL_Renderer *renderer = nullptr;
 
 void signalHandler(int signum);
 void cleanUp();
+
 int initProgram(){
     signal(SIGINT, signalHandler);
 
-    if(!SDL_Init(SDL_INIT_VIDEO)){
-        std::cout << "Error trying to initialize SDL" << std::endl;
+    if(SDL_Init(SDL_INIT_VIDEO)){
+        std::cerr << "Error trying to initialize SDL: " << SDL_GetError() << std::endl;
         return -1;
     }
 
     config = *readConfiguration("config/config.txt");
     
-    std::cout << "Window Width: " << config.windowWidth << std::endl;
-    std::cout << "Window Height: " << config.windowHeigth << std::endl;
 
-
-    SDL_CreateWindowAndRenderer("CSort", config.windowWidth, config.windowHeigth, 0, &window, &renderer);
+    window = SDL_CreateWindow("CSort", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, config.windowWidth, config.windowHeigth, SDL_WINDOW_VULKAN);
     if(window == NULL){
         std::cout << "Error trying to create SDL_Window" << std::endl;
         return -1;
     }
     std::cout << "Window created successfully!" << std::endl;
 
+    renderer = SDL_CreateRenderer(window, -1,  SDL_RENDERER_ACCELERATED);
     if(renderer == NULL){
         std::cout << "Error while trying to create the renderer" << std::endl;
         return -1;
         
     }
     std::cout << "Renderer created successfully!" << std::endl;
-
-    SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
     SDL_RenderClear(renderer);
 

@@ -1,11 +1,13 @@
-#include <SDL3/SDL_render.h>
 #include <iostream>
 #include <thread>
 #include "../include/sortView.hpp"
 #include "../include/sorting.hpp"
 #include "../include/config.hpp"
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_rect.h>
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
+#include <SDL2/SDL_render.h>
+
 
 extern Config config;
 extern SDL_Renderer *renderer;
@@ -38,7 +40,7 @@ if(sArray->getSize() == 0){
         SDL_FRect rect = {x, static_cast<float>(config.windowHeigth - sArray->getItemMutable(i).getValue()), wbar, static_cast<float>(sArray->getItemMutable(i).getValue())};
         
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderFillRect(renderer, &rect);
+        SDL_RenderFillRectF(renderer, &rect);
         x += wbar + 2;
     }
 

@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Run CSort",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/CSort",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+          { "description": "Enable pretty-printing", "text": "-enable-pretty-printing", "ignoreFailures": true }
+        ],
+        "preLaunchTask": "Build with Make"
+      }
+    ]
+  }
+  
