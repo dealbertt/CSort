@@ -5,6 +5,14 @@
 #include <thread>
 
 #include "../include/sortView.hpp"
+float ViewObject::calculateWidthofBar(size_t size){
+    float totalSpacing = spacing * (size - 1);
+    float availableWidth = config.windowWidth - totalSpacing;
+
+    return availableWidth / static_cast<float>(size);
+
+}
+
 
 void ViewObject::paint(){
     size_t size = array.getSize();
@@ -12,11 +20,8 @@ void ViewObject::paint(){
         return;
     }
 
-    float width = static_cast<float>(config.windowWidth);
-    wbar = (width - (size - 1)) / (double)size;
-    if(static_cast<int>(size) >  config.windowWidth){
-        wbar = 1;
-    }
+    wbar = calculateWidthofBar(size);
+
     float x = 0;
 
     SDL_SetRenderDrawColor(&renderer, 0, 0, 0, 255);
@@ -27,7 +32,7 @@ void ViewObject::paint(){
     for(size_t i = 0; i < size; i++){
         SDL_FRect rect = {x, static_cast<float>(config.windowHeigth - array.getItemConst(i).getValue()), wbar, static_cast<float>(array.getItemConst(i).getValue())};
         SDL_RenderFillRectF(&renderer, &rect);
-        x += wbar + 1;
+        x += wbar + spacing;
     }
 
     array.MtxArray.unlock();
@@ -36,7 +41,7 @@ void ViewObject::paint(){
 }
 
 void ViewObject::executeSort(){
-    std::thread sortThread(BubbleSort, std::ref(array));
+    std::thread sortThread(CocktailSort, std::ref(array));
     sortThread.detach();
 
     while(!array.isSorted()){

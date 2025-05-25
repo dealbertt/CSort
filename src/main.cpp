@@ -33,22 +33,21 @@ int initProgram(){
     config = *readConfiguration("config/config.txt");
     
 
-    window = SDL_CreateWindow("CSort", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, config.windowWidth, config.windowHeigth,SDL_WINDOW_VULKAN);
+    SDL_CreateWindowAndRenderer(config.windowWidth, config.windowHeigth,SDL_WINDOW_VULKAN, &window, &renderer);
     if(window == NULL){
         std::cout << "Error trying to create SDL_Window" << std::endl;
         return -1;
     }
     std::cout << "Window created successfully!" << std::endl;
 
-    renderer = SDL_CreateRenderer(window, -1,  SDL_RENDERER_ACCELERATED);
     if(renderer == NULL){
         std::cout << "Error while trying to create the renderer" << std::endl;
         return -1;
         
     }
     std::cout << "Renderer created successfully!" << std::endl;
+    SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
-    SDL_RenderClear(renderer);
 
     SDL_RenderPresent(renderer);
     return 0;
@@ -61,6 +60,7 @@ int main(){
     }
 
     Array array(config.numberElements, config.windowHeigth);
+
     array.FillArray();
 
     //Typeshit

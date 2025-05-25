@@ -9,10 +9,14 @@ class ViewObject{
         Array &array;
 
     public:
-        ViewObject(Array &array, SDL_Renderer &renderer): array(array), renderer(renderer){}
+        ViewObject(Array &array, SDL_Renderer &renderer): array(array), renderer(renderer){
+            wbar = 0;
+            spacing = 2.0f;
+        }
 
     public:
         float wbar;
+        float spacing;
         SDL_Renderer &renderer;
 
     public:

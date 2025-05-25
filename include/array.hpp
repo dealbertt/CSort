@@ -38,7 +38,7 @@ class ArrayItem{
 
     public:
         ArrayItem() {}
-        explicit ArrayItem(const valueType& value) : value(value) {}
+        explicit ArrayItem(valueType& value) : value(value) {}
         const valueType &getValue() const { return value;}
 
         //DEFINE OPERATORS TO ALLOW TO PLAY SOUDS
@@ -101,14 +101,19 @@ class Array{
         Array(size_t size, ArrayItem::valueType maxValue) {
             sArray.resize(size);
             sArray_maxSize = maxValue;
+
             sorted = false;
             needRepaint = false;
+
+            sortDelay = new Delay();
             sortDelay->setDelay(500);
         }
-
+        ~Array(){
+            delete sortDelay;
+        }
 
     public: //Functions
-        Array();
+            
 
         bool isSorted() const {return sorted;}
         void setSorted(bool newSorted){sorted = newSorted;}
