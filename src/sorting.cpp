@@ -41,7 +41,31 @@ void CocktailSort(class Array &array){
     array.setSorted(true);
     return;
 }
-void SelectionSort(class Array &array); 
+
+
+void SelectionSort(class Array &array){
+    size_t size = array.getSize();
+     for(size_t i = 0; i < size - 1; i++){
+        size_t min = i;
+
+        for(size_t j = i + 1; j < size; j++){
+            //highlightValue(window, renderer, array[j]);
+            if(array[j] < array[min]){
+                min = j;
+            }
+        }
+        //swap the ith value for the min value
+
+        array.swap(i, min);
+
+        /*
+        array_member aux = array[i];
+        array[i] = array[min];
+        array[min] = aux;
+        */
+    } 
+    array.setSorted(true);
+}
 void InsertionSort(class Array &array); 
 void QuickSort(class Array &array); 
 

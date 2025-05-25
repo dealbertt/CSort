@@ -106,7 +106,7 @@ class Array{
             needRepaint = false;
 
             sortDelay = new Delay();
-            sortDelay->setDelay(500);
+            sortDelay->setDelay(5000);
         }
         ~Array(){
             delete sortDelay;

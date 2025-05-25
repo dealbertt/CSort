@@ -41,7 +41,7 @@ void ViewObject::paint(){
 }
 
 void ViewObject::executeSort(){
-    std::thread sortThread(CocktailSort, std::ref(array));
+    std::thread sortThread(SelectionSort, std::ref(array));
     sortThread.detach();
 
     while(!array.isSorted()){
