@@ -31,7 +31,12 @@ void ViewObject::paint(){
     SDL_SetRenderDrawColor(&renderer, 255, 255, 255, 255);
     for(size_t i = 0; i < size; i++){
         SDL_FRect rect = {x, static_cast<float>(config.windowHeigth - array.getItemConst(i).getValue()), wbar, static_cast<float>(array.getItemConst(i).getValue())};
+        
+        SDL_Color color = configureColor(array.getItemMutable(i));
+        SDL_SetRenderDrawColor(&renderer, color.r, color.g, color.b, color.a);
         SDL_RenderFillRectF(&renderer, &rect);
+
+         
         x += wbar + spacing;
     }
 
@@ -50,4 +55,24 @@ void ViewObject::executeSort(){
             array.needRepaint = false;
         }
     }
+}
+
+SDL_Color ViewObject::configureColor(ArrayItem &item){
+    uint8_t colorCode = item.getColor();
+    SDL_Color color;
+    switch (colorCode) {
+        case 0:
+            color = {255, 255, 255, 255};
+            break;
+
+        case 1:
+            color = {255, 0, 0, 255};
+            break;
+
+        default:
+            color = {255, 255, 255, 255};
+            
+    
+    }
+    return color;
 }

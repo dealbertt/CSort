@@ -23,6 +23,7 @@ class ViewObject{
         float calculateWidthofBar(size_t size);
         void paint();
         void executeSort();
+        SDL_Color configureColor(ArrayItem &item);
 
 };
 

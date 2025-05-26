@@ -35,11 +35,16 @@ class ArrayItem{
 
     protected:
         valueType value;
+        uint8_t color;
 
     public:
         ArrayItem() {}
         explicit ArrayItem(valueType& value) : value(value) {}
         const valueType &getValue() const { return value;}
+
+        uint8_t getColor() { return color;} 
+
+        void setColor(uint8_t newColor){color = newColor;} 
 
         //DEFINE OPERATORS TO ALLOW TO PLAY SOUDS
         bool operator == (const ArrayItem &item) const{
@@ -106,7 +111,7 @@ class Array{
             needRepaint = false;
 
             sortDelay = new Delay();
-            sortDelay->setDelay(5000);
+            sortDelay->setDelay(50000);
         }
         ~Array(){
             delete sortDelay;
@@ -118,6 +123,8 @@ class Array{
         bool isSorted() const {return sorted;}
         void setSorted(bool newSorted){sorted = newSorted;}
         void onAccess();
+        void mark(size_t index);
+        void Unmark(size_t index);
 
         size_t getSize() const {return sArray.size();}
         ArrayItem::valueType getMaxValue() const {return sArray_maxSize;}
@@ -129,7 +136,7 @@ class Array{
             return sArray[index];
         }
 
-        ArrayItem getItemMutable(size_t index){
+        ArrayItem &getItemMutable(size_t index){
             assert(index < sArray.size());
 
             return sArray[index];
@@ -149,8 +156,14 @@ class Array{
             onAccess();
             std::swap(sArray[firstIndex], sArray[secondIndex]);
             onAccess();
+
+            mark(firstIndex);
+            mark(secondIndex);
+
             MtxArray.unlock();
             sortDelay->delay();
+            Unmark(firstIndex);
+            Unmark(secondIndex);
         }
 
         const ArrayItem &operator [](size_t i){

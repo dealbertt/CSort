@@ -41,3 +41,11 @@ void Array::onAccess(){
     //sortDelay->delay();
     //std::this_thread::sleep_for(std::chrono::microseconds(5));
 }
+
+void Array::mark(size_t index){
+    sArray[index].setColor(1);
+}
+
+void Array::Unmark(size_t index){
+    sArray[index].setColor(0);
+}
