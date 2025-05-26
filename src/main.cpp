@@ -66,7 +66,7 @@ int main(){
     //Typeshit
     ViewObject object(array, *renderer);
 
-    object.executeSort();
+    runList(renderer);
 
     cleanUp();
     return 0;

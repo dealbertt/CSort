@@ -1,3 +1,5 @@
+#include <climits>
+#include <cstdint>
 #include <iostream>
 
 #include <SDL2/SDL.h>
@@ -5,12 +7,20 @@
 #include <thread>
 
 #include "../include/sortView.hpp"
+
+const struct Algorithm algoList[] = {
+    {"Bubbler Sort", &BubbleSort,  100, "Bien"},
+    {"Cocktail Sort", &CocktailSort,  100, "que tal"},
+    {"Selection Sort", &SelectionSort,  1000, "Hola"}
+};
+
+const size_t algoListSize = sizeof(algoList) / sizeof(algoList[0]);
 float ViewObject::calculateWidthofBar(size_t size){
     float totalSpacing = spacing * (size - 1);
     float availableWidth = config.windowWidth - totalSpacing;
 
-    return availableWidth / static_cast<float>(size);
-
+    wbar = availableWidth / static_cast<float>(size);
+    return wbar;
 }
 
 
@@ -45,8 +55,8 @@ void ViewObject::paint(){
     SDL_RenderPresent(&renderer);
 }
 
-void ViewObject::executeSort(){
-    std::thread sortThread(SelectionSort, std::ref(array));
+void ViewObject::executeSort(void (*func)(class Array&)){
+    std::thread sortThread(func, std::ref(array));
     sortThread.detach();
 
     while(!array.isSorted()){
@@ -85,7 +95,17 @@ void ViewObject::markArrayDone(){
     for(size_t i = 0; i < array.getSize(); i++){
         array.markDone(i);
         paint();
-        array.sortDelay->setDelay(5000);
+        array.sortDelay->setDelay(4000);
         array.sortDelay->delay();
     }
 }
+
+void runList(SDL_Renderer *renderer){
+    for(size_t i = 0; i < algoListSize; i++){
+        Array array(algoList[i].maxSize, config.windowHeigth);
+        array.FillArray();
+        ViewObject object(array, *renderer);
+        object.executeSort(algoList[i].func);
+    }
+}
+

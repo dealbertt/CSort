@@ -11,7 +11,7 @@ class ViewObject{
     public:
         ViewObject(Array &array, SDL_Renderer &renderer): array(array), renderer(renderer){
             wbar = 0;
-            spacing = 2.0f;
+            spacing = 1.0f;
         }
 
     public:
@@ -22,10 +22,21 @@ class ViewObject{
     public:
         float calculateWidthofBar(size_t size);
         void paint();
-        void executeSort();
+        void executeSort(void (*func)(class Array&));
         SDL_Color configureColor(ArrayItem &item);
         void markArrayDone();
 
 };
 
+struct Algorithm{
+    std::string name;
+    void (*func)(class Array&);
+    uint64_t maxSize;
+    std::string description;
+    //pointer to a function that takes an array class as a parameter
+};
+
+extern const struct Algorithm algoList[];
+
+void runList(SDL_Renderer *renderer);
 #endif
