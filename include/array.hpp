@@ -124,6 +124,7 @@ class Array{
         void setSorted(bool newSorted){sorted = newSorted;}
         void onAccess();
         void mark(size_t index);
+        void markDone(size_t index);
         void Unmark(size_t index);
 
         size_t getSize() const {return sArray.size();}

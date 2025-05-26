@@ -46,6 +46,9 @@ void Array::mark(size_t index){
     sArray[index].setColor(1);
 }
 
+void Array::markDone(size_t index){
+    sArray[index].setColor(2);
+}
 void Array::Unmark(size_t index){
     sArray[index].setColor(0);
 }

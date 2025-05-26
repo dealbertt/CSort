@@ -24,6 +24,7 @@ class ViewObject{
         void paint();
         void executeSort();
         SDL_Color configureColor(ArrayItem &item);
+        void markArrayDone();
 
 };
 

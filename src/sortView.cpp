@@ -55,6 +55,7 @@ void ViewObject::executeSort(){
             array.needRepaint = false;
         }
     }
+    markArrayDone();
 }
 
 SDL_Color ViewObject::configureColor(ArrayItem &item){
@@ -69,10 +70,22 @@ SDL_Color ViewObject::configureColor(ArrayItem &item){
             color = {255, 0, 0, 255};
             break;
 
+        case 2:
+            color = {0, 255, 0, 255};
+            break;
         default:
             color = {255, 255, 255, 255};
             
     
     }
     return color;
+}
+
+void ViewObject::markArrayDone(){
+    for(size_t i = 0; i < array.getSize(); i++){
+        array.markDone(i);
+        paint();
+        array.sortDelay->setDelay(5000);
+        array.sortDelay->delay();
+    }
 }
