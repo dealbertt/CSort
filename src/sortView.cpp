@@ -9,10 +9,10 @@
 #include "../include/sortView.hpp"
 
 const struct Algorithm algoList[] = {
-    {"Insertion Sort", &InsertionSort,  100, "Hola"},
-    {"Bubbler Sort", &BubbleSort,  100, "Bien"},
-    {"Cocktail Sort", &CocktailSort,  100, "que tal"},
-    {"Selection Sort", &SelectionSort,  1000, "Hola"},
+    {"Bubbler Sort", &BubbleSort,  100, "Bien", 8000},
+    {"Cocktail Sort", &CocktailSort,  100, "que tal", 8000},
+    {"Selection Sort", &SelectionSort,  1000, "Hola", 40000},
+    {"Insertion Sort", &InsertionSort,  100, "Hola", 12000},
 };
 
 const size_t algoListSize = sizeof(algoList) / sizeof(algoList[0]);
@@ -105,6 +105,7 @@ void runList(SDL_Renderer *renderer){
     for(size_t i = 0; i < algoListSize; i++){
         Array array(algoList[i].maxSize, config.windowHeigth);
         array.FillArray();
+        array.sortDelay->setDelay(algoList[i].delay);
         ViewObject object(array, *renderer);
         object.executeSort(algoList[i].func);
     }

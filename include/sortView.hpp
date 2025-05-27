@@ -4,6 +4,7 @@
 #include "array.hpp"
 #include "sorting.hpp"
 #include <SDL2/SDL_render.h>
+#include <chrono>
 class ViewObject{
     protected:
         Array &array;
@@ -33,6 +34,7 @@ struct Algorithm{
     void (*func)(class Array&);
     uint64_t maxSize;
     std::string description;
+    int delay;
     //pointer to a function that takes an array class as a parameter
 };
 
