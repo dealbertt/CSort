@@ -9,9 +9,10 @@
 #include "../include/sortView.hpp"
 
 const struct Algorithm algoList[] = {
+    {"Insertion Sort", &InsertionSort,  100, "Hola"},
     {"Bubbler Sort", &BubbleSort,  100, "Bien"},
     {"Cocktail Sort", &CocktailSort,  100, "que tal"},
-    {"Selection Sort", &SelectionSort,  1000, "Hola"}
+    {"Selection Sort", &SelectionSort,  1000, "Hola"},
 };
 
 const size_t algoListSize = sizeof(algoList) / sizeof(algoList[0]);

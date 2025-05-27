@@ -92,8 +92,6 @@ class Array{
             uint8_t color; //Index that is used to then show the color
         };
 
-        Access access1, access2;
-        std::vector<Access> listAccesses;
 
         bool sorted;
 
@@ -111,7 +109,7 @@ class Array{
             needRepaint = false;
 
             sortDelay = new Delay();
-            sortDelay->setDelay(400);
+            sortDelay->setDelay(4000);
         }
         ~Array(){
             delete sortDelay;
@@ -163,17 +161,28 @@ class Array{
 
             MtxArray.unlock();
             sortDelay->delay();
+
             Unmark(firstIndex);
             Unmark(secondIndex);
         }
 
+        void insert(size_t firstIndex, size_t secondIndex){
+            MtxArray.lock();
+            onAccess();
+            sArray[firstIndex] = sArray[secondIndex];
+            onAccess();
+            
+            MtxArray.unlock();
+            sortDelay->delay();
+
+        }
         const ArrayItem &operator [](size_t i){
             assert(i < sArray.size());
-
             return sArray[i];
         } 
 
         void FillArray();
+
 
 };
 #endif

@@ -66,6 +66,20 @@ void SelectionSort(class Array &array){
     } 
     array.setSorted(true);
 }
-void InsertionSort(class Array &array); 
+void InsertionSort(class Array &array){
+    size_t size = array.getSize();
+
+    for(size_t i = 1; i < size; i++){
+
+        ArrayItem item = array[i];
+        int j = i - 1;
+
+        while(j >= 0 && array[j].getValue() > item.getValue()){
+            array.swap(j, j + 1);
+            j--;
+        } 
+    }
+    array.setSorted(true);
+} 
 void QuickSort(class Array &array); 
 
