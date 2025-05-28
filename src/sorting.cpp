@@ -1,5 +1,6 @@
 #include <iostream>
 #include "../include/array.hpp"
+#include "../include/sorting.hpp"
 void BubbleSort(Array &array){
     for(size_t i = 0; i < array.getSize(); i ++){
         for(size_t j = 0; j < array.getSize() - 1; j++){
@@ -81,5 +82,39 @@ void InsertionSort(class Array &array){
     }
     array.setSorted(true);
 } 
-void QuickSort(class Array &array); 
+void QuickSortInit(class Array &array){
+    uint32_t low = 0;
+    int32_t high = array.getSize() - 1;
 
+    QuickSort(array, low, high);
+
+    array.setSorted(true);
+} 
+
+void QuickSort(class Array &array, uint32_t low, int32_t high){
+    if(static_cast<int32_t>(low) < high){
+        uint32_t pi = partition(array, low, high);
+        QuickSort(array, low, static_cast<int32_t>(pi - 1));
+        QuickSort(array, pi + 1, high);
+    }
+}
+
+
+uint32_t partition(class Array &array, uint32_t low, int32_t high){
+    uint32_t pivot = static_cast<uint32_t>(array[high].getValue());
+
+    int32_t i = static_cast<int32_t>(low - 1);
+    
+      for (int32_t j = static_cast<int32_t>(low); j <= high - 1; j++) {
+        if (static_cast<uint32_t>(array[j].getValue()) < pivot) {
+            i++;
+            array.swap(i, j);
+        }
+    }
+    
+    array.swap(static_cast<uint32_t>(i + 1), high);  
+
+    
+
+    return i + 1;
+}

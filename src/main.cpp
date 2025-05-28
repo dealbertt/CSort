@@ -5,6 +5,7 @@
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_error.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "../include/config.hpp" 
 #include "../include/array.hpp" 

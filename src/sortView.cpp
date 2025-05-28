@@ -9,6 +9,7 @@
 #include "../include/sortView.hpp"
 
 const struct Algorithm algoList[] = {
+    {"Quick Sort", &QuickSortInit,  1000, "Bien", 2000},
     {"Bubbler Sort", &BubbleSort,  100, "Bien", 8000},
     {"Cocktail Sort", &CocktailSort,  100, "que tal", 8000},
     {"Selection Sort", &SelectionSort,  1000, "Hola", 40000},
