@@ -18,6 +18,7 @@ extern size_t accessesCount;
 
 extern Config config;
 
+extern void SoundAccess(size_t i);
 class Delay{
     protected:
         int duration;
@@ -40,6 +41,10 @@ class ArrayItem{
     public:
         ArrayItem() {}
         explicit ArrayItem(valueType& value) : value(value) {}
+
+        const valueType& get() const
+        { onAccess(*this); return value; }
+
         const valueType &getValue() const { return value;}
 
         uint8_t getColor() { return color;} 

@@ -2,6 +2,7 @@
 #include <random>
 #include <thread>
 #include "../include/array.hpp"
+#include "../include/sound.hpp"
 
 size_t compareCount = 0;
 
@@ -12,14 +13,14 @@ void Delay::delay(){
 }
 
 void ArrayItem::onAccess(const ArrayItem &item){
-
+    SoundAccess(item.getValue());
 }
 
 void ArrayItem::onComparison(ArrayItem &first, ArrayItem &second){
     compareCount++;
 
-    std::cout << "Play some sound here based on item of value: " << first.value << std::endl;
-    std::cout << "Play some sound here based on item of value: " << second.value << std::endl;
+    SoundAccess(first.getValue());
+    SoundAccess(second.getValue());
 }
 
 void Array::FillArray(){

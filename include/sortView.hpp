@@ -6,7 +6,7 @@
 #include <SDL2/SDL_render.h>
 #include <chrono>
 class ViewObject{
-    protected:
+    public:
         Array &array;
 
     public:
@@ -41,4 +41,6 @@ struct Algorithm{
 extern const struct Algorithm algoList[];
 
 void runList(SDL_Renderer *renderer);
+
+void SoundCallBack(void *udata, Uint8 *stream, int len);
 #endif
