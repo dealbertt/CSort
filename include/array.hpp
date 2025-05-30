@@ -54,36 +54,42 @@ class ArrayItem{
         //DEFINE OPERATORS TO ALLOW TO PLAY SOUDS
         bool operator == (const ArrayItem &item) const{
             //onComparisons
+            onComparison(*this, item);
 
             return value == item.value;
         } 
 
         bool operator != (const ArrayItem &item) const{
             //onComparisons
+            onComparison(*this, item);
             return value != item.value;
         } 
         
         bool operator < (const ArrayItem &item) const{
             //onComparisons
+            onComparison(*this, item);
             return value < item.value;
         } 
 
         bool operator <= (const ArrayItem &item) const{
             //onComparisons
+            onComparison(*this, item);
             return value <= item.value;
         } 
 
         bool operator > (const ArrayItem &item) const{
             //onComparisons
+            onComparison(*this, item);
             return value > item.value;
         } 
 
         bool operator >= (const ArrayItem &item) const{
             //onComparisons
+            onComparison(*this, item);
             return value >= item.value;
         } 
 
-        static void onComparison(ArrayItem &first, ArrayItem &second);
+        static void onComparison(const ArrayItem &first, const ArrayItem &second);
         static void onAccess(const ArrayItem &item);
 };
 
@@ -157,9 +163,10 @@ class Array{
             assert(firstIndex < sArray.size());
             assert(secondIndex < sArray.size());
 
-            onAccess();
+            ArrayItem::onAccess(sArray[firstIndex]);
             std::swap(sArray[firstIndex], sArray[secondIndex]);
-            onAccess();
+            ArrayItem::onAccess(sArray[secondIndex]);
+
 
             mark(firstIndex);
             mark(secondIndex);

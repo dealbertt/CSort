@@ -16,11 +16,11 @@ void ArrayItem::onAccess(const ArrayItem &item){
     SoundAccess(item.get());
 }
 
-void ArrayItem::onComparison(ArrayItem &first, ArrayItem &second){
+void ArrayItem::onComparison(const ArrayItem &first, const ArrayItem &second){
     compareCount++;
 
-    SoundAccess(first.get());
-    SoundAccess(second.get());
+    SoundAccess(first.getValue());
+    SoundAccess(second.getValue());
 }
 
 void Array::FillArray(){

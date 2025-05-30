@@ -76,16 +76,22 @@ int main(){
     audiospec.callback = SoundCallBack;
     audiospec.userdata = &object;
 
+    int devices = SDL_GetNumAudioDevices(0);
+    std::cout << "Audio devices found: " << devices << std::endl;
+    for (int i = 0; i < devices; ++i) {
+        std::cout << "Device " << i << ": " << SDL_GetAudioDeviceName(i, 0) << std::endl;
+    }
+
+
+
 
     if(SDL_OpenAudio(&audiospec, NULL) < 0){
         std::cerr << "SDL_OpenAudio failed: " << SDL_GetError() << std::endl;
     }else{
         SDL_PauseAudio(0);
     }
-    SoundAccess(array.getSize() / 2); // Add one index to accessList
-    SDL_Delay(1000); // Wait to let sound play
-
-
+    SoundAccess(array.getSize() / 2);
+    SDL_Delay(1000);
     runList(renderer);
 
     cleanUp();
