@@ -8,6 +8,7 @@
 
 #include "../include/sortView.hpp"
 
+extern ViewObject *globalObject;
 const struct Algorithm algoList[] = {
     {"Bubbler Sort", &BubbleSort,  100, "Bien", 8000},
     {"Cocktail Sort", &CocktailSort,  100, "que tal", 8000},
@@ -59,7 +60,7 @@ void ViewObject::paint(){
 
 void ViewObject::executeSort(void (*func)(class Array&)){
     std::thread sortThread(func, std::ref(array));
-    sortThread.detach();
+    sortThread.join();
 
     while(!array.isSorted()){
         if(array.needRepaint){
@@ -103,12 +104,19 @@ void ViewObject::markArrayDone(){
 }
 
 void runList(SDL_Renderer *renderer){
+    ViewObject *object = nullptr;
     for(size_t i = 0; i < algoListSize; i++){
+
         Array array(algoList[i].maxSize, config.windowHeigth);
         array.FillArray();
         array.sortDelay->setDelay(algoList[i].delay);
-        ViewObject object(array, *renderer);
-        object.executeSort(algoList[i].func);
+
+        object = new ViewObject(array, *renderer);
+
+        globalObject = object;
+        object->executeSort(algoList[i].func);
+
+        delete object;
     }
 }
 

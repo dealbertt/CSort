@@ -22,6 +22,7 @@ Config config;
 SDL_Window *window = nullptr;
 SDL_Renderer *renderer = nullptr;
 
+ViewObject *globalObject = nullptr;
 void signalHandler(int signum);
 void cleanUp();
 
@@ -66,15 +67,13 @@ int main(){
     array.FillArray();
 
     //Typeshit
-    ViewObject object(array, *renderer);
-
     SDL_AudioSpec audiospec;
     audiospec.freq = 44100;
     audiospec.format = AUDIO_S16SYS;
     audiospec.channels = 1;
     audiospec.samples = 4096;
     audiospec.callback = SoundCallBack;
-    audiospec.userdata = &object;
+    audiospec.userdata = &globalObject;
 
     int devices = SDL_GetNumAudioDevices(0);
     std::cout << "Audio devices found: " << devices << std::endl;
@@ -90,8 +89,6 @@ int main(){
     }else{
         SDL_PauseAudio(0);
     }
-    SoundAccess(array.getSize() / 2);
-    SDL_Delay(1000);
     runList(renderer);
 
     cleanUp();

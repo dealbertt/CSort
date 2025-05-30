@@ -160,12 +160,15 @@ class Array{
 
         void swap(size_t firstIndex, size_t secondIndex){
             MtxArray.lock();
+
             assert(firstIndex < sArray.size());
             assert(secondIndex < sArray.size());
 
-            ArrayItem::onAccess(sArray[firstIndex]);
+            //ArrayItem::onAccess(sArray[firstIndex]);
+
             std::swap(sArray[firstIndex], sArray[secondIndex]);
-            ArrayItem::onAccess(sArray[secondIndex]);
+
+            //ArrayItem::onAccess(sArray[secondIndex]);
 
 
             mark(firstIndex);

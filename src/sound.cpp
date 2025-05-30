@@ -12,6 +12,7 @@ double soundSustain = 2.0;
 
 static const size_t max_oscillators = 512;
 
+extern ViewObject *globalObject;
 class Oscillator{
     protected:
         double m_freq;
@@ -142,7 +143,7 @@ void SoundReset(){
 
 void SoundCallBack(void *udata, Uint8 *stream, int len){ size_t &p = pos;
 
-    ViewObject &sv = *reinterpret_cast<ViewObject *>(udata);
+    ViewObject &sv = *globalObject;
 
     int16_t *data = (int16_t *)(stream);
 
