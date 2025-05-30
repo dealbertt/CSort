@@ -42,7 +42,7 @@ class ArrayItem{
         ArrayItem() {}
         explicit ArrayItem(valueType& value) : value(value) {}
 
-        const valueType& get() const
+        const valueType &get() const
         { onAccess(*this); return value; }
 
         const valueType &getValue() const { return value;}

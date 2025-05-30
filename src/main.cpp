@@ -28,7 +28,7 @@ void cleanUp();
 int initProgram(){
     signal(SIGINT, signalHandler);
 
-    if(SDL_Init(SDL_INIT_VIDEO)){
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)){
         std::cerr << "Error trying to initialize SDL: " << SDL_GetError() << std::endl;
         return -1;
     }
@@ -79,7 +79,12 @@ int main(){
 
     if(SDL_OpenAudio(&audiospec, NULL) < 0){
         std::cerr << "SDL_OpenAudio failed: " << SDL_GetError() << std::endl;
+    }else{
+        SDL_PauseAudio(0);
     }
+    SoundAccess(array.getSize() / 2); // Add one index to accessList
+    SDL_Delay(1000); // Wait to let sound play
+
 
     runList(renderer);
 
@@ -95,6 +100,7 @@ void signalHandler(int signum){
 void cleanUp(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    SDL_CloseAudio();
     SDL_Quit();
     exit(1);
 }

@@ -13,14 +13,14 @@ void Delay::delay(){
 }
 
 void ArrayItem::onAccess(const ArrayItem &item){
-    SoundAccess(item.getValue());
+    SoundAccess(item.get());
 }
 
 void ArrayItem::onComparison(ArrayItem &first, ArrayItem &second){
     compareCount++;
 
-    SoundAccess(first.getValue());
-    SoundAccess(second.getValue());
+    SoundAccess(first.get());
+    SoundAccess(second.get());
 }
 
 void Array::FillArray(){
