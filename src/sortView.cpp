@@ -65,6 +65,7 @@ void ViewObject::executeSort(void (*func)(class Array&)){
     while(!array.isSorted()){
         if(array.needRepaint){
             paint();
+            std::cout << "Needs paint" << std::endl;
             array.needRepaint = false;
         }
     }

@@ -180,6 +180,7 @@ class Array{
 
             sArray[firstIndex].onAccess();
 
+            this->onAccess();
             std::swap(sArray[firstIndex], sArray[secondIndex]);
 
             sArray[secondIndex].onAccess();
