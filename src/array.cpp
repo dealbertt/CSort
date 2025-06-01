@@ -1,6 +1,8 @@
+#include <chrono>
 #include <iostream>
 #include <random>
 #include <thread>
+#include <unistd.h>
 #include "../include/array.hpp"
 #include "../include/sound.hpp"
 
@@ -12,19 +14,27 @@ void Delay::delay(){
      std::this_thread::sleep_for(std::chrono::microseconds(duration));
 }
 
-void ArrayItem::onAccess(const ArrayItem &item){
-    SoundAccess(item.get());
+void ArrayItem::onAccess() const {
+    std::cout << "[DEBUG] onAccess called. Value: " << this->getValue() << std::endl;
+    std::cout << "[DEBUG] this pointer: " << static_cast<const void*>(this) << std::endl;
+    //std::this_thread::sleep_for(std::chrono::milliseconds(500)); pv
+
+
+    SoundAccess(this->get());
 }
 
-void ArrayItem::onComparison(const ArrayItem &first, const ArrayItem &second){
+void ArrayItem::onComparison(const ArrayItem &item) const {
     compareCount++;
 
-    SoundAccess(first.getValue());
-    SoundAccess(second.getValue());
+    std::cout << "[DEBUG] onComparison called. Value: " << this->getValue() << std::endl;
+    std::cout << "[DEBUG] onComparison second called. Value: " << item.getValue() << std::endl;
+    SoundAccess(this->getValue());
+    SoundAccess(item.getValue());
 }
 
 void Array::FillArray(){
 
+    sArray.reserve(getSize());
     std::random_device rd;  // Seed for the random number engine
     std::mt19937 gen(rd()); // Mersenne Twister PRNG
     std::uniform_int_distribution<ArrayItem::valueType> dist(1,  getMaxValue()); // Generates 0 or 1

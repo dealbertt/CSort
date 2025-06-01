@@ -63,10 +63,6 @@ int main(){
         exit(1);
     }
 
-    Array array(config.numberElements, config.windowHeigth);
-
-    array.FillArray();
-
     //Typeshit
     SDL_AudioSpec audiospec;
     audiospec.freq = 44100;

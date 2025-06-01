@@ -39,11 +39,18 @@ class ArrayItem{
         uint8_t color;
 
     public:
-        ArrayItem() {}
-        explicit ArrayItem(valueType& value) : value(value) {}
+        ArrayItem() : value(0), color(0){
+             std::cerr << "[DEBUG] ArrayItem at " << this << " destroyed\n";
+        }
+        explicit ArrayItem(valueType& value) : value(value) {
+             std::cerr << "[DEBUG] ArrayItem at " << this << " constructed\n";
+        }
+        ~ArrayItem(){
+             std::cerr << "[DEBUG] ArrayItem at " << this << " destroyed\n";
+        }
 
         const valueType &get() const
-        { onAccess(*this); return value; }
+        { onAccess(); return value; }
 
         const valueType &getValue() const { return value;}
 
@@ -54,43 +61,43 @@ class ArrayItem{
         //DEFINE OPERATORS TO ALLOW TO PLAY SOUDS
         bool operator == (const ArrayItem &item) const{
             //onComparisons
-            onComparison(*this, item);
+            onComparison(item);
 
             return value == item.value;
         } 
 
         bool operator != (const ArrayItem &item) const{
             //onComparisons
-            onComparison(*this, item);
+            onComparison(item);
             return value != item.value;
         } 
         
         bool operator < (const ArrayItem &item) const{
             //onComparisons
-            onComparison(*this, item);
+            onComparison(item);
             return value < item.value;
         } 
 
         bool operator <= (const ArrayItem &item) const{
             //onComparisons
-            onComparison(*this, item);
+            onComparison(item);
             return value <= item.value;
         } 
 
         bool operator > (const ArrayItem &item) const{
             //onComparisons
-            onComparison(*this, item);
+            onComparison(item);
             return value > item.value;
         } 
 
         bool operator >= (const ArrayItem &item) const{
             //onComparisons
-            onComparison(*this, item);
+            onComparison(item);
             return value >= item.value;
         } 
 
-        static void onComparison(const ArrayItem &first, const ArrayItem &second);
-        static void onAccess(const ArrayItem &item);
+        void onComparison(const ArrayItem &item) const;
+        void onAccess() const;
 };
 
 class Array{
@@ -131,6 +138,7 @@ class Array{
 
         bool isSorted() const {return sorted;}
         void setSorted(bool newSorted){sorted = newSorted;}
+        void setSize(size_t newSize){ sArray.resize(newSize);}
         void onAccess();
         void mark(size_t index);
         void markDone(size_t index);
@@ -143,7 +151,7 @@ class Array{
         //The function itself cannot modify the value 
         const ArrayItem &getItemConst(size_t index) const{
             assert(index < sArray.size());
-            return sArray[index];
+            return sArray.at(index);
         }
 
         ArrayItem &getItemMutable(size_t index){
@@ -164,11 +172,11 @@ class Array{
             assert(firstIndex < sArray.size());
             assert(secondIndex < sArray.size());
 
-            //ArrayItem::onAccess(sArray[firstIndex]);
+            sArray[firstIndex].onAccess();
 
             std::swap(sArray[firstIndex], sArray[secondIndex]);
 
-            //ArrayItem::onAccess(sArray[secondIndex]);
+            sArray[secondIndex].onAccess();
 
 
             mark(firstIndex);
@@ -193,7 +201,7 @@ class Array{
         }
         const ArrayItem &operator [](size_t i){
             assert(i < sArray.size());
-            return sArray[i];
+            return sArray.at(i);
         } 
 
         void FillArray();

@@ -60,7 +60,7 @@ void ViewObject::paint(){
 
 void ViewObject::executeSort(void (*func)(class Array&)){
     std::thread sortThread(func, std::ref(array));
-    sortThread.join();
+    sortThread.detach();
 
     while(!array.isSorted()){
         if(array.needRepaint){
@@ -107,16 +107,17 @@ void runList(SDL_Renderer *renderer){
     ViewObject *object = nullptr;
     for(size_t i = 0; i < algoListSize; i++){
 
-        Array array(algoList[i].maxSize, config.windowHeigth);
-        array.FillArray();
-        array.sortDelay->setDelay(algoList[i].delay);
+        std::cout << "Iteration of runList: " << i << std::endl;
 
-        object = new ViewObject(array, *renderer);
+        object = new ViewObject(algoList[i].maxSize, config.windowHeigth, *renderer);
+        object->array.sortDelay->setDelay(algoList[i].delay);
 
         globalObject = object;
         object->executeSort(algoList[i].func);
 
         delete object;
+        globalObject = nullptr;
+
     }
 }
 

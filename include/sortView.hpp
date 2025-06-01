@@ -7,12 +7,14 @@
 #include <chrono>
 class ViewObject{
     public:
-        Array &array;
+        Array array;
 
     public:
-        ViewObject(Array &array, SDL_Renderer &renderer): array(array), renderer(renderer){
+        ViewObject(size_t maxSize, int windowHeight, SDL_Renderer &renderer): array(maxSize, windowHeight), renderer(renderer){
             wbar = 0;
             spacing = 1.0f;
+            array.setSize(maxSize);
+            array.FillArray();
         }
 
     public:
