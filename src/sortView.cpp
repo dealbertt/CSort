@@ -113,6 +113,7 @@ void runList(SDL_Renderer *renderer){
         object->array.sortDelay->setDelay(algoList[i].delay);
 
         globalObject = object;
+        object->paint();
         object->executeSort(algoList[i].func);
 
         delete object;

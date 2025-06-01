@@ -126,10 +126,9 @@ static void addOscillator(double freq, size_t p, size_t pstart, size_t pduration
 static std::vector<unsigned int> accessList;
 
 void SoundAccess(size_t i){
-    accessList.push_back(i);
-      double freq = 440.0; // A4 tone
-      size_t duration = s_samplerate / 2; // half second
-      addOscillator(freq, pos, pos, duration);
+    double freq = 440.0; // A4 tone
+    size_t duration = s_samplerate / 2; // half second
+    addOscillator(freq, pos, pos, duration);
 }
 
 static double arrayIndexToFreq(double index){

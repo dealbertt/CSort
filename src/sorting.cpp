@@ -1,9 +1,15 @@
+#include <chrono>
 #include <iostream>
+#include <thread>
 #include "../include/array.hpp"
 #include "../include/sorting.hpp"
 void BubbleSort(Array &array){
+    std::cout << "Inside BubbleSort!" << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     for(size_t i = 0; i < array.getSize(); i ++){
+        std::cout << "Iteration if i " << i << std::endl;
         for(size_t j = 0; j < array.getSize() - 1; j++){
+            std::cout << "Iteration if j " << j << std::endl;
             if(array[j] > array[j + 1]){
                 array.swap(j, j + 1);
             }
