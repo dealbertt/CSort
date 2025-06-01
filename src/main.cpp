@@ -1,8 +1,8 @@
-#include <SDL2/SDL_audio.h>
 #include <iostream>
 #include <csignal>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_audio.h>
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_error.h>
@@ -10,7 +10,6 @@
 
 #include "../include/config.hpp" 
 #include "../include/array.hpp" 
-#include "../include/sorting.hpp" 
 #include "../include/sortView.hpp" 
 #include "../include/sound.hpp" 
 
@@ -39,17 +38,19 @@ int initProgram(){
 
     SDL_CreateWindowAndRenderer(config.windowWidth, config.windowHeigth,SDL_WINDOW_VULKAN, &window, &renderer);
     if(window == NULL){
-        std::cout << "Error trying to create SDL_Window" << std::endl;
+        std::cerr << "Error trying to create SDL_Window: " << SDL_GetError() << std::endl;
         return -1;
+    }else{
+        std::cout << "Window created successfully!" << std::endl;
     }
-    std::cout << "Window created successfully!" << std::endl;
 
     if(renderer == NULL){
-        std::cout << "Error while trying to create the renderer" << std::endl;
+        std::cerr << "Error while trying to create the renderer: " << SDL_GetError() << std::endl;
         return -1;
-        
+    }else{
+        std::cout << "Renderer created successfully!" << std::endl;
     }
-    std::cout << "Renderer created successfully!" << std::endl;
+
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
     SDL_RenderPresent(renderer);
