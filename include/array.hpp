@@ -179,11 +179,13 @@ class Array{
             assert(secondIndex < sArray.size());
 
             sArray[firstIndex].onAccess();
+            sArray[firstIndex].onComparison(sArray[secondIndex]);
 
             this->onAccess();
             std::swap(sArray[firstIndex], sArray[secondIndex]);
 
             sArray[secondIndex].onAccess();
+            
 
 
             mark(firstIndex);

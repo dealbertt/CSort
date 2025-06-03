@@ -1,8 +1,6 @@
-#include <SDL2/SDL_stdinc.h>
 #include <algorithm>
 #include <limits>
 #include <vector>
-#include <SDL2/SDL_mixer.h>
 
 #include "../include/sortView.hpp"
 
@@ -121,36 +119,43 @@ static void addOscillator(double freq, size_t p, size_t pstart, size_t pduration
             osciList[oldest] = Oscillator(freq, pstart, pduration);
         }
     }
+    std::cout << "[DEBUG] addOscillator freq: " << freq << " at pos: " << pstart << "\n";
 }
 
 static std::vector<unsigned int> accessList;
 
-void SoundAccess(size_t i){
-    double freq = 440.0; // A4 tone
-    size_t duration = s_samplerate / 2; // half second
-    addOscillator(freq, pos, pos, duration);
-}
-
 static double arrayIndexToFreq(double index){
     return 120 + 1200 * (index * index);
 }
+
+void SoundAccess(size_t i){
+    std::cout << "[DEBUG] SoundAccess(" << i << ")\n" << std::endl;
+    std::cout << "[DEBUG] accessList size: " << accessList.size() << "\n";
+    accessList.push_back(i);
+}
+
 
 void SoundReset(){
     pos = 0;
     osciList.clear();
 }
 
-void SoundCallBack(void *udata, Uint8 *stream, int len){ size_t &p = pos;
-
+void SoundCallBack(void *udata, Uint8 *stream, int len){
+    size_t &p = pos;
     ViewObject &sv = *globalObject;
 
     int16_t *data = (int16_t *)(stream);
 
     size_t size = len / sizeof(int16_t);
 
+    if(accessList.empty()){
+        memset(stream, 0, len);
+        p += size;
+        return;
+    }
     double pscale = (double)size / accessList.size();
 
-    for (size_t i = 0; i < accessList.size(); ++i)
+    for (size_t i = 0; i < accessList.size(); i++)
     {
         double relindex = accessList[i] / (double)sv.array.getMaxValue();
         double freq = arrayIndexToFreq(relindex);
@@ -185,7 +190,7 @@ void SoundCallBack(void *udata, Uint8 *stream, int len){ size_t &p = pos;
             vol = 0.9 * oldvol;
         }
 
-        for (size_t i = 0; i < size; ++i)
+        for (size_t i = 0; i < size; i++)
         {
             int32_t v = 24000.0 * wave[i] / (oldvol + (vol - oldvol) * (i / (double)size));
 

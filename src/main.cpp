@@ -6,7 +6,6 @@
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_error.h>
-#include <SDL2/SDL_mixer.h>
 
 #include "../include/config.hpp" 
 #include "../include/array.hpp" 
@@ -70,22 +69,24 @@ int main(){
     audiospec.channels = 1;
     audiospec.samples = 4096;
     audiospec.callback = SoundCallBack;
-    audiospec.userdata = &globalObject;
+    audiospec.userdata = globalObject;
 
-    int devices = SDL_GetNumAudioDevices(0);
-    std::cout << "Audio devices found: " << devices << std::endl;
-    for (int i = 0; i < devices; ++i) {
-        std::cout << "Device " << i << ": " << SDL_GetAudioDeviceName(i, 0) << std::endl;
+    //int devices = SDL_GetNumAudioDevices(0);
+
+    if(SDL_OpenAudio(&audiospec, NULL) < 0){
+        std::cerr << "Error trying to open SDL_OpenAudio: " << SDL_GetError() << std::endl;
     }
+    SDL_PauseAudio(0);
 
 
 
-
+    /*
     if(SDL_OpenAudio(&audiospec, NULL) < 0){
         std::cerr << "SDL_OpenAudio failed: " << SDL_GetError() << std::endl;
     }else{
         SDL_PauseAudio(0);
     }
+    */
     runList(renderer);
 
     cleanUp();
