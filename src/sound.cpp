@@ -182,7 +182,7 @@ void SoundCallBack(void *udata, Uint8 *stream, int len){
         double freq = arrayIndexToFreq(relindex);
 
         addOscillator(freq, p, p + i * pscale,
-                50 / 1000.0 * soundSustain * s_samplerate);
+                (sv.array.sortDelay->getDuration() / 1000.0f) / 1000.0 * soundSustain * s_samplerate);
     }
 
     accessList.clear();
