@@ -55,26 +55,26 @@ int initProgram(){
     SDL_RenderPresent(renderer);
 
     int numDrivers = SDL_GetNumAudioDrivers();
-    std::cout << "[DEBUG] Available audio drivers: " << numDrivers << std::endl;
+    if(config.debug) std::cout << "[DEBUG] Available audio drivers: " << numDrivers << std::endl;
 
     for (int i = 0; i < numDrivers; i++) {
-        std::cout << "[DEBUG] Driver " << i << ": " << SDL_GetAudioDriver(i) << std::endl;
+        if(config.debug) std::cout << "[DEBUG] Driver " << i << ": " << SDL_GetAudioDriver(i) << std::endl;
     }
 
     const char* currentDriver = SDL_GetCurrentAudioDriver(); 
     if (currentDriver) {
-        std::cout << "[DEBUG] Current audio driver: " << currentDriver << std::endl;
+        if(config.debug) std::cout << "[DEBUG] Current audio driver: " << currentDriver << std::endl;
     } else {
-        std::cout << "[DEBUG] No audio driver initialized" << std::endl;
+        if(config.debug) std::cout << "[DEBUG] No audio driver initialized" << std::endl;
     }
 
     int numDevices = SDL_GetNumAudioDevices(0);
 
-    std::cout << "[DEBUG] Number of audio playback devices: " << numDevices << std::endl;
+    if(config.debug) std::cout << "[DEBUG] Number of audio playback devices: " << numDevices << std::endl;
 
     for (int i = 0; i < numDevices; i++) {
         const char* device_name = SDL_GetAudioDeviceName(i, 0);
-        std::cout << "[DEBUG] Audio device " << i << ": " << device_name << std::endl;
+        if(config.debug) std::cout << "[DEBUG] Audio device " << i << ": " << device_name << std::endl;
     }
 
     SDL_AudioSpec desired, obtained;

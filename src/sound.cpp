@@ -102,8 +102,6 @@ static size_t pos = 0;
 static void addOscillator(double freq, size_t p, size_t pstart, size_t pduration){
     if(config.debug) std::cout << "[DEBUG] addOscillator freq: " << freq << " at pos: " << pstart << "\n";
 
-    size_t oldest = 0;
-           //toldest = std::numeric_limits<size_t>::max();
 
     for(size_t i = 0; i < osciList.size(); i++){
         if(osciList[i].isDone(p)){
@@ -117,10 +115,20 @@ static void addOscillator(double freq, size_t p, size_t pstart, size_t pduration
         osciList.push_back(Oscillator(freq, pstart, pduration));
         if(config.debug) std::cout << "[DEBUG] Added new oscillator, total count: " << osciList.size() << "\n";
         return;
-    }else{
-        osciList[oldest] = Oscillator(freq, pstart, pduration);
     }
-    if(config.debug) std::cout << "[DEBUG] addOscillator freq: " << freq << " at pos: " << pstart << "\n";
+    
+    size_t oldest_idx = 0;
+    size_t oldest_start = osciList[0].tstart();
+
+    for(size_t i = 1; i < osciList.size(); i++){
+        if(osciList[i].tstart() < oldest_start){
+            oldest_idx = i;
+            oldest_start = osciList[i].tstart();
+        }
+    }
+
+    osciList[oldest_idx] = Oscillator(freq, pstart, pduration);
+    if(config.debug) std::cout << "[DEBUG] Replaced oldest oscillator at index " << oldest_idx << "\n";
 }
 
 static std::vector<unsigned int> accessList;

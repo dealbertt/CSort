@@ -180,13 +180,10 @@ class Array{
             assert(secondIndex < sArray.size());
 
             sArray[firstIndex].onAccess();
-            sArray[firstIndex].onComparison(sArray[secondIndex]);
+            sArray[secondIndex].onAccess();
 
             this->onAccess();
             std::swap(sArray[firstIndex], sArray[secondIndex]);
-
-            sArray[secondIndex].onAccess();
-            
 
 
             mark(firstIndex);
