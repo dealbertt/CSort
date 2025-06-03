@@ -53,8 +53,56 @@ int initProgram(){
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
     SDL_RenderPresent(renderer);
+
+    int numDrivers = SDL_GetNumAudioDrivers();
+    std::cout << "[DEBUG] Available audio drivers: " << numDrivers << std::endl;
+
+    for (int i = 0; i < numDrivers; i++) {
+        std::cout << "[DEBUG] Driver " << i << ": " << SDL_GetAudioDriver(i) << std::endl;
+    }
+
+    const char* currentDriver = SDL_GetCurrentAudioDriver(); 
+    if (currentDriver) {
+        std::cout << "[DEBUG] Current audio driver: " << currentDriver << std::endl;
+    } else {
+        std::cout << "[DEBUG] No audio driver initialized" << std::endl;
+    }
+
+    int numDevices = SDL_GetNumAudioDevices(0);
+
+    std::cout << "[DEBUG] Number of audio playback devices: " << numDevices << std::endl;
+
+    for (int i = 0; i < numDevices; i++) {
+        const char* device_name = SDL_GetAudioDeviceName(i, 0);
+        std::cout << "[DEBUG] Audio device " << i << ": " << device_name << std::endl;
+    }
+
+    SDL_AudioSpec desired, obtained;
+    desired.freq = 44100;
+    desired.format = AUDIO_S16SYS;
+    desired.channels = 1;
+    desired.samples = 4096;
+    desired.callback = SoundCallBack;
+    desired.userdata = nullptr;
+
+    if(SDL_OpenAudio(&desired, &obtained) < 0){
+        std::cerr << "Error opening SDL_Audio: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    if(config.debug){
+        std::cout << "[DEBUG] Desired: freq=" << desired.freq << ", format=" << desired.format 
+            << ", channels=" << (int)desired.channels << ", samples=" << desired.samples << std::endl;
+        std::cout << "[DEBUG] Obtained: freq=" << obtained.freq << ", format=" << obtained.format 
+            << ", channels=" << (int)obtained.channels << ", samples=" << obtained.samples << std::endl;
+    }
+
+    SDL_PauseAudio(0);
+
+    sleep(1);
     return 0;
 }
+
 
 int main(){
 
@@ -62,31 +110,8 @@ int main(){
         std::cout << "Error initializing the components of the program" << std::endl;
         exit(1);
     }
+    //testAudioWithSimpleTone(); 
 
-    //Typeshit
-    SDL_AudioSpec audiospec;
-    audiospec.freq = 44100;
-    audiospec.format = AUDIO_S16SYS;
-    audiospec.channels = 1;
-    audiospec.samples = 4096;
-    audiospec.callback = SoundCallBack;
-
-    //int devices = SDL_GetNumAudioDevices(0);
-
-    if(SDL_OpenAudio(&audiospec, NULL) < 0){
-        std::cerr << "Error trying to open SDL_OpenAudio: " << SDL_GetError() << std::endl;
-    }
-    SDL_PauseAudio(0);
-
-
-
-    /*
-    if(SDL_OpenAudio(&audiospec, NULL) < 0){
-        std::cerr << "SDL_OpenAudio failed: " << SDL_GetError() << std::endl;
-    }else{
-        SDL_PauseAudio(0);
-    }
-    */
     runList(renderer);
 
     cleanUp();

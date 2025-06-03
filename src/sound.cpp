@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "../include/sortView.hpp"
+#include "../include/sound.hpp"
 
 static const size_t s_samplerate = 44100;
 
@@ -99,25 +100,25 @@ static std::vector<Oscillator> osciList;
 static size_t pos = 0;
 
 static void addOscillator(double freq, size_t p, size_t pstart, size_t pduration){
+    if(config.debug) std::cout << "[DEBUG] addOscillator freq: " << freq << " at pos: " << pstart << "\n";
+
     size_t oldest = 0;
            //toldest = std::numeric_limits<size_t>::max();
 
     for(size_t i = 0; i < osciList.size(); i++){
         if(osciList[i].isDone(p)){
             osciList[i] = Oscillator(freq, pstart, pduration);
+            if(config.debug) std::cout << "[DEBUG] Replaced finished oscillator at index " << i << "\n";
             return;
         }
+    }
 
-        if(osciList[i].tstart() < oldest){
-            oldest = i;
-            //toldest = osciList[i].tstart();
-        }
-        
-        if(osciList.size() < max_oscillators){
-            osciList.push_back(Oscillator(freq, pstart, pduration));
-        }else{
-            osciList[oldest] = Oscillator(freq, pstart, pduration);
-        }
+    if(osciList.size() < max_oscillators){
+        osciList.push_back(Oscillator(freq, pstart, pduration));
+        if(config.debug) std::cout << "[DEBUG] Added new oscillator, total count: " << osciList.size() << "\n";
+        return;
+    }else{
+        osciList[oldest] = Oscillator(freq, pstart, pduration);
     }
     if(config.debug) std::cout << "[DEBUG] addOscillator freq: " << freq << " at pos: " << pstart << "\n";
 }
@@ -215,6 +216,16 @@ void SoundCallBack(void *udata, Uint8 *stream, int len){
     p += size;
 }
 
-
+void testAudioWithSimpleTone() {
+    std::cout << "[DEBUG] Testing audio with simple tone..." << std::endl;
+    
+    // Force add a test oscillator
+    osciList.clear();
+    osciList.push_back(Oscillator(440.0, pos, s_samplerate * 2)); // 440Hz for 2 seconds
+    
+    std::cout << "[DEBUG] Added test oscillator: 440Hz" << std::endl;
+    std::cout << "[DEBUG] Current position: " << pos << std::endl;
+    std::cout << "[DEBUG] Oscillator list size: " << osciList.size() << std::endl;
+}
 
 
