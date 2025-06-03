@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <limits>
+#include <mutex>
 #include <vector>
 
 #include "../include/sortView.hpp"
@@ -7,7 +8,7 @@
 
 static const size_t s_samplerate = 44100;
 
-double soundSustain = 2.0;
+double soundSustain = 1.0;
 
 static const size_t max_oscillators = 512;
 
@@ -133,22 +134,28 @@ static void addOscillator(double freq, size_t p, size_t pstart, size_t pduration
 
 static std::vector<unsigned int> accessList;
 
+static std::mutex MtxAccess;
+
 static double arrayIndexToFreq(double index){
     return 120 + 1200 * (index * index);
 }
 
 void SoundAccess(size_t i){
+    MtxAccess.lock();
     if(config.debug){
         std::cout << "[DEBUG] SoundAccess(" << i << ")\n" << std::endl;
         std::cout << "[DEBUG] accessList size: " << accessList.size() << "\n";
     }
     accessList.push_back(i);
+    MtxAccess.unlock();
 }
 
 
 void SoundReset(){
+    MtxAccess.lock();
     pos = 0;
     osciList.clear();
+    MtxAccess.unlock();
 }
 
 void SoundCallBack(void *udata, Uint8 *stream, int len){
@@ -164,6 +171,9 @@ void SoundCallBack(void *udata, Uint8 *stream, int len){
         p += size;
         return;
     }
+
+    MtxAccess.lock();
+
     double pscale = (double)size / accessList.size();
 
     for (size_t i = 0; i < accessList.size(); i++)
@@ -172,10 +182,12 @@ void SoundCallBack(void *udata, Uint8 *stream, int len){
         double freq = arrayIndexToFreq(relindex);
 
         addOscillator(freq, p, p + i * pscale,
-                sv.array.sortDelay->getDuration() / 1000.0 * soundSustain * s_samplerate);
+                50 / 1000.0 * soundSustain * s_samplerate);
     }
 
     accessList.clear();
+
+    MtxAccess.unlock();
 
     std::vector<double> wave(size, 0.0);
     size_t wavecount = 0;
@@ -195,6 +207,7 @@ void SoundCallBack(void *udata, Uint8 *stream, int len){
         double vol = *std::max_element(wave.begin(), wave.end());
 
         static double oldvol = 1.0;
+
         if(vol > oldvol){
 
         }else{

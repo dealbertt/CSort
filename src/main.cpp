@@ -99,7 +99,6 @@ int initProgram(){
 
     SDL_PauseAudio(0);
 
-    sleep(1);
     return 0;
 }
 
@@ -126,6 +125,7 @@ void signalHandler(int signum){
 void cleanUp(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    SDL_PauseAudio(1);
     SDL_CloseAudio();
     SDL_Quit();
     exit(1);

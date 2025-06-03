@@ -10,9 +10,9 @@
 
 extern ViewObject *globalObject;
 const struct Algorithm algoList[] = {
-    {"Bubbler Sort", &BubbleSort,  100, "Bien", 8000},
+    {"Bubble Sort", &BubbleSort,  100, "Bien", 8000},
     {"Cocktail Sort", &CocktailSort,  100, "que tal", 8000},
-    {"Selection Sort", &SelectionSort,  500, "Hola", 40000},
+    {"Selection Sort", &SelectionSort,  100, "Hola", 40000},
     {"Insertion Sort", &InsertionSort,  100, "Hola", 12000},
     {"Quick Sort", &QuickSortInit,  500, "Bien", 8000},
 };

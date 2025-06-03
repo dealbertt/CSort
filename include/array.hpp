@@ -182,7 +182,6 @@ class Array{
             sArray[firstIndex].onAccess();
             sArray[secondIndex].onAccess();
 
-            this->onAccess();
             std::swap(sArray[firstIndex], sArray[secondIndex]);
 
 
@@ -194,6 +193,8 @@ class Array{
 
             Unmark(firstIndex);
             Unmark(secondIndex);
+            this->onAccess();
+
         }
 
         void insert(size_t firstIndex, size_t secondIndex){
