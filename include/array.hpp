@@ -41,13 +41,14 @@ class ArrayItem{
 
     public:
         ArrayItem() : value(0), color(0){
-             std::cerr << "[DEBUG] ArrayItem at " << this << " constructed\n";
+            if(config.debug) std::cout << "[DEBUG] ArrayItem at " << this << " constructed\n";
+             
         }
         explicit ArrayItem(valueType& value) : value(value) {
-             std::cerr << "[DEBUG] ArrayItem at " << this << " constructed in explicit constructor\n";
+             if(config.debug) std::cout << "[DEBUG] ArrayItem at " << this << " constructed in explicit constructor\n";
         }
         ~ArrayItem(){
-             std::cerr << "[DEBUG] ArrayItem at " << this << " destroyed\n";
+             if(config.debug) std::cout << "[DEBUG] ArrayItem at " << this << " destroyed\n";
         }
 
         const valueType &get() const
@@ -212,7 +213,9 @@ class Array{
             MtxArray.lock();
             assert(i < sArray.size());
             MtxArray.unlock();
-            std::cout << "operator[] called with index: " << i << std::endl;
+
+            if(config.debug) std::cout << "[DEBUG] operator[] called with index: " << i << std::endl;
+
             return sArray.at(i);
         } 
 

@@ -15,8 +15,8 @@ void Delay::delay(){
 }
 
 void ArrayItem::onAccess() const {
-    std::cout << "[DEBUG] onAccess called. Value: " << this->getValue() << std::endl;
-    std::cout << "[DEBUG] this pointer: " << static_cast<const void*>(this) << std::endl;
+
+    if(config.debug) std::cout << "[DEBUG] onAccess called. Value: " << this->getValue() << std::endl;
 
     SoundAccess(this->getValue());
 }
@@ -24,15 +24,17 @@ void ArrayItem::onAccess() const {
 void ArrayItem::onComparison(const ArrayItem &item) const {
     compareCount++;
 
-    std::cout << "[DEBUG] onComparison called. Value: " << this->getValue() << std::endl;
-    std::cout << "[DEBUG] onComparison second called. Value: " << item.getValue() << std::endl;
+    if(config.debug){
+        std::cout << "[DEBUG] onComparison called. Value: " << this->getValue() << std::endl;
+        std::cout << "[DEBUG] onComparison second called. Value: " << item.getValue() << std::endl;
+    }
+
     SoundAccess(this->getValue());
     SoundAccess(item.getValue());
 }
 
 void Array::FillArray(){
 
-    std::cout << "Inside FillArray!" << std::endl;
     std::random_device rd;  // Seed for the random number engine
     std::mt19937 gen(rd()); // Mersenne Twister PRNG
     std::uniform_int_distribution<ArrayItem::valueType> dist(1,  getMaxValue()); // Generates 0 or 1

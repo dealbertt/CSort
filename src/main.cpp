@@ -55,6 +55,7 @@ int initProgram(){
     SDL_RenderPresent(renderer);
     return 0;
 }
+
 int main(){
 
     if(initProgram() == -1){
@@ -69,7 +70,6 @@ int main(){
     audiospec.channels = 1;
     audiospec.samples = 4096;
     audiospec.callback = SoundCallBack;
-    audiospec.userdata = globalObject;
 
     //int devices = SDL_GetNumAudioDevices(0);
 

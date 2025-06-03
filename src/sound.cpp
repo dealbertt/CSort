@@ -119,7 +119,7 @@ static void addOscillator(double freq, size_t p, size_t pstart, size_t pduration
             osciList[oldest] = Oscillator(freq, pstart, pduration);
         }
     }
-    std::cout << "[DEBUG] addOscillator freq: " << freq << " at pos: " << pstart << "\n";
+    if(config.debug) std::cout << "[DEBUG] addOscillator freq: " << freq << " at pos: " << pstart << "\n";
 }
 
 static std::vector<unsigned int> accessList;
@@ -129,8 +129,10 @@ static double arrayIndexToFreq(double index){
 }
 
 void SoundAccess(size_t i){
-    std::cout << "[DEBUG] SoundAccess(" << i << ")\n" << std::endl;
-    std::cout << "[DEBUG] accessList size: " << accessList.size() << "\n";
+    if(config.debug){
+        std::cout << "[DEBUG] SoundAccess(" << i << ")\n" << std::endl;
+        std::cout << "[DEBUG] accessList size: " << accessList.size() << "\n";
+    }
     accessList.push_back(i);
 }
 
