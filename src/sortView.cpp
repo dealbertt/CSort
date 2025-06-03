@@ -95,11 +95,12 @@ SDL_Color ViewObject::configureColor(ArrayItem &item){
 }
 
 void ViewObject::markArrayDone(){
+    array.sortDelay->setDelay(4000);
     for(size_t i = 0; i < array.getSize(); i++){
         array.markDone(i);
         paint();
-        array.sortDelay->setDelay(4000);
         array.sortDelay->delay();
+        array[i].onAccess();
     }
 }
 

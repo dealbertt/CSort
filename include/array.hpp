@@ -183,6 +183,7 @@ class Array{
             sArray[secondIndex].onAccess();
 
             std::swap(sArray[firstIndex], sArray[secondIndex]);
+            this->onAccess();
 
 
             mark(firstIndex);
@@ -193,7 +194,6 @@ class Array{
 
             Unmark(firstIndex);
             Unmark(secondIndex);
-            this->onAccess();
 
         }
 

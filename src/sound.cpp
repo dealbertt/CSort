@@ -8,7 +8,7 @@
 
 static const size_t s_samplerate = 44100;
 
-double soundSustain = 1.0;
+double soundSustain = 2.0;
 
 static const size_t max_oscillators = 512;
 
