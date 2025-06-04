@@ -183,6 +183,7 @@ void SoundCallBack(void *udata, Uint8 *stream, int len){
 
         addOscillator(freq, p, p + i * pscale,
                 (sv.array.sortDelay->getDuration() / 1000.0f) / 1000.0 * soundSustain * s_samplerate);
+        if(config.debug) std::cout << "[DEBUG] Duration of oscillator: " << sv.array.sortDelay->getDuration() / 1000.0f << std::endl;
     }
 
     accessList.clear();
