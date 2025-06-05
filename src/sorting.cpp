@@ -4,7 +4,6 @@
 #include "../include/array.hpp"
 #include "../include/sorting.hpp"
 void BubbleSort(Array &array){
-    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     for(size_t i = 0; i < array.getSize(); i ++){
         for(size_t j = 0; j < array.getSize() - 1; j++){
             if(array[j] > array[j + 1]){

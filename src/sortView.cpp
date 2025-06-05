@@ -1,20 +1,23 @@
 #include <climits>
 #include <cstdint>
 #include <iostream>
+#include <thread>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_render.h>
-#include <thread>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_scancode.h>
+#include <SDL2/SDL_keyboard.h>
 
 #include "../include/sortView.hpp"
 
 extern ViewObject *globalObject;
 const struct Algorithm algoList[] = {
+    {"Selection Sort", &SelectionSort,  500, "Hola", 5000},
+    {"Quick Sort", &QuickSortInit,  5000, "Bien", 500},
     {"Bubble Sort", &BubbleSort,  100, "Bien", 8000},
     {"Cocktail Sort", &CocktailSort,  100, "que tal", 8000},
-    {"Selection Sort", &SelectionSort,  100, "Hola", 40000},
     {"Insertion Sort", &InsertionSort,  100, "Hola", 12000},
-    {"Quick Sort", &QuickSortInit,  500, "Bien", 8000},
 };
 
 const size_t algoListSize = sizeof(algoList) / sizeof(algoList[0]);
@@ -67,6 +70,7 @@ void ViewObject::executeSort(void (*func)(class Array&)){
             paint();
             array.needRepaint = false;
         }
+        handleKeyboard();
     }
     markArrayDone();
 }
@@ -124,3 +128,17 @@ void runList(SDL_Renderer *renderer){
     }
 }
 
+int ViewObject::handleKeyboard(){
+    SDL_Event event;
+    SDL_PollEvent(&event);
+
+    const Uint8 *pressed = SDL_GetKeyboardState(NULL);
+    if(event.type == SDL_KEYDOWN){
+        if(pressed[SDL_SCANCODE_SPACE]){
+            std::cout << "Space key pressed!" << std::endl;
+        }
+    }
+
+    return 0;
+
+}
