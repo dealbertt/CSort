@@ -122,11 +122,3 @@ void signalHandler(int signum){
     cleanUp();
 }
 
-void cleanUp(){
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_PauseAudio(1);
-    SDL_CloseAudio();
-    SDL_Quit();
-    exit(1);
-}
