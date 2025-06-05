@@ -37,7 +37,7 @@ void Array::FillArray(){
 
     std::random_device rd;  // Seed for the random number engine
     std::mt19937 gen(rd()); // Mersenne Twister PRNG
-    std::uniform_int_distribution<ArrayItem::valueType> dist(1,  getMaxValue()); // Generates 0 or 1
+    std::uniform_int_distribution<ArrayItem::valueType> dist(1,  getMaxValue() - 50); 
                                                                                  
     size_t size = getSize();
 
