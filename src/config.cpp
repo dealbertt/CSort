@@ -13,7 +13,6 @@ Config *readConfiguration(const char *path){
         if(strstr(line, "NUMBER_ELEMENTS")) sscanf(line, "NUMBER_ELEMENTS=%d", &config->numberElements);
         else if(strstr(line, "WINDOW_WIDTH")) sscanf(line, "WINDOW_WIDTH=%d", &config->windowWidth);
         else if(strstr(line, "WINDOW_HEIGHT")) sscanf(line, "WINDOW_HEIGHT=%d", &config->windowHeigth);
-        else if(strstr(line, "FPS")) sscanf(line, "FPS=%d", &config->fps);
         else if(strstr(line, "DELAY")) sscanf(line, "DELAY=%d", &config->delay);
         else if(strstr(line, "DEBUG")) sscanf(line, "DEBUG=%d", &config->debug);
     }
