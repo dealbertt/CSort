@@ -157,8 +157,8 @@ int ViewObject::handleKeyboard(SDL_Event &event){
                                    } 
             case SDL_SCANCODE_ESCAPE:{
 
-            cleanUp();
-            break;
+                                         cleanUp();
+                                         break;
                                      }
             default:
                                      break;
@@ -179,5 +179,12 @@ void cleanUp(){
 }
 
 void ViewObject::startArray(){
+    array.setSorted(false);
     a = std::chrono::steady_clock::now();
+}
+
+void ViewObject::finishArray(){
+    
+    b = std::chrono::steady_clock::now();
+    std::cout << "Time taken: " << std::chrono::duration_cast<std::chrono::seconds>(b - a).count() << std::endl;
 }

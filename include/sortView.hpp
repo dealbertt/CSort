@@ -33,6 +33,7 @@ class ViewObject{
         void markArrayDone();
         int handleKeyboard(SDL_Event &event);
         void startArray();
+        void finishArray();
 
 };
 
