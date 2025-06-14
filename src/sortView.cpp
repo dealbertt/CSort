@@ -77,6 +77,7 @@ void ViewObject::executeSort(void (*func)(class Array&)){
             array.needRepaint = false;
         }
     }
+    finishArray();
     markArrayDone();
 }
 
