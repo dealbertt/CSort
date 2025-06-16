@@ -120,6 +120,7 @@ void ViewObject::markArrayDone(){
     }
 }
 
+//This function goes throuhg each item of the algoList, creating a new ViewObject, which then creates a new array with the specified size
 void runList(SDL_Renderer *renderer){
     ViewObject *object = nullptr;
     for(size_t i = 0; i < algoListSize; i++){
@@ -139,6 +140,7 @@ void runList(SDL_Renderer *renderer){
     }
 }
 
+//Function in charge of all the keyboard shortcuts, for now there are not that many, hopefully will add more in the future
 int ViewObject::handleKeyboard(SDL_Event &event){
 
     if(event.type == SDL_KEYDOWN){
@@ -175,6 +177,7 @@ int ViewObject::handleKeyboard(SDL_Event &event){
 
 }
 
+//Function for when the program exits, whether because there are no more algorithms to sort of because a signal has been received
 void cleanUp(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
@@ -183,6 +186,7 @@ void cleanUp(){
     SDL_Quit();
     exit(1);
 }
+
 
 void ViewObject::startArray(){
     array.setSorted(false);
