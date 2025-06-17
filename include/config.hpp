@@ -14,6 +14,7 @@ typedef struct Config{
 
 Config *readConfiguration(const char *);
 
+void debug(std::string message);
 #endif
 
 

@@ -20,7 +20,12 @@ Config *readConfiguration(const char *path){
     std::cout << "Number of elements: " << config->numberElements << "\n";
     std::cout << "Window Width: " << config->windowWidth << "\n";
     std::cout << "Window Height: " << config->windowHeigth << "\n";
-    std::cout << "FPS: " << config->fps << "\n";
 
     return config;
+}
+
+void debug(std::string message, Config *config){
+    if(config->debug){
+        std::cout << "[DEBUG] " << message << std::endl;
+    }
 }
