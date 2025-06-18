@@ -10,11 +10,6 @@
 #include "../include/config.hpp" 
 #include "../include/array.hpp" 
 #include "../include/sortView.hpp" 
-#include "../include/sound.hpp" 
-
-
-// draw | | | |  bars: each bar is width w, separation is w/2
-// thus n bars need n * w + (n-1) * w/2 width
 
 Config config;
 SDL_Window *window = nullptr;
