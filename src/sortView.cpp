@@ -16,6 +16,9 @@ const int MAX_DELAY = 1000000;
 extern ViewObject *globalObject;
 extern SDL_Renderer *renderer;
 extern SDL_Window *window;
+
+
+//List containing all the implemented algorithms, incluiding the delay after each swap, a description, and the amount of elements to sort
 const struct Algorithm algoList[] = {
     {"Bubble Sort", &BubbleSort,  100, "Bien", 8000}, //8 ms
     {"Cocktail Sort", &CocktailSort,  100, "que tal", 8000}, // 8 ms
@@ -34,6 +37,7 @@ float ViewObject::calculateWidthofBar(size_t size){
 }
 
 
+//Function in charge of painting the array
 void ViewObject::paint(){
     size_t size = array.getSize();
     if(size == 0){
@@ -65,6 +69,7 @@ void ViewObject::paint(){
     SDL_RenderPresent(&renderer);
 }
 
+//Function in charge of launching the sorting logic thread
 void ViewObject::executeSort(void (*func)(class Array&)){
     std::thread sortThread(func, std::ref(array));
     sortThread.detach();
