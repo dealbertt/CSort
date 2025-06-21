@@ -5,3 +5,4 @@ This project uses SDL2 with C++
 
 (not abandoned, coming back soon)
 
+I HAVE TO PORT IT BACK TO SDL3, AS I DIDNT USE SDL_MIXER (ONLY COMPATIBLE WITH SDL2)
