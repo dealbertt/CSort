@@ -3,8 +3,8 @@
 
 #include "array.hpp"
 #include "sorting.hpp"
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_events.h>
+#include <SDL3/SDL_render.h>
+#include <SDL3/SDL_events.h>
 #include <chrono>
 class ViewObject{
     public:
@@ -31,9 +31,10 @@ class ViewObject{
         void executeSort(void (*func)(class Array&));
         SDL_Color configureColor(ArrayItem &item);
         void markArrayDone();
-        int handleKeyboard(SDL_Event &event);
+        int handleKeyboard();
         void startArray();
         void finishArray();
+        void updateText();
 
 };
 
@@ -52,4 +53,5 @@ void runList(SDL_Renderer *renderer);
 
 void SoundCallBack(void *udata, Uint8 *stream, int len);
 void cleanUp();
+
 #endif

@@ -1,14 +1,17 @@
+#include <SDL2/SDL_keycode.h>
+#include <SDL3/SDL_keyboard.h>
 #include <chrono>
 #include <climits>
 #include <cstdint>
 #include <iostream>
 #include <thread>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_scancode.h>
-#include <SDL2/SDL_keyboard.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_render.h>
+#include <SDL3/SDL_events.h>
+#include <SDL3/SDL_scancode.h>
+#include <SDL3/SDL_keyboard.h>
+#include <SDL3/SDL_audio.h>
 
 #include "../include/sortView.hpp"
 
@@ -58,7 +61,7 @@ void ViewObject::paint(){
         
         SDL_Color color = configureColor(array.getItemMutable(i));
         SDL_SetRenderDrawColor(&renderer, color.r, color.g, color.b, color.a);
-        SDL_RenderFillRectF(&renderer, &rect);
+        SDL_RenderFillRect(&renderer, &rect);
 
          
         x += wbar + spacing;
@@ -76,7 +79,7 @@ void ViewObject::executeSort(void (*func)(class Array&)){
 
     SDL_Event event;
     while(!array.isSorted()){
-        while(SDL_PollEvent(&event)) handleKeyboard(event);
+        handleKeyboard();
         if(array.needRepaint){
             paint();
             array.needRepaint = false;
@@ -141,36 +144,34 @@ void runList(SDL_Renderer *renderer){
 }
 
 //Function in charge of all the keyboard shortcuts, for now there are not that many, hopefully will add more in the future
-int ViewObject::handleKeyboard(SDL_Event &event){
+int ViewObject::handleKeyboard(){
 
-    if(event.type == SDL_KEYDOWN){
-        switch (event.key.keysym.scancode) {
-            case SDL_SCANCODE_UP:{
-                                     int delay = array.sortDelay->getDuration();
-                                     if(delay < MAX_DELAY){
-                                         delay += 1000;
-                                         array.sortDelay->setDelay(delay);
-                                         std::cout << "Duration increased to: " << array.sortDelay->getDuration() << std::endl;
-                                     }else{
-                                         std::cout << "Max delay value reached!" << std::endl;
-                                     }
-                                     break;
-                                 }
-            case SDL_SCANCODE_DOWN:{
-                                       int delay = array.sortDelay->getDuration();
-                                       delay -= 1000;
-                                       array.sortDelay->setDelay(delay);
-                                       std::cout << "Duration decreased to: " << array.sortDelay->getDuration() << std::endl;
-                                       break;
-                                   } 
-            case SDL_SCANCODE_ESCAPE:{
+    SDL_Event event;
+    SDL_PollEvent(&event);
 
-                                         cleanUp();
-                                         break;
-                                     }
-            default:
-                                     break;
+    const bool *pressed = SDL_GetKeyboardState(NULL);
+    if(pressed[SDLK_UP]){
+        int delay = array.sortDelay->getDuration();
+        if(delay < MAX_DELAY){
+            delay += 1000;
+            array.sortDelay->setDelay(delay);
+            std::cout << "Duration increased to: " << array.sortDelay->getDuration() << std::endl;
+        }else{
+            std::cout << "Max delay value reached!" << std::endl;
         }
+
+    }
+
+    if(pressed[SDL_SCANCODE_DOWN]){
+        int delay = array.sortDelay->getDuration();
+        delay -= 1000;
+        array.sortDelay->setDelay(delay);
+        std::cout << "Duration decreased to: " << array.sortDelay->getDuration() << std::endl;
+    } 
+
+    if(pressed[SDL_SCANCODE_ESCAPE]){
+
+        cleanUp();
     }
 
     return 0;
@@ -181,8 +182,8 @@ int ViewObject::handleKeyboard(SDL_Event &event){
 void cleanUp(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    SDL_PauseAudio(1);
-    SDL_CloseAudio();
+    SDL_PauseAudioDevice(1);
+    SDL_CloseAudioDevice(1);
     SDL_Quit();
     exit(1);
 }
@@ -198,3 +199,5 @@ void ViewObject::finishArray(){
     b = std::chrono::steady_clock::now();
     std::cout << "Time taken: " << std::chrono::duration_cast<std::chrono::seconds>(b - a).count() << std::endl;
 }
+
+

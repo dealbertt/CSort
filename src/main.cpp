@@ -1,11 +1,11 @@
 #include <iostream>
 #include <csignal>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_audio.h>
-#include <SDL2/SDL_video.h>
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_error.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_audio.h>
+#include <SDL3/SDL_video.h>
+#include <SDL3/SDL_render.h>
+#include <SDL3/SDL_error.h>
 
 #include "../include/config.hpp" 
 #include "../include/array.hpp" 
@@ -30,7 +30,7 @@ int initProgram(){
     config = *readConfiguration("config/config.txt");
     
 
-    SDL_CreateWindowAndRenderer(config.windowWidth, config.windowHeigth,SDL_WINDOW_VULKAN, &window, &renderer);
+    SDL_CreateWindowAndRenderer("CSort", config.windowWidth, config.windowHeigth,SDL_WINDOW_VULKAN, &window, &renderer);
     if(window == NULL){
         std::cerr << "Error trying to create SDL_Window: " << SDL_GetError() << std::endl;
         return -1;
@@ -74,16 +74,19 @@ int initProgram(){
 
     SDL_AudioSpec desired, obtained;
     desired.freq = 44100;
-    desired.format = AUDIO_S16SYS;
+    desired.format = SDL_AUDIO_S16;
     desired.channels = 1;
-    desired.samples = 4096;
-    desired.callback = SoundCallBack;
-    desired.userdata = nullptr;
+    //desired.samples = 4096;
+    //desired.callback = SoundCallBack;
+    //desired.userdata = nullptr;
 
+    /*
     if(SDL_OpenAudio(&desired, &obtained) < 0){
         std::cerr << "Error opening SDL_Audio: " << SDL_GetError() << std::endl;
         return -1;
     }
+    */
+    SDL_OpenAudioDeviceStream(SDL_AudioDeviceID devid, const SDL_AudioSpec *spec, SDL_AudioStreamCallback callback, void *userdata)
 
     if(config.debug){
         std::cout << "[DEBUG] Desired: freq=" << desired.freq << ", format=" << desired.format 
