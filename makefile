@@ -1,6 +1,6 @@
 CXX = g++
-CXXFLAGS = -Wall -Werror -std=c++17 -g -Iinclude $(shell pkg-config --cflags sdl2 SDL2_ttf)
-LDFLAGS = $(shell pkg-config --libs sdl2 SDL2_ttf)
+CXXFLAGS = -Wall -Werror -std=c++17 -g -Iinclude $(shell pkg-config --cflags sdl3 SDL3_ttf) -lSDL3_ttf
+LDFLAGS = $(shell pkg-config --libs sdl3 sdl3-ttf)
 
 SRC_DIR = src
 SRC = $(SRC_DIR)/main.cpp $(SRC_DIR)/array.cpp $(SRC_DIR)/sorting.cpp $(SRC_DIR)/sortView.cpp $(SRC_DIR)/config.cpp $(SRC_DIR)/sound.cpp
