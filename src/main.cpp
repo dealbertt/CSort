@@ -74,7 +74,7 @@ int initProgram(){
     }
     */
 
-    SDL_AudioSpec desired, obtained;
+    SDL_AudioSpec desired;
     desired.freq = 44100;
     desired.format = SDL_AUDIO_S16;
     desired.channels = 1;
@@ -95,9 +95,13 @@ int initProgram(){
             return -1;
         }
 
+    }else{
+        if(config.debug){
+            std::cout << "[DEBUG] AudioDeviceID: " << audioId << std::endl;
+        }
     }
 
-    SDL_AudioStream *stream = SDL_CreateAudioStream(&desired, &obtained);
+    SDL_AudioStream *stream = SDL_CreateAudioStream(NULL, &desired);
     if(stream == NULL){
         if(config.debug){
             std::cout << "[DEBUG] The AudioStream is NULL!:" << SDL_GetError() << std::endl;
