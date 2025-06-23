@@ -63,6 +63,7 @@ int initProgram(){
         if(config.debug) std::cout << "[DEBUG] No audio driver initialized" << std::endl;
     }
 
+    /*
     int numDevices = SDL_GetNumAudioDevices(0);
 
     if(config.debug) std::cout << "[DEBUG] Number of audio playback devices: " << numDevices << std::endl;
@@ -71,6 +72,7 @@ int initProgram(){
         const char* device_name = SDL_GetAudioDeviceName(i, 0);
         if(config.debug) std::cout << "[DEBUG] Audio device " << i << ": " << device_name << std::endl;
     }
+    */
 
     SDL_AudioSpec desired, obtained;
     desired.freq = 44100;
@@ -86,16 +88,28 @@ int initProgram(){
         return -1;
     }
     */
-    SDL_OpenAudioDeviceStream(SDL_AudioDeviceID devid, const SDL_AudioSpec *spec, SDL_AudioStreamCallback callback, void *userdata)
+    SDL_AudioDeviceID audioId = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &desired);
+    if(audioId == 0){
+        if(config.debug){
+            std::cout << "[DEBUG] The AudioDeviceID is 0!:" << SDL_GetError() << std::endl;
+            return -1;
+        }
 
-    if(config.debug){
-        std::cout << "[DEBUG] Desired: freq=" << desired.freq << ", format=" << desired.format 
-            << ", channels=" << (int)desired.channels << ", samples=" << desired.samples << std::endl;
-        std::cout << "[DEBUG] Obtained: freq=" << obtained.freq << ", format=" << obtained.format 
-            << ", channels=" << (int)obtained.channels << ", samples=" << obtained.samples << std::endl;
     }
 
-    SDL_PauseAudio(0);
+    SDL_AudioStream *stream = SDL_CreateAudioStream(&desired, &obtained);
+    if(stream == NULL){
+        if(config.debug){
+            std::cout << "[DEBUG] The AudioStream is NULL!:" << SDL_GetError() << std::endl;
+            return -1;
+        }
+    }
+
+
+    SDL_OpenAudioDeviceStream(audioId, &desired, NULL, NULL);
+
+
+    SDL_PauseAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK);
 
     return 0;
 }

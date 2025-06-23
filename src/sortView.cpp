@@ -1,5 +1,3 @@
-#include <SDL2/SDL_keycode.h>
-#include <SDL3/SDL_keyboard.h>
 #include <chrono>
 #include <climits>
 #include <cstdint>
@@ -77,7 +75,6 @@ void ViewObject::executeSort(void (*func)(class Array&)){
     std::thread sortThread(func, std::ref(array));
     sortThread.detach();
 
-    SDL_Event event;
     while(!array.isSorted()){
         handleKeyboard();
         if(array.needRepaint){

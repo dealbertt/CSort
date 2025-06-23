@@ -2,6 +2,7 @@
 #include <limits>
 #include <mutex>
 #include <vector>
+#include <cmath>
 
 #include "../include/sortView.hpp"
 #include "../include/sound.hpp"
