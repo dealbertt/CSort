@@ -22,7 +22,7 @@ void cleanUp();
 int initProgram(){
     signal(SIGINT, signalHandler);
 
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)){
+    if(!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)){
         std::cerr << "Error trying to initialize SDL: " << SDL_GetError() << std::endl;
         return -1;
     }
