@@ -1,6 +1,7 @@
 #ifndef SOUND_HPP
 #define SOUND_HPP
 
+#include <SDL3/SDL_audio.h>
 #include <iostream>
 #include <cmath>
 

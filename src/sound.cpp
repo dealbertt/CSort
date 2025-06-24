@@ -172,6 +172,7 @@ void SoundCallBack(void *udata, Uint8 *stream, int len){
     p += size;
 }
 
+
 void testAudioWithSimpleTone() {
     std::cout << "[DEBUG] Testing audio with simple tone..." << std::endl;
     
@@ -185,3 +186,82 @@ void testAudioWithSimpleTone() {
 }
 
 
+int SDLCALL AudioStreamCallBack(void *udata, SDL_AudioStream *stream, void *out_buffer, int len){
+
+    int16_t *data = (int16_t*)(out_buffer);
+    size_t num_samples_requested = len / sizeof(int16_t);
+
+
+    size_t currentGlobalPos = pos;
+    
+    if(accessList.empty()){
+
+    }else{
+        MtxAccess.lock();
+    
+        double pscale = (double)num_samples_requested / accessList.size();
+        for(size_t i = 0; i < accessList.size(); i++){
+            double relIndex = accessList[i] / (double)globalObject->array.getMaxValue();
+            double freq = arrayIndexToFreq(relIndex);
+
+
+            size_t oscillatorStartPos = currentGlobalPos + (size_t)(i * pscale);
+            size_t oscillatorDurationSamples = static_cast<size_t>(50.0 / 1000.0 * soundSustain * s_samplerate);
+            addOscillator(freq, currentGlobalPos, oscillatorStartPos, oscillatorDurationSamples);
+        }
+        accessList.clear();
+        MtxAccess.unlock();
+    }
+
+
+        std::vector<double> waves(num_samples_requested, 0.0);
+        size_t wavecount = 0;
+
+        for(auto it = osciList.begin(); it != osciList.end();){
+            if(!it->isDone(currentGlobalPos)){
+                it->mix(waves.data(), num_samples_requested, currentGlobalPos);
+                wavecount++;
+                it++;
+            }else{
+                it = osciList.erase(it);
+            }
+
+        }
+
+        if(wavecount == 0){
+            memset(out_buffer, 0, len);
+        }else{
+            double vol = 0.0;
+            if(!waves.empty()){
+                vol = *std::max_element(waves.begin(), waves.end());
+            }
+
+            static double oldvol = 1.0;
+
+            if(vol > oldvol){
+
+            }else{
+                vol = 0.9 * oldvol;
+            }
+
+            for(size_t i = 0; i < num_samples_requested; i++){
+                int32_t v = 24000.0 * waves[i] / (oldvol) + (vol - oldvol) * (static_cast<double>(i) / num_samples_requested);
+
+                if (v > 32200){
+                    v = 32200;
+                }
+
+                if (v < -32200){
+                    v = -32200;
+                }
+
+                data[i] = static_cast<int16_t>(v);
+            }
+
+            oldvol = vol;
+        }
+
+        pos += num_samples_requested;
+
+    return 0;
+}
