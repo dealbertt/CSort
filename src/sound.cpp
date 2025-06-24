@@ -9,6 +9,9 @@ double soundSustain = 2.0;
 
 static size_t pos = 0;
 
+static const size_t INTERNAL_BUFFER_SAMPLES = 2048;
+static std::vector<int16_t> gInternalAudioBuffer(INTERNAL_BUFFER_SAMPLES);
+
 double Oscillator::envelope(size_t i) const{
             double x = static_cast<double>(i) / m_duration;
             
@@ -188,6 +191,7 @@ void testAudioWithSimpleTone() {
 }
 
 
+
 int SDLCALL AudioStreamCallBack(void *userdata, SDL_AudioStream *stream, void *out_buffer, int len){
 
     int16_t *data = (int16_t*)(out_buffer);
@@ -266,4 +270,90 @@ int SDLCALL AudioStreamCallBack(void *userdata, SDL_AudioStream *stream, void *o
         pos += num_samples_requested;
 
     return 0;
+}
+
+static void generateAudio(SDL_AudioStream *stream, size_t numSamples){
+    if(numSamples > gInternalAudioBuffer.size()){
+        numSamples = gInternalAudioBuffer.size();
+    }
+
+    MtxAccess.lock();
+    size_t currentGlobalPos = pos;
+    if(accessList.empty()){
+
+    }else{
+        MtxAccess.lock();
+    
+        double pscale = (double)numSamples / accessList.size();
+        for(size_t i = 0; i < accessList.size(); i++){
+            double relIndex = accessList[i] / (double)globalObject->array.getMaxValue();
+            double freq = arrayIndexToFreq(relIndex);
+
+
+            size_t oscillatorStartPos = currentGlobalPos + (size_t)(i * pscale);
+            size_t oscillatorDurationSamples = static_cast<size_t>(50.0 / 1000.0 * soundSustain * s_samplerate);
+
+            addOscillator(freq, currentGlobalPos, oscillatorStartPos, oscillatorDurationSamples);
+        }
+        accessList.clear();
+    }
+    std::fill(gInternalAudioBuffer.begin(), gInternalAudioBuffer.begin() + numSamples, 0);
+
+    std::vector<double> waves(numSamples, 0.0);
+    size_t wavecount = 0;
+
+    for(auto it = osciList.begin(); it != osciList.end();){
+        if(!it->isDone(currentGlobalPos)){
+            it->mix(waves.data(), numSamples, currentGlobalPos);
+            wavecount++;
+            it++;
+        }else{
+            it = osciList.erase(it);
+        }
+
+    }
+
+    if(wavecount == 0){
+        //memset(out_buffer, 0, len);
+    }else{
+        double vol = 0.0;
+        if(!waves.empty()){
+            vol = *std::max_element(waves.begin(), waves.end());
+        }
+
+        static double oldvol = 1.0;
+
+        if(vol > oldvol){
+
+        }else{
+            vol = 0.9 * oldvol;
+        }
+
+        for(size_t i = 0; i < numSamples; i++){
+            int32_t v = 24000.0 * waves[i] / (oldvol) + (vol - oldvol) * (static_cast<double>(i) / numSamples);
+
+            if (v > 32200){
+                v = 32200;
+            }
+
+            if (v < -32200){
+                v = -32200;
+            }
+
+            gInternalAudioBuffer[i] = static_cast<int16_t>(v);
+        }
+
+        oldvol = vol;
+    }
+
+    pos += numSamples;
+}
+
+void SDLCALL AudioStreamNotificationCallback(void *udata, SDL_AudioStream *stream, int additional_amount, int total_amount){
+    size_t samplesNeeded = additional_amount / sizeof(int16_t);
+
+    size_t samplesToGenerate = std::min(samplesNeeded, INTERNAL_BUFFER_SAMPLES);
+    if(samplesToGenerate > 0){
+        generateAudio(stream, samplesToGenerate);
+    }
 }

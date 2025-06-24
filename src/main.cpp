@@ -91,7 +91,15 @@ int initProgram(){
     //desired.callback = SoundCallBack;
     //desired.userdata = nullptr;
 
-    gAudioStream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &desired, AudioStreamCallBack, nullptr, &gAudioDevice);
+
+    gAudioStream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &desired, AudioStreamNotificationCallback, nullptr);
+    if(!gAudioStream){
+        std::cout << "Error on gAudioStream: " << SDL_GetError() << std::endl;
+        SDL_QuitSubSystem(SDL_INIT_AUDIO);
+        return -1;
+    }
+
+    SDL_ResumeAudioDevice(gAudioDevice);
     /*
     if(SDL_OpenAudio(&desired, &obtained) < 0){
         std::cerr << "Error opening SDL_Audio: " << SDL_GetError() << std::endl;

@@ -56,7 +56,6 @@ class Oscillator{
 
         void mix(double *data, int size, size_t p) const {
             for(int i = 0; i < size; i++){
-                size_t absoluteSampleIndex = p + i;
                 if(p + i < m_start) continue;
                 if(p + i >= m_end) break;
 
@@ -82,4 +81,5 @@ void SoundAccess(size_t i);
 void SoundReset();
 void testAudioWithSimpleTone();
 int SDLCALL AudioStreamCallBack(void *udata, SDL_AudioStream *stream, void *out_buffer, int len);
+void SDLCALL AudioStreamNotificationCallback(void *udata, SDL_AudioStream *stream, int additional_amount, int total_amount);
 #endif
