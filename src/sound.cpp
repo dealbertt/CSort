@@ -2,55 +2,12 @@
 #include <limits>
 #include <mutex>
 #include <vector>
-#include <cmath>
 
 #include "../include/sortView.hpp"
 #include "../include/sound.hpp"
 
-static const size_t s_samplerate = 44100;
 
-double soundSustain = 2.0;
-
-static const size_t max_oscillators = 512;
-
-extern ViewObject *globalObject;
-class Oscillator{
-    protected:
-        double m_freq;
-        size_t m_start, m_end;
-
-        size_t m_duration;
-
-    public:
-        Oscillator(double freq, size_t tstart, size_t duration = 44100 / 8) : m_freq(freq),
-        m_start(tstart),
-        m_end(tstart + duration),
-        m_duration(duration){}
-
-        static double wave_sin(double x){
-            return sin(x * 2 * M_PI);
-        }
-
-        static double wave_sin3(double x){
-            double s = sin(x * 2 * M_PI);
-
-            return s * s* s;
-        }
-
-        static double wave_triangle(double x){
-            x = fmod(x, 1.0);
-
-            if(x <= 0.25) return 4.0 * x;
-            if(x <= 0.75) return 2.0 - 4.0 * x;
-
-            return 4.0 * x - 4.0;
-        }
-
-        static double wave(double x){
-            return wave_triangle(x);
-        }
-
-        double envelope(size_t i) const {
+double Oscillator::envelope(size_t i) const{
             double x = static_cast<double>(i) / m_duration;
             
             if(x > 1.0) x = 1.0;
@@ -74,33 +31,7 @@ class Oscillator{
 
             return sustain / release * (1.0 - x);
 
-        }
-
-        void mix(double *data, int size, size_t p) const {
-            for(int i = 0; i < size; i++){
-                if(p + i < m_start) continue;
-                if(p + i >= m_end) break;
-
-                size_t trel = (p + i - m_start);
-                
-                data[i] += envelope(trel) * wave(static_cast<double>(trel) / s_samplerate * m_freq);
-            }
-        }
-
-        size_t tstart() const {
-            return m_start;
-        }
-
-        bool isDone(size_t p) const {
-            return (p >= m_end);
-        }
-
-};
-
-static std::vector<Oscillator> osciList;
-
-static size_t pos = 0;
-
+}
 static void addOscillator(double freq, size_t p, size_t pstart, size_t pduration){
     if(config.debug) std::cout << "[DEBUG] addOscillator freq: " << freq << " at pos: " << pstart << "\n";
 

@@ -1,3 +1,4 @@
+#include <SDL3/SDL_init.h>
 #include <iostream>
 #include <csignal>
 
@@ -57,6 +58,7 @@ int initProgram(){
     }
 
     const char* currentDriver = SDL_GetCurrentAudioDriver(); 
+
     if (currentDriver) {
         if(config.debug) std::cout << "[DEBUG] Current audio driver: " << currentDriver << std::endl;
     } else {
@@ -136,5 +138,6 @@ int main(){
 void signalHandler(int signum){
     (void)signum;
     cleanUp();
+    //SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
 
