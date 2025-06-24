@@ -11,10 +11,14 @@
 #include "../include/config.hpp" 
 #include "../include/array.hpp" 
 #include "../include/sortView.hpp" 
+#include "../include/sound.hpp" 
 
 Config config;
 SDL_Window *window = nullptr;
 SDL_Renderer *renderer = nullptr;
+
+SDL_AudioDeviceID gAudioDevice = 0;
+SDL_AudioStream *gAudioStream = nullptr;
 
 ViewObject *globalObject = nullptr;
 void signalHandler(int signum);
@@ -22,6 +26,7 @@ void cleanUp();
 
 int initProgram(){
     signal(SIGINT, signalHandler);
+    std::cout << "Inside initProgram!" << std::endl;
 
     if(!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)){
         std::cerr << "Error trying to initialize SDL: " << SDL_GetError() << std::endl;
@@ -31,7 +36,9 @@ int initProgram(){
     config = *readConfiguration("config/config.txt");
     
 
-    SDL_CreateWindowAndRenderer("CSort", config.windowWidth, config.windowHeigth,SDL_WINDOW_VULKAN, &window, &renderer);
+    if(!SDL_CreateWindowAndRenderer("CSort", config.windowWidth, config.windowHeigth,SDL_WINDOW_VULKAN, &window, &renderer)){
+        std::cout << "Error on SDL_CreateWindowAndRenderer: " << SDL_GetError() << std::endl;
+    }
     if(window == NULL){
         std::cerr << "Error trying to create SDL_Window: " << SDL_GetError() << std::endl;
         return -1;
@@ -84,6 +91,7 @@ int initProgram(){
     //desired.callback = SoundCallBack;
     //desired.userdata = nullptr;
 
+    gAudioStream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &desired, AudioStreamCallBack, nullptr, &gAudioDevice);
     /*
     if(SDL_OpenAudio(&desired, &obtained) < 0){
         std::cerr << "Error opening SDL_Audio: " << SDL_GetError() << std::endl;

@@ -92,6 +92,7 @@ void SoundReset(){
     MtxAccess.unlock();
 }
 
+/*
 void SoundCallBack(void *udata, Uint8 *stream, int len){
     size_t &p = pos;
     ViewObject &sv = *globalObject;
@@ -171,6 +172,7 @@ void SoundCallBack(void *udata, Uint8 *stream, int len){
     // advance sample timestamp
     p += size;
 }
+*/
 
 
 void testAudioWithSimpleTone() {
@@ -186,7 +188,7 @@ void testAudioWithSimpleTone() {
 }
 
 
-int SDLCALL AudioStreamCallBack(void *udata, SDL_AudioStream *stream, void *out_buffer, int len){
+int SDLCALL AudioStreamCallBack(void *userdata, SDL_AudioStream *stream, void *out_buffer, int len){
 
     int16_t *data = (int16_t*)(out_buffer);
     size_t num_samples_requested = len / sizeof(int16_t);
