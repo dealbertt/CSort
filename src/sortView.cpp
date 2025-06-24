@@ -147,28 +147,30 @@ int ViewObject::handleKeyboard(){
     SDL_PollEvent(&event);
 
     const bool *pressed = SDL_GetKeyboardState(NULL);
-    if(pressed[SDLK_UP]){
-        int delay = array.sortDelay->getDuration();
-        if(delay < MAX_DELAY){
-            delay += 1000;
-            array.sortDelay->setDelay(delay);
-            std::cout << "Duration increased to: " << array.sortDelay->getDuration() << std::endl;
-        }else{
-            std::cout << "Max delay value reached!" << std::endl;
+    if(event.type == SDL_EVENT_KEY_DOWN){
+        if(pressed[SDLK_UP]){
+            int delay = array.sortDelay->getDuration();
+            if(delay < MAX_DELAY){
+                delay += 1000;
+                array.sortDelay->setDelay(delay);
+                std::cout << "Duration increased to: " << array.sortDelay->getDuration() << std::endl;
+            }else{
+                std::cout << "Max delay value reached!" << std::endl;
+            }
+
         }
 
-    }
+        if(pressed[SDL_SCANCODE_DOWN]){
+            int delay = array.sortDelay->getDuration();
+            delay -= 1000;
+            array.sortDelay->setDelay(delay);
+            std::cout << "Duration decreased to: " << array.sortDelay->getDuration() << std::endl;
+        } 
 
-    if(pressed[SDL_SCANCODE_DOWN]){
-        int delay = array.sortDelay->getDuration();
-        delay -= 1000;
-        array.sortDelay->setDelay(delay);
-        std::cout << "Duration decreased to: " << array.sortDelay->getDuration() << std::endl;
-    } 
+        if(pressed[SDL_SCANCODE_ESCAPE]){
 
-    if(pressed[SDL_SCANCODE_ESCAPE]){
-
-        cleanUp();
+            cleanUp();
+        }
     }
 
     return 0;

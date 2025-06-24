@@ -1,4 +1,3 @@
-#include <SDL3/SDL_init.h>
 #include <iostream>
 #include <csignal>
 
@@ -120,9 +119,9 @@ int main(){
         std::cout << "Error initializing the components of the program" << std::endl;
         exit(1);
     }
-    testAudioWithSimpleTone(); 
+    //testAudioWithSimpleTone(); 
 
-    //runList(renderer);
+    runList(renderer);
 
     cleanUp();
     return 0;
