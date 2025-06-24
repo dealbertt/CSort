@@ -106,29 +106,6 @@ int initProgram(){
         return -1;
     }
     */
-    SDL_AudioDeviceID audioId = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &desired);
-    if(audioId == 0){
-        if(config.debug){
-            std::cout << "[DEBUG] The AudioDeviceID is 0!:" << SDL_GetError() << std::endl;
-            return -1;
-        }
-
-    }else{
-        if(config.debug){
-            std::cout << "[DEBUG] AudioDeviceID: " << audioId << std::endl;
-        }
-    }
-
-    SDL_AudioStream *stream = SDL_CreateAudioStream(NULL, &desired);
-    if(stream == NULL){
-        if(config.debug){
-            std::cout << "[DEBUG] The AudioStream is NULL!:" << SDL_GetError() << std::endl;
-            return -1;
-        }
-    }
-
-
-    SDL_OpenAudioDeviceStream(audioId, &desired, NULL, NULL);
 
 
     SDL_PauseAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK);
@@ -143,9 +120,9 @@ int main(){
         std::cout << "Error initializing the components of the program" << std::endl;
         exit(1);
     }
-    //testAudioWithSimpleTone(); 
+    testAudioWithSimpleTone(); 
 
-    runList(renderer);
+    //runList(renderer);
 
     cleanUp();
     return 0;

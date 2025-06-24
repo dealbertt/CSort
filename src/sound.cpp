@@ -4,6 +4,7 @@
 
 #include "../include/sortView.hpp"
 #include "../include/sound.hpp"
+#include <SDL3/SDL_log.h>
 
 double soundSustain = 2.0;
 
@@ -11,6 +12,8 @@ static size_t pos = 0;
 
 static const size_t INTERNAL_BUFFER_SAMPLES = 2048;
 static std::vector<int16_t> gInternalAudioBuffer(INTERNAL_BUFFER_SAMPLES);
+
+extern SDL_AudioStream *gAudioStream;
 
 double Oscillator::envelope(size_t i) const{
             double x = static_cast<double>(i) / m_duration;
@@ -92,6 +95,10 @@ void SoundReset(){
     MtxAccess.lock();
     pos = 0;
     osciList.clear();
+
+    if(gAudioStream){
+        SDL_FlushAudioStream(gAudioStream);
+    }
     MtxAccess.unlock();
 }
 
@@ -181,13 +188,14 @@ void SoundCallBack(void *udata, Uint8 *stream, int len){
 void testAudioWithSimpleTone() {
     std::cout << "[DEBUG] Testing audio with simple tone..." << std::endl;
     
+    MtxAccess.lock();
     // Force add a test oscillator
     osciList.clear();
     osciList.push_back(Oscillator(440.0, pos, s_samplerate * 2)); // 440Hz for 2 seconds
+    MtxAccess.unlock();
+
+    SDL_Log("Current oscillator list size: %zu.", osciList.size());
     
-    std::cout << "[DEBUG] Added test oscillator: 440Hz" << std::endl;
-    std::cout << "[DEBUG] Current position: " << pos << std::endl;
-    std::cout << "[DEBUG] Oscillator list size: " << osciList.size() << std::endl;
 }
 
 
