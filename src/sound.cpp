@@ -1,11 +1,13 @@
 #include <algorithm>
-#include <limits>
 #include <mutex>
 #include <vector>
 
 #include "../include/sortView.hpp"
 #include "../include/sound.hpp"
 
+double soundSustain = 2.0;
+
+static size_t pos = 0;
 
 double Oscillator::envelope(size_t i) const{
             double x = static_cast<double>(i) / m_duration;

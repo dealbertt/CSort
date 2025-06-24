@@ -4,18 +4,17 @@
 #include <iostream>
 #include <cmath>
 
+
 #include "../include/sortView.hpp"
 
 static const size_t s_samplerate = 44100;
 
-double soundSustain = 2.0;
 
 static const size_t max_oscillators = 512;
 
 extern ViewObject *globalObject;
 
 
-static size_t pos = 0;
 class Oscillator{
     protected:
         double m_freq;
@@ -76,7 +75,6 @@ class Oscillator{
 };
 
 static std::vector<Oscillator> osciList;
-static void addOscillator(double freq, size_t p, size_t pstart, size_t pduration);
 
 void SoundAccess(size_t i);
 void SoundReset();
