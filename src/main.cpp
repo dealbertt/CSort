@@ -102,8 +102,9 @@ int initProgram(){
         SDL_Log("Could not find an SDL_AudioDeviceID for the stream");
         return -1;
     }
-
+    std::cout << "gAudioDeviceID:" << gAudioDevice << std::endl;
     SDL_ResumeAudioDevice(gAudioDevice);
+
     /*
     if(SDL_OpenAudio(&desired, &obtained) < 0){
         std::cerr << "Error opening SDL_Audio: " << SDL_GetError() << std::endl;

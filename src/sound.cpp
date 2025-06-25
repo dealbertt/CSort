@@ -1,3 +1,4 @@
+#include <SDL3/SDL_audio.h>
 #include <algorithm>
 #include <mutex>
 #include <vector>
@@ -281,7 +282,6 @@ static void generateAudio(SDL_AudioStream *stream, size_t numSamples){
         numSamples = gInternalAudioBuffer.size();
     }
 
-    MtxAccess.lock();
     size_t currentGlobalPos = pos;
     if(accessList.empty()){
 
@@ -351,9 +351,14 @@ static void generateAudio(SDL_AudioStream *stream, size_t numSamples){
     }
 
     pos += numSamples;
+    if(!SDL_PutAudioStreamData(stream, gInternalAudioBuffer.data(), numSamples * sizeof(int16_t))){
+        SDL_Log("Error on SDL_PutAudioStreamData!");
+    }
+    MtxAccess.unlock();
 }
 
 void SDLCALL AudioStreamNotificationCallback(void *udata, SDL_AudioStream *stream, int additional_amount, int total_amount){
+    SDL_Log("AudioStreamNotificationCallback is called");
     size_t samplesNeeded = additional_amount / sizeof(int16_t);
 
     size_t samplesToGenerate = std::min(samplesNeeded, INTERNAL_BUFFER_SAMPLES);
