@@ -97,6 +97,11 @@ int initProgram(){
         SDL_QuitSubSystem(SDL_INIT_AUDIO);
         return -1;
     }
+    gAudioDevice = SDL_GetAudioStreamDevice(gAudioStream);
+    if(gAudioDevice == 0){
+        SDL_Log("Could not find an SDL_AudioDeviceID for the stream");
+        return -1;
+    }
 
     SDL_ResumeAudioDevice(gAudioDevice);
     /*
@@ -107,7 +112,7 @@ int initProgram(){
     */
 
 
-    SDL_PauseAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK);
+    //SDL_PauseAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK);
 
     return 0;
 }

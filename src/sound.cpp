@@ -81,25 +81,21 @@ static double arrayIndexToFreq(double index){
 }
 
 void SoundAccess(size_t i){
-    MtxAccess.lock();
     if(config.debug){
         std::cout << "[DEBUG] SoundAccess(" << i << ")\n" << std::endl;
         std::cout << "[DEBUG] accessList size: " << accessList.size() << "\n";
     }
     accessList.push_back(i);
-    MtxAccess.unlock();
 }
 
 
 void SoundReset(){
-    MtxAccess.lock();
     pos = 0;
     osciList.clear();
 
     if(gAudioStream){
         SDL_FlushAudioStream(gAudioStream);
     }
-    MtxAccess.unlock();
 }
 
 /*
