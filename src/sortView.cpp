@@ -1,3 +1,4 @@
+#include <SDL3/SDL_init.h>
 #include <chrono>
 #include <climits>
 #include <cstdint>
@@ -148,7 +149,7 @@ int ViewObject::handleKeyboard(){
 
     const bool *pressed = SDL_GetKeyboardState(NULL);
     if(event.type == SDL_EVENT_KEY_DOWN){
-        if(pressed[SDLK_UP]){
+        if(pressed[SDL_SCANCODE_UP]){
             int delay = array.sortDelay->getDuration();
             if(delay < MAX_DELAY){
                 delay += 1000;
@@ -168,7 +169,6 @@ int ViewObject::handleKeyboard(){
         } 
 
         if(pressed[SDL_SCANCODE_ESCAPE]){
-
             cleanUp();
         }
     }
@@ -179,10 +179,9 @@ int ViewObject::handleKeyboard(){
 
 //Function for when the program exits, whether because there are no more algorithms to sort of because a signal has been received
 void cleanUp(){
+    SDL_QuitSubSystem(SDL_INIT_AUDIO);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    SDL_PauseAudioDevice(1);
-    SDL_CloseAudioDevice(1);
     SDL_Quit();
     exit(1);
 }
