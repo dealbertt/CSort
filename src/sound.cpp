@@ -1,56 +1,22 @@
+#include <SDL3/SDL_audio.h>
 #include <algorithm>
-#include <limits>
 #include <mutex>
 #include <vector>
-#include <cmath>
 
 #include "../include/sortView.hpp"
 #include "../include/sound.hpp"
-
-static const size_t s_samplerate = 44100;
+#include <SDL3/SDL_log.h>
 
 double soundSustain = 2.0;
 
-static const size_t max_oscillators = 512;
+static size_t pos = 0;
 
-extern ViewObject *globalObject;
-class Oscillator{
-    protected:
-        double m_freq;
-        size_t m_start, m_end;
+static const size_t INTERNAL_BUFFER_SAMPLES = 2048;
+static std::vector<int16_t> gInternalAudioBuffer(INTERNAL_BUFFER_SAMPLES);
 
-        size_t m_duration;
+extern SDL_AudioStream *gAudioStream;
 
-    public:
-        Oscillator(double freq, size_t tstart, size_t duration = 44100 / 8) : m_freq(freq),
-        m_start(tstart),
-        m_end(tstart + duration),
-        m_duration(duration){}
-
-        static double wave_sin(double x){
-            return sin(x * 2 * M_PI);
-        }
-
-        static double wave_sin3(double x){
-            double s = sin(x * 2 * M_PI);
-
-            return s * s* s;
-        }
-
-        static double wave_triangle(double x){
-            x = fmod(x, 1.0);
-
-            if(x <= 0.25) return 4.0 * x;
-            if(x <= 0.75) return 2.0 - 4.0 * x;
-
-            return 4.0 * x - 4.0;
-        }
-
-        static double wave(double x){
-            return wave_triangle(x);
-        }
-
-        double envelope(size_t i) const {
+double Oscillator::envelope(size_t i) const{
             double x = static_cast<double>(i) / m_duration;
             
             if(x > 1.0) x = 1.0;
@@ -74,33 +40,7 @@ class Oscillator{
 
             return sustain / release * (1.0 - x);
 
-        }
-
-        void mix(double *data, int size, size_t p) const {
-            for(int i = 0; i < size; i++){
-                if(p + i < m_start) continue;
-                if(p + i >= m_end) break;
-
-                size_t trel = (p + i - m_start);
-                
-                data[i] += envelope(trel) * wave(static_cast<double>(trel) / s_samplerate * m_freq);
-            }
-        }
-
-        size_t tstart() const {
-            return m_start;
-        }
-
-        bool isDone(size_t p) const {
-            return (p >= m_end);
-        }
-
-};
-
-static std::vector<Oscillator> osciList;
-
-static size_t pos = 0;
-
+}
 static void addOscillator(double freq, size_t p, size_t pstart, size_t pduration){
     if(config.debug) std::cout << "[DEBUG] addOscillator freq: " << freq << " at pos: " << pstart << "\n";
 
@@ -142,23 +82,24 @@ static double arrayIndexToFreq(double index){
 }
 
 void SoundAccess(size_t i){
-    MtxAccess.lock();
     if(config.debug){
         std::cout << "[DEBUG] SoundAccess(" << i << ")\n" << std::endl;
         std::cout << "[DEBUG] accessList size: " << accessList.size() << "\n";
     }
     accessList.push_back(i);
-    MtxAccess.unlock();
 }
 
 
 void SoundReset(){
-    MtxAccess.lock();
     pos = 0;
     osciList.clear();
-    MtxAccess.unlock();
+
+    if(gAudioStream){
+        SDL_FlushAudioStream(gAudioStream);
+    }
 }
 
+/*
 void SoundCallBack(void *udata, Uint8 *stream, int len){
     size_t &p = pos;
     ViewObject &sv = *globalObject;
@@ -238,17 +179,190 @@ void SoundCallBack(void *udata, Uint8 *stream, int len){
     // advance sample timestamp
     p += size;
 }
+*/
+
 
 void testAudioWithSimpleTone() {
     std::cout << "[DEBUG] Testing audio with simple tone..." << std::endl;
     
+    MtxAccess.lock();
     // Force add a test oscillator
     osciList.clear();
     osciList.push_back(Oscillator(440.0, pos, s_samplerate * 2)); // 440Hz for 2 seconds
+    MtxAccess.unlock();
+
+    SDL_Log("Current oscillator list size: %zu.", osciList.size());
     
-    std::cout << "[DEBUG] Added test oscillator: 440Hz" << std::endl;
-    std::cout << "[DEBUG] Current position: " << pos << std::endl;
-    std::cout << "[DEBUG] Oscillator list size: " << osciList.size() << std::endl;
 }
 
 
+
+int SDLCALL AudioStreamCallBack(void *userdata, SDL_AudioStream *stream, void *out_buffer, int len){
+
+    int16_t *data = (int16_t*)(out_buffer);
+    size_t num_samples_requested = len / sizeof(int16_t);
+
+
+    size_t currentGlobalPos = pos;
+    
+    if(accessList.empty()){
+
+    }else{
+        MtxAccess.lock();
+    
+        double pscale = (double)num_samples_requested / accessList.size();
+        for(size_t i = 0; i < accessList.size(); i++){
+            double relIndex = accessList[i] / (double)globalObject->array.getMaxValue();
+            double freq = arrayIndexToFreq(relIndex);
+
+
+            size_t oscillatorStartPos = currentGlobalPos + (size_t)(i * pscale);
+            size_t oscillatorDurationSamples = static_cast<size_t>(50.0 / 1000.0 * soundSustain * s_samplerate);
+            addOscillator(freq, currentGlobalPos, oscillatorStartPos, oscillatorDurationSamples);
+        }
+        accessList.clear();
+        MtxAccess.unlock();
+    }
+
+
+        std::vector<double> waves(num_samples_requested, 0.0);
+        size_t wavecount = 0;
+
+        for(auto it = osciList.begin(); it != osciList.end();){
+            if(!it->isDone(currentGlobalPos)){
+                it->mix(waves.data(), num_samples_requested, currentGlobalPos);
+                wavecount++;
+                it++;
+            }else{
+                it = osciList.erase(it);
+            }
+
+        }
+
+        if(wavecount == 0){
+            memset(out_buffer, 0, len);
+        }else{
+            double vol = 0.0;
+            if(!waves.empty()){
+                vol = *std::max_element(waves.begin(), waves.end());
+            }
+
+            static double oldvol = 1.0;
+
+            if(vol > oldvol){
+
+            }else{
+                vol = 0.9 * oldvol;
+            }
+
+            for(size_t i = 0; i < num_samples_requested; i++){
+                int32_t v = 24000.0 * waves[i] / (oldvol) + (vol - oldvol) * (static_cast<double>(i) / num_samples_requested);
+
+                if (v > 32200){
+                    v = 32200;
+                }
+
+                if (v < -32200){
+                    v = -32200;
+                }
+
+                data[i] = static_cast<int16_t>(v);
+            }
+
+            oldvol = vol;
+        }
+
+        pos += num_samples_requested;
+
+    return 0;
+}
+
+static void generateAudio(SDL_AudioStream *stream, size_t numSamples){
+    if(numSamples > gInternalAudioBuffer.size()){
+        numSamples = gInternalAudioBuffer.size();
+    }
+
+    size_t currentGlobalPos = pos;
+    if(accessList.empty()){
+
+    }else{
+        MtxAccess.lock();
+    
+        double pscale = (double)numSamples / accessList.size();
+        for(size_t i = 0; i < accessList.size(); i++){
+            double relIndex = accessList[i] / (double)globalObject->array.getMaxValue();
+            double freq = arrayIndexToFreq(relIndex);
+
+
+            size_t oscillatorStartPos = currentGlobalPos + (size_t)(i * pscale);
+            size_t oscillatorDurationSamples = static_cast<size_t>(50.0 / 1000.0 * soundSustain * s_samplerate);
+
+            addOscillator(freq, currentGlobalPos, oscillatorStartPos, oscillatorDurationSamples);
+        }
+        accessList.clear();
+    }
+    std::fill(gInternalAudioBuffer.begin(), gInternalAudioBuffer.begin() + numSamples, 0);
+
+    std::vector<double> waves(numSamples, 0.0);
+    size_t wavecount = 0;
+
+    for(auto it = osciList.begin(); it != osciList.end();){
+        if(!it->isDone(currentGlobalPos)){
+            it->mix(waves.data(), numSamples, currentGlobalPos);
+            wavecount++;
+            it++;
+        }else{
+            it = osciList.erase(it);
+        }
+
+    }
+
+    if(wavecount == 0){
+        //memset(out_buffer, 0, len);
+    }else{
+        double vol = 0.0;
+        if(!waves.empty()){
+            vol = *std::max_element(waves.begin(), waves.end());
+        }
+
+        static double oldvol = 1.0;
+
+        if(vol > oldvol){
+
+        }else{
+            vol = 0.9 * oldvol;
+        }
+
+        for(size_t i = 0; i < numSamples; i++){
+            int32_t v = 24000.0 * waves[i] / (oldvol) + (vol - oldvol) * (static_cast<double>(i) / numSamples);
+
+            if (v > 32200){
+                v = 32200;
+            }
+
+            if (v < -32200){
+                v = -32200;
+            }
+
+            gInternalAudioBuffer[i] = static_cast<int16_t>(v);
+        }
+
+        oldvol = vol;
+    }
+
+    pos += numSamples;
+    if(!SDL_PutAudioStreamData(stream, gInternalAudioBuffer.data(), numSamples * sizeof(int16_t))){
+        SDL_Log("Error on SDL_PutAudioStreamData!");
+    }
+    MtxAccess.unlock();
+}
+
+void SDLCALL AudioStreamNotificationCallback(void *udata, SDL_AudioStream *stream, int additional_amount, int total_amount){
+    SDL_Log("AudioStreamNotificationCallback is called");
+    size_t samplesNeeded = additional_amount / sizeof(int16_t);
+
+    size_t samplesToGenerate = std::min(samplesNeeded, INTERNAL_BUFFER_SAMPLES);
+    if(samplesToGenerate > 0){
+        generateAudio(stream, samplesToGenerate);
+    }
+}

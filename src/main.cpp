@@ -10,10 +10,14 @@
 #include "../include/config.hpp" 
 #include "../include/array.hpp" 
 #include "../include/sortView.hpp" 
+#include "../include/sound.hpp" 
 
 Config config;
 SDL_Window *window = nullptr;
 SDL_Renderer *renderer = nullptr;
+
+SDL_AudioDeviceID gAudioDevice = 0;
+SDL_AudioStream *gAudioStream = nullptr;
 
 ViewObject *globalObject = nullptr;
 void signalHandler(int signum);
@@ -21,6 +25,7 @@ void cleanUp();
 
 int initProgram(){
     signal(SIGINT, signalHandler);
+    std::cout << "Inside initProgram!" << std::endl;
 
     if(!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)){
         std::cerr << "Error trying to initialize SDL: " << SDL_GetError() << std::endl;
@@ -30,7 +35,9 @@ int initProgram(){
     config = *readConfiguration("config/config.txt");
     
 
-    SDL_CreateWindowAndRenderer("CSort", config.windowWidth, config.windowHeigth,SDL_WINDOW_VULKAN, &window, &renderer);
+    if(!SDL_CreateWindowAndRenderer("CSort", config.windowWidth, config.windowHeigth,SDL_WINDOW_VULKAN, &window, &renderer)){
+        std::cout << "Error on SDL_CreateWindowAndRenderer: " << SDL_GetError() << std::endl;
+    }
     if(window == NULL){
         std::cerr << "Error trying to create SDL_Window: " << SDL_GetError() << std::endl;
         return -1;
@@ -57,6 +64,7 @@ int initProgram(){
     }
 
     const char* currentDriver = SDL_GetCurrentAudioDriver(); 
+
     if (currentDriver) {
         if(config.debug) std::cout << "[DEBUG] Current audio driver: " << currentDriver << std::endl;
     } else {
@@ -82,38 +90,30 @@ int initProgram(){
     //desired.callback = SoundCallBack;
     //desired.userdata = nullptr;
 
+
+    gAudioStream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &desired, AudioStreamNotificationCallback, nullptr);
+    if(!gAudioStream){
+        std::cout << "Error on gAudioStream: " << SDL_GetError() << std::endl;
+        SDL_QuitSubSystem(SDL_INIT_AUDIO);
+        return -1;
+    }
+    gAudioDevice = SDL_GetAudioStreamDevice(gAudioStream);
+    if(gAudioDevice == 0){
+        SDL_Log("Could not find an SDL_AudioDeviceID for the stream");
+        return -1;
+    }
+    std::cout << "gAudioDeviceID:" << gAudioDevice << std::endl;
+    SDL_ResumeAudioDevice(gAudioDevice);
+
     /*
     if(SDL_OpenAudio(&desired, &obtained) < 0){
         std::cerr << "Error opening SDL_Audio: " << SDL_GetError() << std::endl;
         return -1;
     }
     */
-    SDL_AudioDeviceID audioId = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &desired);
-    if(audioId == 0){
-        if(config.debug){
-            std::cout << "[DEBUG] The AudioDeviceID is 0!:" << SDL_GetError() << std::endl;
-            return -1;
-        }
-
-    }else{
-        if(config.debug){
-            std::cout << "[DEBUG] AudioDeviceID: " << audioId << std::endl;
-        }
-    }
-
-    SDL_AudioStream *stream = SDL_CreateAudioStream(NULL, &desired);
-    if(stream == NULL){
-        if(config.debug){
-            std::cout << "[DEBUG] The AudioStream is NULL!:" << SDL_GetError() << std::endl;
-            return -1;
-        }
-    }
 
 
-    SDL_OpenAudioDeviceStream(audioId, &desired, NULL, NULL);
-
-
-    SDL_PauseAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK);
+    //SDL_PauseAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK);
 
     return 0;
 }
@@ -136,5 +136,6 @@ int main(){
 void signalHandler(int signum){
     (void)signum;
     cleanUp();
+    //SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
 
