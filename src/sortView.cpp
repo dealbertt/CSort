@@ -22,6 +22,7 @@ const int MAX_DELAY = 1000000;
 extern ViewObject *globalObject;
 extern SDL_Renderer *renderer;
 extern SDL_Window *window;
+extern TTF_Font *font;
 
 extern std::mutex MtxAccess;
 
@@ -73,6 +74,7 @@ void ViewObject::paint(){
 
     array.MtxArray.unlock();
 
+    updateText();
     SDL_RenderPresent(&renderer);
 }
 
@@ -83,7 +85,6 @@ void ViewObject::executeSort(void (*func)(class Array&)){
 
     while(!array.isSorted()){
         handleKeyboard();
-        updateText();
         if(array.needRepaint){
             paint();
             array.needRepaint = false;
@@ -185,6 +186,8 @@ int ViewObject::handleKeyboard(){
 
 //Function for when the program exits, whether because there are no more algorithms to sort of because a signal has been received
 void cleanUp(){
+    TTF_CloseFont(font);
+    TTF_Quit();
     SDL_QuitSubSystem(SDL_INIT_AUDIO);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
@@ -205,17 +208,7 @@ void ViewObject::finishArray(){
 }
 
 int ViewObject::updateText(){
-    int fontSize = 40;
     SDL_Color color = {255, 255, 255, 255};
-
-    std::string fontPath = "fonts/FiraCodeNerdFont-Regular.ttf";
-
-    TTF_Font *font = TTF_OpenFont(fontPath.c_str(), fontSize);
-    if(font == NULL){
-        std::cout << "Error trying to open the font: " << SDL_GetError() << std::endl;
-        return -1;
-    }
-
 
     MtxAccess.lock();
     std::string strComparison = "Comparisons: " + std::to_string(compareCount);
@@ -243,8 +236,6 @@ int ViewObject::updateText(){
 
     SDL_DestroyTexture(NameTexture);
     SDL_DestroySurface(NameSurface);
-
-    TTF_CloseFont(font);
 
     return 0;
 }

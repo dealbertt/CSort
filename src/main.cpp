@@ -16,6 +16,7 @@
 Config config;
 SDL_Window *window = nullptr;
 SDL_Renderer *renderer = nullptr;
+TTF_Font *font = nullptr;
 
 SDL_AudioDeviceID gAudioDevice = 0;
 SDL_AudioStream *gAudioStream = nullptr;
@@ -118,6 +119,16 @@ int initProgram(){
 
     if(!TTF_Init()){
         std::cout << "Error on TTF_Init: " << SDL_GetError();
+        return -1;
+    }
+
+    int fontSize = 40;
+
+    std::string fontPath = "fonts/FiraCodeNerdFont-Regular.ttf";
+
+    font = TTF_OpenFont(fontPath.c_str(), fontSize);
+    if(font == NULL){
+        std::cout << "Error trying to open the font: " << SDL_GetError() << std::endl;
         return -1;
     }
     return 0;
