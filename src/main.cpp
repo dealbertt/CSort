@@ -1,3 +1,4 @@
+#include <SDL3_ttf/SDL_ttf.h>
 #include <iostream>
 #include <csignal>
 
@@ -115,6 +116,10 @@ int initProgram(){
 
     //SDL_PauseAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK);
 
+    if(!TTF_Init()){
+        std::cout << "Error on TTF_Init: " << SDL_GetError();
+        return -1;
+    }
     return 0;
 }
 

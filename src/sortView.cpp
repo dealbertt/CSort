@@ -1,8 +1,8 @@
-#include <SDL3/SDL_init.h>
 #include <chrono>
 #include <climits>
 #include <cstdint>
 #include <iostream>
+#include <string>
 #include <thread>
 
 #include <SDL3/SDL.h>
@@ -11,14 +11,19 @@
 #include <SDL3/SDL_scancode.h>
 #include <SDL3/SDL_keyboard.h>
 #include <SDL3/SDL_audio.h>
+#include <SDL3_ttf/SDL_ttf.h>
+#include <SDL3/SDL_error.h>
+#include <SDL3/SDL_init.h>
 
 #include "../include/sortView.hpp"
+#include "../include/sound.hpp"
 
 const int MAX_DELAY = 1000000;
 extern ViewObject *globalObject;
 extern SDL_Renderer *renderer;
 extern SDL_Window *window;
 
+extern std::mutex MtxAccess;
 
 //List containing all the implemented algorithms, incluiding the delay after each swap, a description, and the amount of elements to sort
 const struct Algorithm algoList[] = {
@@ -78,6 +83,7 @@ void ViewObject::executeSort(void (*func)(class Array&)){
 
     while(!array.isSorted()){
         handleKeyboard();
+        updateText();
         if(array.needRepaint){
             paint();
             array.needRepaint = false;
@@ -112,11 +118,11 @@ SDL_Color ViewObject::configureColor(ArrayItem &item){
 
 void ViewObject::markArrayDone(){
     const int target = 1000;
-    for(size_t i = 0; i < array.getSize(); i++){
+    for(index = 0; index < array.getSize(); index++){
         array.sortDelay->setDelay((target / array.getSize()) * 1000);
-        array.markDone(i);
+        array.markDone(index);
         paint();
-        array[i].onAccess();
+        array[index].onAccess();
         array.sortDelay->delay();
     }
 }
@@ -198,4 +204,48 @@ void ViewObject::finishArray(){
     std::cout << "Time taken: " << std::chrono::duration_cast<std::chrono::seconds>(b - a).count() << std::endl;
 }
 
+int ViewObject::updateText(){
+    int fontSize = 40;
+    SDL_Color color = {255, 255, 255, 255};
+
+    std::string fontPath = "fonts/FiraCodeNerdFont-Regular.ttf";
+
+    TTF_Font *font = TTF_OpenFont(fontPath.c_str(), fontSize);
+    if(font == NULL){
+        std::cout << "Error trying to open the font: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+
+    MtxAccess.lock();
+    std::string strComparison = "Comparisons: " + std::to_string(compareCount);
+    std::string strAccesses = "Accesses:" + std::to_string(accessesCount);
+    std::string strName = algoList[index].name; 
+
+    SDL_Surface *NameSurface = TTF_RenderText_Solid(font, strName.c_str(), strName.length(), color);
+    if(NameSurface == NULL){
+        std::cout << "Error trying to create NameSurface: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    SDL_Texture *NameTexture = SDL_CreateTextureFromSurface(&renderer, NameSurface);
+    if(NameTexture == NULL){
+        std::cout << "Error creating NameTexture: " << SDL_GetError() << std::endl;
+    }
+    SDL_FRect NameRect;
+    NameRect.x = (static_cast<float>(config.windowWidth) / 2) - 200;
+    NameRect.y = 0;
+    NameRect.w = 400;
+    NameRect.h = 50;
+
+    SDL_RenderTexture(&renderer, NameTexture, NULL, &NameRect);
+    MtxAccess.unlock();
+
+    SDL_DestroyTexture(NameTexture);
+    SDL_DestroySurface(NameSurface);
+
+    TTF_CloseFont(font);
+
+    return 0;
+}
 

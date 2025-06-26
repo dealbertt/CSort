@@ -7,6 +7,9 @@
 #include <SDL3/SDL_events.h>
 #include <chrono>
 class ViewObject{
+    private:
+        size_t index;
+
     public:
         Array array;
         std::chrono::steady_clock::time_point a;
@@ -34,7 +37,7 @@ class ViewObject{
         int handleKeyboard();
         void startArray();
         void finishArray();
-        void updateText();
+        int updateText();
 
 };
 

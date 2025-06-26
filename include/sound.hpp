@@ -13,6 +13,7 @@ static const size_t s_samplerate = 44100;
 
 static const size_t max_oscillators = 512;
 
+static std::mutex MtxAccess;
 extern ViewObject *globalObject;
 
 

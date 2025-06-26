@@ -75,8 +75,6 @@ static void addOscillator(double freq, size_t p, size_t pstart, size_t pduration
 
 static std::vector<unsigned int> accessList;
 
-static std::mutex MtxAccess;
-
 static double arrayIndexToFreq(double index){
     return 120 + 1200 * (index * index);
 }
@@ -361,10 +359,12 @@ static void generateAudio(SDL_AudioStream *stream, size_t numSamples){
 
 void SDLCALL AudioStreamNotificationCallback(void *udata, SDL_AudioStream *stream, int additional_amount, int total_amount){
     if(config.debug) SDL_Log("AudioStreamNotificationCallback is called");
+    //SDL_LockAudioStream(gAudioStream);
     size_t samplesNeeded = additional_amount / sizeof(int16_t);
 
     size_t samplesToGenerate = std::min(samplesNeeded, INTERNAL_BUFFER_SAMPLES);
     if(samplesToGenerate > 0){
         generateAudio(stream, samplesToGenerate);
     }
+    //SDL_UnlockAudioStream(gAudioStream);
 }
