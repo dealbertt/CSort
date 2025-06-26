@@ -1,4 +1,3 @@
-#include <SDL3/SDL_audio.h>
 #include <algorithm>
 #include <mutex>
 #include <vector>
@@ -6,6 +5,7 @@
 #include "../include/sortView.hpp"
 #include "../include/sound.hpp"
 #include <SDL3/SDL_log.h>
+#include <SDL3/SDL_audio.h>
 
 double soundSustain = 2.0;
 
@@ -197,6 +197,7 @@ void testAudioWithSimpleTone() {
 
 
 
+/*
 int SDLCALL AudioStreamCallBack(void *userdata, SDL_AudioStream *stream, void *out_buffer, int len){
 
     int16_t *data = (int16_t*)(out_buffer);
@@ -276,6 +277,7 @@ int SDLCALL AudioStreamCallBack(void *userdata, SDL_AudioStream *stream, void *o
 
     return 0;
 }
+*/
 
 static void generateAudio(SDL_AudioStream *stream, size_t numSamples){
     if(numSamples > gInternalAudioBuffer.size()){
@@ -358,7 +360,7 @@ static void generateAudio(SDL_AudioStream *stream, size_t numSamples){
 }
 
 void SDLCALL AudioStreamNotificationCallback(void *udata, SDL_AudioStream *stream, int additional_amount, int total_amount){
-    SDL_Log("AudioStreamNotificationCallback is called");
+    if(config.debug) SDL_Log("AudioStreamNotificationCallback is called");
     size_t samplesNeeded = additional_amount / sizeof(int16_t);
 
     size_t samplesToGenerate = std::min(samplesNeeded, INTERNAL_BUFFER_SAMPLES);
