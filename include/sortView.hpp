@@ -17,6 +17,7 @@ class ViewObject{
 
     public:
         ViewObject(size_t maxSize, int windowHeight, SDL_Renderer &renderer): array(maxSize, windowHeight), renderer(renderer){
+            index = 0;
             wbar = 0;
             spacing = 1.0f;
             array.setSize(maxSize);
