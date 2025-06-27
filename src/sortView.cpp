@@ -74,7 +74,9 @@ void ViewObject::paint(){
 
     array.MtxArray.unlock();
 
-    updateText();
+    if(textNeedsUpdate){
+        updateText();
+    }
     SDL_RenderPresent(&renderer);
 }
 
@@ -83,6 +85,7 @@ void ViewObject::executeSort(void (*func)(class Array&)){
     std::thread sortThread(func, std::ref(array));
     sortThread.detach();
 
+    textNeedsUpdate = true;
     while(!array.isSorted()){
         handleKeyboard();
         if(array.needRepaint){
@@ -118,6 +121,7 @@ SDL_Color ViewObject::configureColor(ArrayItem &item){
 }
 
 void ViewObject::markArrayDone(){
+    textNeedsUpdate = false;
     const int target = 1000;
     for(index = 0; index < array.getSize(); index++){
         array.sortDelay->setDelay((target / array.getSize()) * 1000);

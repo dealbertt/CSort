@@ -122,7 +122,7 @@ int initProgram(){
         return -1;
     }
 
-    int fontSize = 40;
+    int fontSize = 28;
 
     std::string fontPath = "fonts/FiraCodeNerdFont-Regular.ttf";
 

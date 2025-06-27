@@ -10,7 +10,9 @@
 class ViewObject{
     private:
         size_t index;
+        bool textNeedsUpdate;
 
+        
     public:
         Array array;
         std::chrono::steady_clock::time_point a;
@@ -18,6 +20,7 @@ class ViewObject{
 
     public:
         ViewObject(size_t maxSize, int windowHeight, SDL_Renderer &renderer): array(maxSize, windowHeight), renderer(renderer){
+            textNeedsUpdate = false;
             index = 0;
             wbar = 0;
             spacing = 1.0f;
