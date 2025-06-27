@@ -26,6 +26,8 @@ extern TTF_Font *font;
 
 extern std::mutex MtxAccess;
 
+size_t globalIndex = 0;
+
 //List containing all the implemented algorithms, incluiding the delay after each swap, a description, and the amount of elements to sort
 const struct Algorithm algoList[] = {
     {"Bubble Sort", &BubbleSort,  100, "Bien", 8000}, //8 ms
@@ -123,11 +125,11 @@ SDL_Color ViewObject::configureColor(ArrayItem &item){
 void ViewObject::markArrayDone(){
     textNeedsUpdate = false;
     const int target = 1000;
-    for(index = 0; index < array.getSize(); index++){
+    for(size_t i = 0; i< array.getSize(); i++){
         array.sortDelay->setDelay((target / array.getSize()) * 1000);
-        array.markDone(index);
+        array.markDone(i);
         paint();
-        array[index].onAccess();
+        array[i].onAccess();
         array.sortDelay->delay();
     }
 }
@@ -135,16 +137,16 @@ void ViewObject::markArrayDone(){
 //This function goes throuhg each item of the algoList, creating a new ViewObject, which then creates a new array with the specified size
 void runList(SDL_Renderer *renderer){
     ViewObject *object = nullptr;
-    for(size_t i = 0; i < algoListSize; i++){
+    for(globalIndex = 0; globalIndex < algoListSize; globalIndex++){
 
-        std::cout << "Iteration of runList: " << i << std::endl;
+        std::cout << "Iteration of runList: " << globalIndex << std::endl;
 
-        object = new ViewObject(algoList[i].maxSize, config.windowHeigth, *renderer);
-        object->array.sortDelay->setDelay(algoList[i].delay);
+        object = new ViewObject(algoList[globalIndex].maxSize, config.windowHeigth, *renderer);
+        object->array.sortDelay->setDelay(algoList[globalIndex].delay);
 
         globalObject = object;
         object->paint();
-        object->executeSort(algoList[i].func);
+        object->executeSort(algoList[globalIndex].func);
 
         delete object;
         globalObject = nullptr;
@@ -217,7 +219,7 @@ int ViewObject::updateText(){
     MtxAccess.lock();
     std::string strComparison = "Comparisons: " + std::to_string(compareCount);
     std::string strAccesses = "Accesses:" + std::to_string(accessesCount);
-    std::string strName = algoList[index].name; 
+    std::string strName = algoList[globalIndex].name; 
 
     SDL_Surface *NameSurface = TTF_RenderText_Solid(font, strName.c_str(), strName.length(), color);
     if(NameSurface == NULL){
