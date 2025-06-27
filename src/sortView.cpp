@@ -1,3 +1,4 @@
+#include <SDL3/SDL_surface.h>
 #include <chrono>
 #include <climits>
 #include <cstdint>
@@ -34,7 +35,7 @@ const struct Algorithm algoList[] = {
     {"Cocktail Sort", &CocktailSort,  100, "que tal", 8000}, // 8 ms
     {"Insertion Sort", &InsertionSort,  100, "Hola", 12000}, // 12 ms
     {"Selection Sort", &SelectionSort,  500, "Hola", 50000}, //50 ms
-    {"Quick Sort", &QuickSortInit,  5000, "Bien", 5000}, // 5 ms
+    {"Quick Sort", &QuickSortInit,  5000, "Bien", 2500}, // 2,5 ms
 };
 
 const size_t algoListSize = sizeof(algoList) / sizeof(algoList[0]);
@@ -123,7 +124,6 @@ SDL_Color ViewObject::configureColor(ArrayItem &item){
 }
 
 void ViewObject::markArrayDone(){
-    textNeedsUpdate = false;
     const int target = 1000;
     for(size_t i = 0; i< array.getSize(); i++){
         array.sortDelay->setDelay((target / array.getSize()) * 1000);
@@ -217,8 +217,8 @@ int ViewObject::updateText(){
     SDL_Color color = {255, 255, 255, 255};
 
     MtxAccess.lock();
-    std::string strComparison = "Comparisons: " + std::to_string(compareCount);
-    std::string strAccesses = "Accesses:" + std::to_string(accessesCount);
+    std::string strComparison = "Comparisons: " + std::to_string(this->array.compareCount);
+    std::string strAccesses = "Accesses:" + std::to_string(this->array.accessesCount);
     std::string strName = algoList[globalIndex].name; 
 
     SDL_Surface *NameSurface = TTF_RenderText_Solid(font, strName.c_str(), strName.length(), color);
@@ -237,11 +237,33 @@ int ViewObject::updateText(){
     NameRect.w = 400;
     NameRect.h = 50;
 
+    SDL_Surface *AccSurface = TTF_RenderText_Solid(font, strAccesses.c_str(), strAccesses.length(), color);
+    if(AccSurface == NULL){
+        std::cout << "Error creating AccSurface: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    SDL_Texture *AccTexture = SDL_CreateTextureFromSurface(&renderer, AccSurface);
+    if(AccTexture == NULL){
+        std::cout << "Error creating AccTexture: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    SDL_FRect AccRect;
+    AccRect.x = 0; 
+    AccRect.y = 0; 
+    AccRect.w = 400; 
+    AccRect.h = 50; 
+
     SDL_RenderTexture(&renderer, NameTexture, NULL, &NameRect);
+    SDL_RenderTexture(&renderer, AccTexture, NULL, &AccRect);
     MtxAccess.unlock();
 
     SDL_DestroyTexture(NameTexture);
     SDL_DestroySurface(NameSurface);
+
+    SDL_DestroyTexture(AccTexture);
+    SDL_DestroySurface(AccSurface);
 
     return 0;
 }

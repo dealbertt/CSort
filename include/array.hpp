@@ -13,10 +13,6 @@
 
 #include "config.hpp"
 
-extern size_t compareCount;
-
-extern size_t accessesCount;
-
 extern Config config;
 
 extern void SoundAccess(size_t i);
@@ -119,9 +115,13 @@ class Array{
         std::mutex MtxArray;
         Delay *sortDelay;
         bool needRepaint;
+        size_t compareCount;
+        size_t accessesCount;
 
     public:
         Array(size_t size, ArrayItem::valueType maxValue) {
+            compareCount = 0;
+            accessesCount = 0;
             sArray.resize(size);
             sArray_maxSize = maxValue;
 

@@ -49,6 +49,7 @@ void Array::FillArray(){
 
 void Array::onAccess(){
     needRepaint = true;
+    accessesCount++;
     //sortDelay->delay();
     //std::this_thread::sleep_for(std::chrono::microseconds(5));
 }
