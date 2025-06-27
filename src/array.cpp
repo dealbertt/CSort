@@ -7,7 +7,6 @@
 #include "../include/sound.hpp"
 
 size_t compareCount = 0;
-
 size_t accessesCount = 0;
 
 void Delay::delay(){

@@ -150,6 +150,8 @@ void runList(SDL_Renderer *renderer){
 
         delete object;
         globalObject = nullptr;
+        compareCount = 0;
+        accessesCount = 0;
 
     }
 }
@@ -217,8 +219,8 @@ int ViewObject::updateText(){
     SDL_Color color = {255, 255, 255, 255};
 
     MtxAccess.lock();
-    std::string strComparison = "Comparisons: " + std::to_string(this->array.compareCount);
-    std::string strAccesses = "Accesses:" + std::to_string(this->array.accessesCount);
+    std::string strComparison = "Comparisons: " + std::to_string(compareCount);
+    std::string strAccesses = "Accesses: " + std::to_string(accessesCount);
     std::string strName = algoList[globalIndex].name; 
 
     SDL_Surface *NameSurface = TTF_RenderText_Solid(font, strName.c_str(), strName.length(), color);
@@ -255,8 +257,27 @@ int ViewObject::updateText(){
     AccRect.w = 400; 
     AccRect.h = 50; 
 
+    SDL_Surface *CompSurface = TTF_RenderText_Solid(font, strComparison.c_str(), strComparison.length(), color);
+    if(CompSurface == NULL){
+        std::cout << "Error creating CompSurface: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    SDL_Texture *CompTexture = SDL_CreateTextureFromSurface(&renderer, CompSurface);
+    if(CompTexture == NULL){
+        std::cout << "Error creating CompTexture: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    SDL_FRect CompRect;
+    CompRect.x = config.windowWidth - 400;
+    CompRect.y = 0;
+    CompRect.w = 400;
+    CompRect.h = 50;
+
     SDL_RenderTexture(&renderer, NameTexture, NULL, &NameRect);
     SDL_RenderTexture(&renderer, AccTexture, NULL, &AccRect);
+    SDL_RenderTexture(&renderer, CompTexture, NULL, &CompRect);
     MtxAccess.unlock();
 
     SDL_DestroyTexture(NameTexture);
@@ -264,6 +285,9 @@ int ViewObject::updateText(){
 
     SDL_DestroyTexture(AccTexture);
     SDL_DestroySurface(AccSurface);
+
+    SDL_DestroyTexture(CompTexture);
+    SDL_DestroySurface(CompSurface);
 
     return 0;
 }
