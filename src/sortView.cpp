@@ -2,6 +2,7 @@
 #include <chrono>
 #include <climits>
 #include <cstdint>
+#include <iomanip>
 #include <iostream>
 #include <string>
 #include <thread>
@@ -31,11 +32,11 @@ size_t globalIndex = 0;
 
 //List containing all the implemented algorithms, incluiding the delay after each swap, a description, and the amount of elements to sort
 const struct Algorithm algoList[] = {
-    {"Quick Sort", &QuickSortInit,  5000, "Bien", 1250}, // 1,25 ms
+    {"Insertion Sort", &InsertionSort,  100, "Hola", 12000}, // 12 ms
     {"Bubble Sort", &BubbleSort,  100, "Bien", 8000}, //8 ms
     {"Cocktail Sort", &CocktailSort,  100, "que tal", 8000}, // 8 ms
-    {"Insertion Sort", &InsertionSort,  100, "Hola", 12000}, // 12 ms
     {"Selection Sort", &SelectionSort,  500, "Hola", 50000}, //50 ms
+    {"Quick Sort", &QuickSortInit,  5000, "Bien", 1250}, // 1,25 ms
 };
 
 const size_t algoListSize = sizeof(algoList) / sizeof(algoList[0]);
@@ -127,7 +128,6 @@ void ViewObject::markArrayDone(){
     const float target = 1000.0f;
     for(size_t i = 0; i< array.getSize(); i++){
         array.sortDelay->setDelay((target / array.getSize()) * 1000.0f);
-        std::cout << "Delay: " << array.sortDelay->getDuration() << std::endl; 
         array.markDone(i);
         paint();
         array[i].onAccess();
@@ -223,7 +223,7 @@ int ViewObject::updateText(){
     std::string strComparison = "Comparisons: " + std::to_string(compareCount);
     std::string strAccesses = "Accesses: " + std::to_string(accessesCount);
     std::string strName = algoList[globalIndex].name; 
-    std::string strDelay = "Delay: " +  std::to_string(algoList[globalIndex].delay / 1000.0f) + " ms";
+    std::string strDelay =  "Delay: " +  std::to_string(algoList[globalIndex].delay / 1000.f) + " ms";
 
     SDL_Surface *NameSurface = TTF_RenderText_Solid(font, strName.c_str(), strName.length(), color);
     if(NameSurface == NULL){

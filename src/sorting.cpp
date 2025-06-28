@@ -77,7 +77,7 @@ void InsertionSort(class Array &array){
         ArrayItem item = array[i];
         int j = i - 1;
 
-        while(j >= 0 && array[j].getValue() > item.getValue()){
+        while(j >= 0 && array[j] > item){
             array.swap(j, j + 1);
             j--;
         } 
