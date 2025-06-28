@@ -15,8 +15,8 @@
 #include "../include/sortView.hpp" 
 #include "../include/sound.hpp" 
 
-//TODO: Add the delay of each algorithm as text aswell
 //TODO: Allow window resizing, define event to resize the array and text aswell
+//TODO: Fix comparison on Insertion Sort (or maybe in general, not sure if they are correct)
 
 Config config;
 SDL_Window *window = nullptr;

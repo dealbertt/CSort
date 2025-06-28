@@ -35,7 +35,7 @@ const struct Algorithm algoList[] = {
     {"Cocktail Sort", &CocktailSort,  100, "que tal", 8000}, // 8 ms
     {"Insertion Sort", &InsertionSort,  100, "Hola", 12000}, // 12 ms
     {"Selection Sort", &SelectionSort,  500, "Hola", 50000}, //50 ms
-    {"Quick Sort", &QuickSortInit,  5000, "Bien", 2500}, // 2,5 ms
+    {"Quick Sort", &QuickSortInit,  5000, "Bien", 1250}, // 1,25 ms
 };
 
 const size_t algoListSize = sizeof(algoList) / sizeof(algoList[0]);
@@ -237,8 +237,8 @@ int ViewObject::updateText(){
     SDL_FRect NameRect;
     NameRect.x = 0; 
     NameRect.y = 0;
-    NameRect.w = 300;
-    NameRect.h = 50;
+    NameRect.w = 200;
+    NameRect.h = 30;
 
     SDL_Surface *AccSurface = TTF_RenderText_Solid(font, strAccesses.c_str(), strAccesses.length(), color);
     if(AccSurface == NULL){
@@ -255,8 +255,8 @@ int ViewObject::updateText(){
     SDL_FRect AccRect;
     AccRect.x = NameRect.x + NameRect.w + 100;
     AccRect.y = 0; 
-    AccRect.w = 300; 
-    AccRect.h = 50; 
+    AccRect.w = 200; 
+    AccRect.h = 30; 
 
     SDL_Surface *CompSurface = TTF_RenderText_Solid(font, strComparison.c_str(), strComparison.length(), color);
     if(CompSurface == NULL){
@@ -273,8 +273,8 @@ int ViewObject::updateText(){
     SDL_FRect CompRect;
     CompRect.x = AccRect.x + AccRect.w + 100;
     CompRect.y = 0;
-    CompRect.w = 300;
-    CompRect.h = 50;
+    CompRect.w = 200;
+    CompRect.h = 30;
 
     SDL_Surface *DelaySurface = TTF_RenderText_Solid(font, strDelay.c_str(), strDelay.length(), color);
     if(DelaySurface == NULL){
@@ -291,8 +291,8 @@ int ViewObject::updateText(){
     SDL_FRect DelayRect;
     DelayRect.x = CompRect.x + CompRect.w + 100;
     DelayRect.y = 0;
-    DelayRect.w = 300;
-    DelayRect.h = 50;
+    DelayRect.w = 200;
+    DelayRect.h = 30;
 
 
     SDL_RenderTexture(&renderer, NameTexture, NULL, &NameRect);
