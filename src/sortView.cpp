@@ -31,11 +31,11 @@ size_t globalIndex = 0;
 
 //List containing all the implemented algorithms, incluiding the delay after each swap, a description, and the amount of elements to sort
 const struct Algorithm algoList[] = {
+    {"Quick Sort", &QuickSortInit,  5000, "Bien", 1250}, // 1,25 ms
     {"Bubble Sort", &BubbleSort,  100, "Bien", 8000}, //8 ms
     {"Cocktail Sort", &CocktailSort,  100, "que tal", 8000}, // 8 ms
     {"Insertion Sort", &InsertionSort,  100, "Hola", 12000}, // 12 ms
     {"Selection Sort", &SelectionSort,  500, "Hola", 50000}, //50 ms
-    {"Quick Sort", &QuickSortInit,  5000, "Bien", 1250}, // 1,25 ms
 };
 
 const size_t algoListSize = sizeof(algoList) / sizeof(algoList[0]);
@@ -124,9 +124,10 @@ SDL_Color ViewObject::configureColor(ArrayItem &item){
 }
 
 void ViewObject::markArrayDone(){
-    const int target = 1000;
+    const float target = 1000.0f;
     for(size_t i = 0; i< array.getSize(); i++){
-        array.sortDelay->setDelay((target / array.getSize()) * 1000);
+        array.sortDelay->setDelay((target / array.getSize()) * 1000.0f);
+        std::cout << "Delay: " << array.sortDelay->getDuration() << std::endl; 
         array.markDone(i);
         paint();
         array[i].onAccess();
@@ -222,7 +223,7 @@ int ViewObject::updateText(){
     std::string strComparison = "Comparisons: " + std::to_string(compareCount);
     std::string strAccesses = "Accesses: " + std::to_string(accessesCount);
     std::string strName = algoList[globalIndex].name; 
-    std::string strDelay = "Delay: " +  std::to_string(algoList[globalIndex].delay / 1000) + " ms";
+    std::string strDelay = "Delay: " +  std::to_string(algoList[globalIndex].delay / 1000.0f) + " ms";
 
     SDL_Surface *NameSurface = TTF_RenderText_Solid(font, strName.c_str(), strName.length(), color);
     if(NameSurface == NULL){
@@ -253,7 +254,7 @@ int ViewObject::updateText(){
     }
 
     SDL_FRect AccRect;
-    AccRect.x = NameRect.x + NameRect.w + 100;
+    AccRect.x = NameRect.x + NameRect.w + 50;
     AccRect.y = 0; 
     AccRect.w = 200; 
     AccRect.h = 30; 
@@ -271,7 +272,7 @@ int ViewObject::updateText(){
     }
 
     SDL_FRect CompRect;
-    CompRect.x = AccRect.x + AccRect.w + 100;
+    CompRect.x = AccRect.x + AccRect.w + 50;
     CompRect.y = 0;
     CompRect.w = 200;
     CompRect.h = 30;
@@ -289,7 +290,7 @@ int ViewObject::updateText(){
     }
 
     SDL_FRect DelayRect;
-    DelayRect.x = CompRect.x + CompRect.w + 100;
+    DelayRect.x = CompRect.x + CompRect.w + 50;
     DelayRect.y = 0;
     DelayRect.w = 200;
     DelayRect.h = 30;
