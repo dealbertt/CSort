@@ -1,6 +1,8 @@
 #include <SDL3_ttf/SDL_ttf.h>
+#include <cstdio>
 #include <iostream>
 #include <csignal>
+#include <print>
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_audio.h>
@@ -125,7 +127,7 @@ int initProgram(){
         return -1;
     }
 
-    int fontSize = 28;
+    int fontSize = 20;
 
     std::string fontPath = "fonts/FiraCodeNerdFont-Regular.ttf";
 

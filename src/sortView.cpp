@@ -222,6 +222,7 @@ int ViewObject::updateText(){
     std::string strComparison = "Comparisons: " + std::to_string(compareCount);
     std::string strAccesses = "Accesses: " + std::to_string(accessesCount);
     std::string strName = algoList[globalIndex].name; 
+    std::string strDelay = "Delay: " +  std::to_string(algoList[globalIndex].delay / 1000) + " ms";
 
     SDL_Surface *NameSurface = TTF_RenderText_Solid(font, strName.c_str(), strName.length(), color);
     if(NameSurface == NULL){
@@ -234,9 +235,9 @@ int ViewObject::updateText(){
         std::cout << "Error creating NameTexture: " << SDL_GetError() << std::endl;
     }
     SDL_FRect NameRect;
-    NameRect.x = (static_cast<float>(config.windowWidth) / 2) - 200;
+    NameRect.x = 0; 
     NameRect.y = 0;
-    NameRect.w = 400;
+    NameRect.w = 300;
     NameRect.h = 50;
 
     SDL_Surface *AccSurface = TTF_RenderText_Solid(font, strAccesses.c_str(), strAccesses.length(), color);
@@ -252,9 +253,9 @@ int ViewObject::updateText(){
     }
 
     SDL_FRect AccRect;
-    AccRect.x = 0; 
+    AccRect.x = NameRect.x + NameRect.w + 100;
     AccRect.y = 0; 
-    AccRect.w = 400; 
+    AccRect.w = 300; 
     AccRect.h = 50; 
 
     SDL_Surface *CompSurface = TTF_RenderText_Solid(font, strComparison.c_str(), strComparison.length(), color);
@@ -270,14 +271,34 @@ int ViewObject::updateText(){
     }
 
     SDL_FRect CompRect;
-    CompRect.x = config.windowWidth - 400;
+    CompRect.x = AccRect.x + AccRect.w + 100;
     CompRect.y = 0;
-    CompRect.w = 400;
+    CompRect.w = 300;
     CompRect.h = 50;
+
+    SDL_Surface *DelaySurface = TTF_RenderText_Solid(font, strDelay.c_str(), strDelay.length(), color);
+    if(DelaySurface == NULL){
+        std::cout << "Error creating DelaySurface: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    SDL_Texture *DelayTexture = SDL_CreateTextureFromSurface(&renderer, DelaySurface);
+    if(DelayTexture == NULL){
+        std::cout << "Error creating DelayTexture: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    SDL_FRect DelayRect;
+    DelayRect.x = CompRect.x + CompRect.w + 100;
+    DelayRect.y = 0;
+    DelayRect.w = 300;
+    DelayRect.h = 50;
+
 
     SDL_RenderTexture(&renderer, NameTexture, NULL, &NameRect);
     SDL_RenderTexture(&renderer, AccTexture, NULL, &AccRect);
     SDL_RenderTexture(&renderer, CompTexture, NULL, &CompRect);
+    SDL_RenderTexture(&renderer, DelayTexture, NULL, &DelayRect);
     MtxAccess.unlock();
 
     SDL_DestroyTexture(NameTexture);
@@ -289,6 +310,8 @@ int ViewObject::updateText(){
     SDL_DestroyTexture(CompTexture);
     SDL_DestroySurface(CompSurface);
 
+    SDL_DestroyTexture(DelayTexture);
+    SDL_DestroySurface(DelaySurface);
     return 0;
 }
 
