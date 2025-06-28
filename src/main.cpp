@@ -17,6 +17,7 @@
 
 //TODO: Allow window resizing, define event to resize the array and text aswell
 //TODO: Fix comparison on Insertion Sort (or maybe in general, not sure if they are correct)
+//TODO: Allow user to control volume throuhg shortcuts
 
 Config config;
 SDL_Window *window = nullptr;
