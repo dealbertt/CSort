@@ -10,6 +10,7 @@ typedef struct Config{
     int windowHeigth;
     int delay; //amount of time that each thread sleep after performing an operation (playing sound or sorting)
     int debug;
+    int volume; //Volume of the audio 
 }Config;
 
 Config *readConfiguration(const char *);

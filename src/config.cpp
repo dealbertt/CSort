@@ -14,12 +14,14 @@ Config *readConfiguration(const char *path){
         else if(strstr(line, "WINDOW_WIDTH")) sscanf(line, "WINDOW_WIDTH=%d", &config->windowWidth);
         else if(strstr(line, "WINDOW_HEIGHT")) sscanf(line, "WINDOW_HEIGHT=%d", &config->windowHeigth);
         else if(strstr(line, "DELAY")) sscanf(line, "DELAY=%d", &config->delay);
+        else if(strstr(line, "VOLUME")) sscanf(line, "VOLUME=%d", &config->volume);
         else if(strstr(line, "DEBUG")) sscanf(line, "DEBUG=%d", &config->debug);
     }
     fclose(ptr);
     std::cout << "Number of elements: " << config->numberElements << "\n";
     std::cout << "Window Width: " << config->windowWidth << "\n";
     std::cout << "Window Height: " << config->windowHeigth << "\n";
+    std::cout << "Volume: " << config->volume << "\n";
 
     return config;
 }

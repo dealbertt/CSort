@@ -29,7 +29,6 @@ extern TTF_Font *font;
 
 extern std::mutex MtxAccess;
 
-extern float maxVol;
 
 size_t globalIndex = 0;
 
@@ -185,18 +184,18 @@ int ViewObject::handleEvents(){
         }
 
         if(pressed[SDL_SCANCODE_LCTRL] && pressed[SDL_SCANCODE_UP] ){
-            if(maxVol < 24000.0){
-                maxVol += 1000;
-                std::cout << "Vol increased to: " << maxVol << std::endl;
+            if(config.volume < 24000.0){
+                config.volume += 1000;
+                std::cout << "Vol increased to: " << config.volume << std::endl;
                 return 0;
             }else{
-                std::cout << "Max volume reached: " << maxVol << std::endl;
+                std::cout << "Max volume reached: " << config.volume << std::endl;
                 return -1;
             }
         }else if(pressed[SDL_SCANCODE_LCTRL] &&  pressed[SDL_SCANCODE_DOWN]){
-            if(maxVol > 0.0){
-                maxVol -= 1000;
-                std::cout << "Vol decreased to: " << maxVol << std::endl;
+            if(config.volume > 0.0){
+                config.volume -= 1000;
+                std::cout << "Vol decreased to: " << config.volume << std::endl;
                 return 0;
             }else{
                 std::cout << "Already at 0 volume!" << std::endl;

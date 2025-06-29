@@ -8,7 +8,6 @@
 #include <SDL3/SDL_audio.h>
 
 double soundSustain = 2.0;
-float maxVol = 24000.0;
 
 static size_t pos = 0;
 
@@ -335,7 +334,7 @@ static void generateAudio(SDL_AudioStream *stream, size_t numSamples){
         }
 
         for(size_t i = 0; i < numSamples; i++){
-            int32_t v = maxVol * waves[i] / (oldvol) + (vol - oldvol) * (static_cast<double>(i) / numSamples);
+            int32_t v = config.volume * waves[i] / (oldvol) + (vol - oldvol) * (static_cast<double>(i) / numSamples);
 
             if (v > 32200){
                 v = 32200;
