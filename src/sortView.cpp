@@ -192,11 +192,12 @@ int ViewObject::handleEvents(){
             cleanUp();
         }
     }else if(event.type == SDL_EVENT_WINDOW_RESIZED){
-        int width = event.window.data1;
-        int height = event.window.data2;
-        SDL_LogDebug(SDL_LOG_PRIORITY_DEBUG,"New Width: %d\n New Height: %d", width, height); 
+        config.windowWidth = event.window.data1;
+        config.windowHeigth = event.window.data2;
+        SDL_LogDebug(SDL_LOG_PRIORITY_DEBUG,"New Width: %d\n New Height: %d", config.windowWidth, config.windowHeigth); 
 
         //rerender array with the new dimensions
+
 
     }
 
