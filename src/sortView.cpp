@@ -67,7 +67,13 @@ void ViewObject::paint(){
     array.MtxArray.lock(); 
     SDL_SetRenderDrawColor(&renderer, 255, 255, 255, 255);
     for(size_t i = 0; i < size; i++){
-        SDL_FRect rect = {x, static_cast<float>(config.windowHeigth - array.getItemConst(i).getValue()), wbar, static_cast<float>(array.getItemConst(i).getValue())};
+        float heigh = (static_cast<float>(array.getItemMutable(i).getValue()) /  static_cast<float>(array.getMaxValue())) * config.windowHeigth;
+        SDL_LogDebug(SDL_LOG_PRIORITY_DEBUG, "MaxValue: %d", array.getMaxValue());
+        SDL_LogDebug(SDL_LOG_PRIORITY_DEBUG, "Current Value: %d", array.getItemMutable(i).getValue());
+        SDL_LogDebug(SDL_LOG_PRIORITY_DEBUG, "Height: %.2f", heigh);
+
+        SDL_FRect rect = {x, static_cast<float>(config.windowHeigth - heigh), wbar, heigh};
+
         
         SDL_Color color = configureColor(array.getItemMutable(i));
         SDL_SetRenderDrawColor(&renderer, color.r, color.g, color.b, color.a);
