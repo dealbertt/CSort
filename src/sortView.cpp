@@ -29,6 +29,8 @@ extern TTF_Font *font;
 
 extern std::mutex MtxAccess;
 
+extern float maxVol;
+
 size_t globalIndex = 0;
 
 //List containing all the implemented algorithms, incluiding the delay after each swap, a description, and the amount of elements to sort
@@ -175,16 +177,44 @@ int ViewObject::handleEvents(){
         cleanUp();
     }
     if(event.type == SDL_EVENT_KEY_DOWN){
+
+
+        if(pressed[SDL_SCANCODE_ESCAPE]){
+            cleanUp();
+            return 0;
+        }
+
+        if(pressed[SDL_SCANCODE_LCTRL] && pressed[SDL_SCANCODE_UP] ){
+            if(maxVol < 24000.0){
+                maxVol += 1000;
+                std::cout << "Vol increased to: " << maxVol << std::endl;
+                return 0;
+            }else{
+                std::cout << "Max volume reached: " << maxVol << std::endl;
+                return -1;
+            }
+        }else if(pressed[SDL_SCANCODE_LCTRL] &&  pressed[SDL_SCANCODE_DOWN]){
+            if(maxVol > 0.0){
+                maxVol -= 1000;
+                std::cout << "Vol decreased to: " << maxVol << std::endl;
+                return 0;
+            }else{
+                std::cout << "Already at 0 volume!" << std::endl;
+                return -1;
+            }
+        } 
+
         if(pressed[SDL_SCANCODE_UP]){
             int delay = array.sortDelay->getDuration();
             if(delay < MAX_DELAY){
                 delay += 1000;
                 array.sortDelay->setDelay(delay);
                 std::cout << "Duration increased to: " << array.sortDelay->getDuration() << std::endl;
+                return 0;
             }else{
                 std::cout << "Max delay value reached!" << std::endl;
+                return -1;
             }
-
         }
 
         if(pressed[SDL_SCANCODE_DOWN]){
@@ -192,11 +222,8 @@ int ViewObject::handleEvents(){
             delay -= 1000;
             array.sortDelay->setDelay(delay);
             std::cout << "Duration decreased to: " << array.sortDelay->getDuration() << std::endl;
+            return 0;
         } 
-
-        if(pressed[SDL_SCANCODE_ESCAPE]){
-            cleanUp();
-        }
     }else if(event.type == SDL_EVENT_WINDOW_RESIZED){
         config.windowWidth = event.window.data1;
         config.windowHeigth = event.window.data2;
