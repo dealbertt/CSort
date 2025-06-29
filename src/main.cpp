@@ -43,7 +43,7 @@ int initProgram(){
     config = *readConfiguration("config/config.txt");
     
 
-    if(!SDL_CreateWindowAndRenderer("CSort", config.windowWidth, config.windowHeigth,SDL_WINDOW_VULKAN, &window, &renderer)){
+    if(!SDL_CreateWindowAndRenderer("CSort", config.windowWidth, config.windowHeigth, SDL_WINDOW_RESIZABLE, &window, &renderer)){
         std::cout << "Error on SDL_CreateWindowAndRenderer: " << SDL_GetError() << std::endl;
     }
     if(window == NULL){

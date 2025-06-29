@@ -1,3 +1,4 @@
+#include <SDL3/SDL_log.h>
 #include <SDL3/SDL_surface.h>
 #include <chrono>
 #include <climits>
@@ -32,9 +33,9 @@ size_t globalIndex = 0;
 
 //List containing all the implemented algorithms, incluiding the delay after each swap, a description, and the amount of elements to sort
 const struct Algorithm algoList[] = {
-    {"Insertion Sort", &InsertionSort,  100, "Hola", 12000}, // 12 ms
     {"Bubble Sort", &BubbleSort,  100, "Bien", 8000}, //8 ms
     {"Cocktail Sort", &CocktailSort,  100, "que tal", 8000}, // 8 ms
+    {"Insertion Sort", &InsertionSort,  100, "Hola", 12000}, // 12 ms
     {"Selection Sort", &SelectionSort,  500, "Hola", 50000}, //50 ms
     {"Quick Sort", &QuickSortInit,  5000, "Bien", 1250}, // 1,25 ms
 };
@@ -91,7 +92,7 @@ void ViewObject::executeSort(void (*func)(class Array&)){
 
     textNeedsUpdate = true;
     while(!array.isSorted()){
-        handleKeyboard();
+        handleEvents();
         if(array.needRepaint){
             paint();
             array.needRepaint = false;
@@ -157,13 +158,16 @@ void runList(SDL_Renderer *renderer){
     }
 }
 
-//Function in charge of all the keyboard shortcuts, for now there are not that many, hopefully will add more in the future
-int ViewObject::handleKeyboard(){
+//Function in charge of handling all SDL_EVENTS such as keyboard events or window events
+int ViewObject::handleEvents(){
 
     SDL_Event event;
     SDL_PollEvent(&event);
 
     const bool *pressed = SDL_GetKeyboardState(NULL);
+    if(event.type == SDL_EVENT_QUIT){
+        cleanUp();
+    }
     if(event.type == SDL_EVENT_KEY_DOWN){
         if(pressed[SDL_SCANCODE_UP]){
             int delay = array.sortDelay->getDuration();
@@ -187,6 +191,13 @@ int ViewObject::handleKeyboard(){
         if(pressed[SDL_SCANCODE_ESCAPE]){
             cleanUp();
         }
+    }else if(event.type == SDL_EVENT_WINDOW_RESIZED){
+        int width = event.window.data1;
+        int height = event.window.data2;
+        SDL_LogDebug(SDL_LOG_PRIORITY_DEBUG,"New Width: %d\n New Height: %d", width, height); 
+
+        //rerender array with the new dimensions
+
     }
 
     return 0;

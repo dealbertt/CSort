@@ -37,7 +37,7 @@ class ViewObject{
         void executeSort(void (*func)(class Array&));
         SDL_Color configureColor(ArrayItem &item);
         void markArrayDone();
-        int handleKeyboard();
+        int handleEvents();
         void startArray();
         void finishArray();
         int updateText();
