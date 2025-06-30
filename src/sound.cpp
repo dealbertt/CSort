@@ -92,6 +92,7 @@ void SoundReset(){
     pos = 0;
     osciList.clear();
 
+    accessList.clear();
     if(gAudioStream){
         SDL_FlushAudioStream(gAudioStream);
     }

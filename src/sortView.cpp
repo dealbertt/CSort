@@ -1,9 +1,7 @@
-#include <SDL3/SDL_log.h>
-#include <SDL3/SDL_surface.h>
 #include <chrono>
-#include <climits>
+#include <csignal>
 #include <cstdint>
-#include <iomanip>
+#include <unistd.h>
 #include <iostream>
 #include <string>
 #include <thread>
@@ -92,23 +90,6 @@ void ViewObject::paint(){
     SDL_RenderPresent(&renderer);
 }
 
-//Function in charge of launching the sorting logic thread
-void ViewObject::executeSort(void (*func)(class Array&)){
-    std::thread sortThread(func, std::ref(array));
-    sortThread.detach();
-
-    textNeedsUpdate = true;
-    while(!array.isSorted()){
-        handleEvents();
-        if(array.needRepaint){
-            paint();
-            array.needRepaint = false;
-        }
-    }
-    finishArray();
-    markArrayDone();
-}
-
 SDL_Color ViewObject::configureColor(ArrayItem &item){
     uint8_t colorCode = item.getColor();
     SDL_Color color;
@@ -131,6 +112,29 @@ SDL_Color ViewObject::configureColor(ArrayItem &item){
     }
     return color;
 }
+//Function in charge of launching the sorting logic thread
+void ViewObject::executeSort(void (*func)(class Array&)){
+    std::thread sortThread(func, std::ref(array));
+    sortThread.detach();
+
+    textNeedsUpdate = true;
+    while(!array.isSorted()){
+        handleEvents();
+        if(array.isSkipped()){
+
+            break;
+        }
+        if(array.needRepaint){
+            paint();
+            array.needRepaint = false;
+        }
+    }
+    if(array.isSorted()){
+        finishArray();
+        markArrayDone();
+    }
+}
+
 
 void ViewObject::markArrayDone(){
     const float target = 1000.0f;
@@ -154,6 +158,7 @@ void runList(SDL_Renderer *renderer){
         object->array.sortDelay->setDelay(algoList[globalIndex].delay);
 
         globalObject = object;
+        object->pressSpaceToContinue();
         object->paint();
         object->executeSort(algoList[globalIndex].func);
 
@@ -177,6 +182,10 @@ int ViewObject::handleEvents(){
     }
     if(event.type == SDL_EVENT_KEY_DOWN){
 
+        if(pressed[SDL_SCANCODE_SPACE]){
+            skipAlgorithm();
+            return 0;
+        }
 
         if(pressed[SDL_SCANCODE_ESCAPE]){
             cleanUp();
@@ -201,7 +210,7 @@ int ViewObject::handleEvents(){
                 std::cout << "Already at 0 volume!" << std::endl;
                 return -1;
             }
-        } 
+          } 
 
         if(pressed[SDL_SCANCODE_UP]){
             int delay = array.sortDelay->getDuration();
@@ -255,7 +264,6 @@ void ViewObject::startArray(){
 }
 
 void ViewObject::finishArray(){
-    
     b = std::chrono::steady_clock::now();
     std::cout << "Time taken: " << std::chrono::duration_cast<std::chrono::seconds>(b - a).count() << std::endl;
 }
@@ -359,4 +367,41 @@ int ViewObject::updateText(){
     SDL_DestroySurface(DelaySurface);
     return 0;
 }
+int ViewObject::skipAlgorithm(){
+    array.mark(0);
+    finishArray();
+    array.setSkipped(true);
+    SDL_RenderClear(&renderer);
+    SoundReset();
+    array.clearArray();
+    kill(getpid(), SIGUSR1);
+    return 0;
+}
 
+int ViewObject::pressSpaceToContinue(){
+    SDL_SetRenderDrawColor(&renderer, 0, 0, 0, 255);
+    SDL_RenderClear(&renderer);
+    SDL_RenderPresent(&renderer);
+
+    SDL_Event event;
+    bool waiting = true;
+
+    while (waiting) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_EVENT_QUIT) {
+                std::exit(0);
+            }
+
+            if (event.type == SDL_EVENT_KEY_DOWN) {
+                const bool *keys = SDL_GetKeyboardState(nullptr);
+                if (keys[SDL_SCANCODE_SPACE]) {
+                    waiting = false;
+                    break;
+                }
+            }
+        }
+        SDL_Delay(10); // Avoid busy-waiting
+    }
+
+    return 0;
+}

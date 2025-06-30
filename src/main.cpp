@@ -137,6 +137,11 @@ int initProgram(){
         std::cout << "Error trying to open the font: " << SDL_GetError() << std::endl;
         return -1;
     }
+
+    sigset_t set;
+    sigemptyset(&set);
+    sigaddset(&set, SIGUSR1);
+    pthread_sigmask(SIG_BLOCK, &set, nullptr);
     return 0;
 }
 

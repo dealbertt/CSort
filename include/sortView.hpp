@@ -10,7 +10,7 @@
 class ViewObject{
     private:
         bool textNeedsUpdate;
-
+        std::thread sortThread;
         
     public:
         Array array;
@@ -41,16 +41,17 @@ class ViewObject{
         void startArray();
         void finishArray();
         int updateText();
+        int skipAlgorithm();
+        int pressSpaceToContinue();
 
 };
 
 struct Algorithm{
     std::string name;
-    void (*func)(class Array&);
+    void (*func)(class Array&);//pointer to a function that takes an array class as a parameter
     uint64_t maxSize;
     std::string description;
     int delay;
-    //pointer to a function that takes an array class as a parameter
 };
 
 extern const struct Algorithm algoList[];

@@ -112,6 +112,7 @@ class Array{
 
 
         bool sorted;
+        bool skipped;
 
     public:
         std::mutex MtxArray;
@@ -124,6 +125,7 @@ class Array{
             sArray_maxSize = maxValue;
 
             sorted = false;
+            skipped = false;
             needRepaint = false;
 
             sortDelay = new Delay();
@@ -138,11 +140,16 @@ class Array{
 
         bool isSorted() const {return sorted;}
         void setSorted(bool newSorted){sorted = newSorted;}
+        bool isSkipped() const {return skipped;}
+        void setSkipped(bool newSkipped){skipped = newSkipped;}
         void setSize(size_t newSize){ 
             sArray.clear();
             sArray.reserve(newSize);
             sArray.resize(newSize);
 
+        }
+        void clearArray(){
+            sArray.clear();
         }
         void onAccess();
         void mark(size_t index);
