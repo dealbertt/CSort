@@ -43,7 +43,6 @@ class ViewObject{
         int updateText();
         int skipAlgorithm();
         int pressSpaceToContinue();
-
 };
 
 struct Algorithm{

@@ -1,3 +1,5 @@
+#include <SDL3/SDL_stdinc.h>
+#include <SDL3/SDL_timer.h>
 #include <chrono>
 #include <csignal>
 #include <cstdint>
@@ -276,6 +278,7 @@ int ViewObject::updateText(){
     std::string strAccesses = "Accesses: " + std::to_string(accessesCount);
     std::string strName = algoList[globalIndex].name; 
     std::string strDelay =  "Delay: " +  std::to_string(algoList[globalIndex].delay / 1000.f) + " ms";
+    std::string strVol = "Vol: " + std::to_string((config.volume / 24000.0) * 100) + " %";
 
     SDL_Surface *NameSurface = TTF_RenderText_Solid(font, strName.c_str(), strName.length(), color);
     if(NameSurface == NULL){
@@ -347,11 +350,28 @@ int ViewObject::updateText(){
     DelayRect.w = 200;
     DelayRect.h = 30;
 
+    SDL_Surface *VolSurface = TTF_RenderText_Solid(font, strVol.c_str(), strVol.length(), color);
+    if(VolSurface == NULL){
+        std::cout << "Error creating VolSurface: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    SDL_Texture *VolTexture = SDL_CreateTextureFromSurface(&renderer, VolSurface);
+    if(VolTexture == NULL){
+        std::cout << "Error creating VolTexture: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+    SDL_FRect VolRect;
+    VolRect.x = DelayRect.x + DelayRect.w + 50;
+    VolRect.y = 0;
+    VolRect.w = 150;
+    VolRect.h = 30;
 
     SDL_RenderTexture(&renderer, NameTexture, NULL, &NameRect);
     SDL_RenderTexture(&renderer, AccTexture, NULL, &AccRect);
     SDL_RenderTexture(&renderer, CompTexture, NULL, &CompRect);
     SDL_RenderTexture(&renderer, DelayTexture, NULL, &DelayRect);
+    SDL_RenderTexture(&renderer, VolTexture, NULL, &VolRect);
     MtxAccess.unlock();
 
     SDL_DestroyTexture(NameTexture);
@@ -367,12 +387,12 @@ int ViewObject::updateText(){
     SDL_DestroySurface(DelaySurface);
     return 0;
 }
+
 int ViewObject::skipAlgorithm(){
-    SDL_RenderClear(&renderer);
+    SoundReset();
     finishArray();
     array.setSkipped(true);
     array.clearArray();
-    SoundReset();
     kill(getpid(), SIGUSR1);
     return 0;
 }
