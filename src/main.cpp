@@ -14,8 +14,7 @@
 #include "../include/sortView.hpp" 
 #include "../include/sound.hpp" 
 
-//TODO: Fix comparison on Insertion Sort (or maybe in general, not sure if they are correct)
-
+//TODO: Fix the skipAlgorithm function, it sort of works, but the index in red is messed up, and the whole rendering part seems to be glithched, no idea why
 Config config;
 SDL_Window *window = nullptr;
 SDL_Renderer *renderer = nullptr;
