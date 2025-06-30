@@ -145,12 +145,12 @@ void QuickSort(class Array &array, uint32_t low, int32_t high){
 
 
 uint32_t partition(class Array &array, uint32_t low, int32_t high){
-    uint32_t pivot = static_cast<uint32_t>(array[high].getValue());
+    ArrayItem pivot = array[high];
 
     int32_t i = static_cast<int32_t>(low - 1);
     
       for (int32_t j = static_cast<int32_t>(low); j <= high - 1; j++) {
-        if (static_cast<uint32_t>(array[j].getValue()) < pivot) {
+        if (array[j] < pivot) {
             i++;
             array.swap(i, j);
         }
