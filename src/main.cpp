@@ -1,4 +1,3 @@
-#include <SDL3_ttf/SDL_ttf.h>
 #include <cstdio>
 #include <iostream>
 #include <csignal>
@@ -15,9 +14,7 @@
 #include "../include/sortView.hpp" 
 #include "../include/sound.hpp" 
 
-//TODO: Allow window resizing, define event to resize the array and text aswell
 //TODO: Fix comparison on Insertion Sort (or maybe in general, not sure if they are correct)
-//TODO: Allow user to control volume throuhg shortcuts
 
 Config config;
 SDL_Window *window = nullptr;

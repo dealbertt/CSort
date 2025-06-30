@@ -8,7 +8,6 @@
 
 void threadSignalHandler(int signum){
     (void)signum;
-    std::cout << "SIGNAL RECEIVED ON THE THREAD" << std::endl;
     pthread_exit(nullptr);
 }
 

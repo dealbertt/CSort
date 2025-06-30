@@ -83,4 +83,5 @@ void SoundReset();
 void testAudioWithSimpleTone();
 int SDLCALL AudioStreamCallBack(void *udata, SDL_AudioStream *stream, void *out_buffer, int len);
 void SDLCALL AudioStreamNotificationCallback(void *udata, SDL_AudioStream *stream, int additional_amount, int total_amount);
+void resumeAudio();
 #endif

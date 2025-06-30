@@ -368,12 +368,11 @@ int ViewObject::updateText(){
     return 0;
 }
 int ViewObject::skipAlgorithm(){
-    array.mark(0);
+    SDL_RenderClear(&renderer);
     finishArray();
     array.setSkipped(true);
-    SDL_RenderClear(&renderer);
-    SoundReset();
     array.clearArray();
+    SoundReset();
     kill(getpid(), SIGUSR1);
     return 0;
 }
@@ -396,6 +395,7 @@ int ViewObject::pressSpaceToContinue(){
                 const bool *keys = SDL_GetKeyboardState(nullptr);
                 if (keys[SDL_SCANCODE_SPACE]) {
                     waiting = false;
+                    resumeAudio();
                     break;
                 }
             }

@@ -14,6 +14,7 @@ static size_t pos = 0;
 static const size_t INTERNAL_BUFFER_SAMPLES = 2048;
 static std::vector<int16_t> gInternalAudioBuffer(INTERNAL_BUFFER_SAMPLES);
 
+extern SDL_AudioDeviceID gAudioDevice;
 extern SDL_AudioStream *gAudioStream;
 
 double Oscillator::envelope(size_t i) const{
@@ -95,9 +96,13 @@ void SoundReset(){
     accessList.clear();
     if(gAudioStream){
         SDL_FlushAudioStream(gAudioStream);
+        SDL_PauseAudioStreamDevice(gAudioStream);
     }
 }
 
+void resumeAudio(){
+    SDL_ResumeAudioStreamDevice(gAudioStream);
+}
 /*
 void SoundCallBack(void *udata, Uint8 *stream, int len){
     size_t &p = pos;
