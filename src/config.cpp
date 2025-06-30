@@ -22,6 +22,7 @@ Config *readConfiguration(const char *path){
     std::cout << "Window Width: " << config->windowWidth << "\n";
     std::cout << "Window Height: " << config->windowHeigth << "\n";
     std::cout << "Volume: " << config->volume << "\n";
+    if(config->volume > 24000 || config->volume < 0) config->volume = 24000;
 
     return config;
 }
