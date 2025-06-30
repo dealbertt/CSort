@@ -277,7 +277,7 @@ int ViewObject::updateText(){
     std::string strComparison = "Comparisons: " + std::to_string(compareCount);
     std::string strAccesses = "Accesses: " + std::to_string(accessesCount);
     std::string strName = algoList[globalIndex].name; 
-    std::string strDelay =  "Delay: " +  std::to_string(algoList[globalIndex].delay / 1000.f) + " ms";
+    std::string strDelay =  "Delay: " +  std::to_string(this->array.sortDelay->getDuration() / 1000.f) + " ms";
     std::string strVol = "Vol: " + std::to_string((config.volume / 24000.0) * 100) + " %";
 
     SDL_Surface *NameSurface = TTF_RenderText_Solid(font, strName.c_str(), strName.length(), color);
