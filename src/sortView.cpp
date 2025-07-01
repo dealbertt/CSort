@@ -432,6 +432,7 @@ int ViewObject::printSpaceToContinue(){
 
     SDL_Color color = {255, 255, 255, 255};
     std::string text = "Press Space to Continue";
+    std::string nextAlgo = "Next algorithm: " + algoList[globalIndex].name;
 
     SDL_Surface *textSurface = TTF_RenderText_Solid(font, text.c_str(), text.length(), color);
     if(textSurface == NULL){
@@ -446,15 +447,39 @@ int ViewObject::printSpaceToContinue(){
     }
 
     SDL_FRect textRect;
-    textRect.x = (config.windowWidth / 2.0) - 125;
-    textRect.y = config.windowHeigth / 2.0;
-    textRect.w = 250;
+    textRect.x = (config.windowWidth / 2.0) - 225;
+    textRect.y = (config.windowHeigth / 2.0) - 50;
+    textRect.w = 450;
     textRect.h = 50;
 
+    SDL_Surface *NextSurface = TTF_RenderText_Solid(font, nextAlgo.c_str(), nextAlgo.length(), color);
+    if(NextSurface == NULL){
+        std::cout << "Error creating the NextSurface: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    SDL_Texture *NextTexture = SDL_CreateTextureFromSurface(&renderer, NextSurface);
+    if(NextTexture == NULL){
+        std::cout << "Error creating NextTexture: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    SDL_FRect nextRect;
+    nextRect.x = textRect.x;
+    nextRect.y = textRect.y + 50;
+    nextRect.w = 450;
+    nextRect.h = 50;
     SDL_RenderClear(&renderer);
+
     SDL_RenderTexture(&renderer, textTexture, NULL, &textRect);
+    SDL_RenderTexture(&renderer, NextTexture, NULL, &nextRect);
+
     SDL_RenderPresent(&renderer);
+
     SDL_DestroyTexture(textTexture);
     SDL_DestroySurface(textSurface);
+
+    SDL_DestroyTexture(NextTexture);
+    SDL_DestroySurface(NextSurface);
     return 0;
 }
