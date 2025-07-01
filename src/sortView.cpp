@@ -36,8 +36,8 @@ size_t globalIndex = 0;
 //List containing all the implemented algorithms, incluiding the delay after each swap, a description, and the amount of elements to sort
 const struct Algorithm algoList[] = {
     {"Bubble Sort", &BubbleSort,  100, "Bubble sort, sometimes referred to as sinking sort, is a simple sorting algorithm that repeatedly steps through the input list element by element, comparing the current element with the one after it, swapping their values if needed. ", 8000}, //8 ms
-    {"Cocktail Sort", &CocktailSort,  100, "que tal", 8000}, // 8 ms
-    {"Insertion Sort", &InsertionSort,  100, "Hola", 12000}, // 12 ms
+    {"Cocktail Sort", &CocktailSort,  100, "Cocktail Sort is a variation of Bubble sort. The Bubble sort algorithm always traverses elements from left and moves the largest element to its correct position in the first iteration and second-largest in the second iteration and so on. Cocktail Sort traverses through a given array in both directions alternatively.", 8000}, // 8 ms
+    {"Insertion Sort", &InsertionSort,  100, "Insertion sort is a simple sorting algorithm that builds the final sorted array (or list) one item at a time by comparisons. It is much less efficient on large lists than more advanced algorithms such as quicksort, heapsort, or merge sort. However, insertion sort provides several advantages such as simple implementation, efficient for small sets and stable", 12000}, // 12 ms
     {"Selection Sort", &SelectionSort,  500, "Hola", 50000}, //50 ms
     {"Quick Sort", &QuickSortInit,  5000, "Bien", 1250}, // 1,25 ms
 };
