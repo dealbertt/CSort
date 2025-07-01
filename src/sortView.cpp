@@ -1,4 +1,5 @@
 #include <SDL3/SDL_stdinc.h>
+#include <SDL3/SDL_surface.h>
 #include <SDL3/SDL_timer.h>
 #include <chrono>
 #include <csignal>
@@ -406,6 +407,7 @@ int ViewObject::pressSpaceToContinue(){
     bool waiting = true;
 
     while (waiting) {
+        printSpaceToContinue();
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_EVENT_QUIT) {
                 std::exit(0);
@@ -423,5 +425,36 @@ int ViewObject::pressSpaceToContinue(){
         SDL_Delay(10); // Avoid busy-waiting
     }
 
+    return 0;
+}
+
+int ViewObject::printSpaceToContinue(){
+
+    SDL_Color color = {255, 255, 255, 255};
+    std::string text = "Press Space to Continue";
+
+    SDL_Surface *textSurface = TTF_RenderText_Solid(font, text.c_str(), text.length(), color);
+    if(textSurface == NULL){
+        std::cout << "Error creating the textSurface: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    SDL_Texture *textTexture = SDL_CreateTextureFromSurface(&renderer, textSurface);
+    if(textTexture == NULL){
+        std::cout << "Error creating textTexture: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    SDL_FRect textRect;
+    textRect.x = (config.windowWidth / 2.0) - 125;
+    textRect.y = config.windowHeigth / 2.0;
+    textRect.w = 250;
+    textRect.h = 50;
+
+    SDL_RenderClear(&renderer);
+    SDL_RenderTexture(&renderer, textTexture, NULL, &textRect);
+    SDL_RenderPresent(&renderer);
+    SDL_DestroyTexture(textTexture);
+    SDL_DestroySurface(textSurface);
     return 0;
 }
