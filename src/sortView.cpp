@@ -38,8 +38,8 @@ const struct Algorithm algoList[] = {
     {"Bubble Sort", &BubbleSort,  100, "Bubble sort, sometimes referred to as sinking sort, is a simple sorting algorithm that repeatedly steps through the input list element by element, comparing the current element with the one after it, swapping their values if needed. ", 8000}, //8 ms
     {"Cocktail Sort", &CocktailSort,  100, "Cocktail Sort is a variation of Bubble sort. The Bubble sort algorithm always traverses elements from left and moves the largest element to its correct position in the first iteration and second-largest in the second iteration and so on. Cocktail Sort traverses through a given array in both directions alternatively.", 8000}, // 8 ms
     {"Insertion Sort", &InsertionSort,  100, "Insertion sort is a simple sorting algorithm that builds the final sorted array (or list) one item at a time by comparisons. It is much less efficient on large lists than more advanced algorithms such as quicksort, heapsort, or merge sort. However, insertion sort provides several advantages such as simple implementation, efficient for small sets and stable", 12000}, // 12 ms
-    {"Selection Sort", &SelectionSort,  500, "Hola", 50000}, //50 ms
-    {"Quick Sort", &QuickSortInit,  5000, "Bien", 1250}, // 1,25 ms
+    {"Selection Sort", &SelectionSort,  500, "Selection sort is an in-place comparison sorting algorithm. It has a O(n2) time complexity, which makes it inefficient on large lists, and generally performs worse than the similar insertion sort. Selection sort is noted for its simplicity and has performance advantages over more complicated algorithms in certain situations, particularly where auxiliary memory is limited." , 50000}, //50 ms
+    {"Quick Sort", &QuickSortInit,  5000, "QuickSort is a sorting algorithm based on the Divide and Conquer that picks an element as a pivot and partitions the given array around the picked pivot by placing the pivot in its correct position in the sorted array It works on the principle of divide and conquer, breaking down the problem into smaller sub-problems", 1250}, // 1,25 ms
 };
 
 const size_t algoListSize = sizeof(algoList) / sizeof(algoList[0]);
