@@ -35,11 +35,11 @@ size_t globalIndex = 0;
 
 //List containing all the implemented algorithms, incluiding the delay after each swap, a description, and the amount of elements to sort
 const struct Algorithm algoList[] = {
-    {"Bubble Sort", &BubbleSort,  100, "Bien", 8000}, //8 ms
-    {"Cocktail Sort", &CocktailSort,  100, "que tal", 8000}, // 8 ms
-    {"Insertion Sort", &InsertionSort,  100, "Hola", 12000}, // 12 ms
-    {"Selection Sort", &SelectionSort,  500, "Hola", 50000}, //50 ms
-    {"Quick Sort", &QuickSortInit,  5000, "Bien", 1250}, // 1,25 ms
+    {"Bubble Sort", &BubbleSort,  100, 8000}, //8 ms
+    {"Cocktail Sort", &CocktailSort,  100, 8000}, // 8 ms
+    {"Insertion Sort", &InsertionSort,  100, 12000}, // 12 ms
+    {"Selection Sort", &SelectionSort,  500, 50000}, //50 ms
+    {"Quick Sort", &QuickSortInit,  5000, 1250}, // 1,25 ms
 };
 
 const size_t algoListSize = sizeof(algoList) / sizeof(algoList[0]);

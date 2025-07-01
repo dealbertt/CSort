@@ -50,7 +50,6 @@ struct Algorithm{
     std::string name;
     void (*func)(class Array&);//pointer to a function that takes an array class as a parameter
     uint64_t maxSize;
-    std::string description;
     int delay;
 };
 
