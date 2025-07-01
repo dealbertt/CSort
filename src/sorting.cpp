@@ -5,19 +5,23 @@
 #include <thread>
 #include "../include/array.hpp"
 #include "../include/sorting.hpp"
-
 void threadSignalHandler(int signum){
     (void)signum;
     pthread_exit(nullptr);
 }
 
-void BubbleSort(Array &array){
+void initAlgorithm(){
     sigset_t set;
     sigemptyset(&set);
     sigaddset(&set, SIGUSR1);
     pthread_sigmask(SIG_UNBLOCK, &set, nullptr);
 
     signal(SIGUSR1, threadSignalHandler);
+}
+
+
+void BubbleSort(Array &array){
+    initAlgorithm();
     for(size_t i = 0; i < array.getSize(); i ++){
         for(size_t j = 0; j < array.getSize() - 1; j++){
             if(array[j] > array[j + 1]){
@@ -31,12 +35,7 @@ void BubbleSort(Array &array){
 
 
 void CocktailSort(class Array &array){
-    sigset_t set;
-    sigemptyset(&set);
-    sigaddset(&set, SIGUSR1);
-    pthread_sigmask(SIG_UNBLOCK, &set, nullptr);
-
-    signal(SIGUSR1, threadSignalHandler);
+    initAlgorithm();
 
     size_t start = 0;
     size_t end = array.getSize() - 1;
@@ -68,12 +67,7 @@ void CocktailSort(class Array &array){
 
 
 void SelectionSort(class Array &array){
-    sigset_t set;
-    sigemptyset(&set);
-    sigaddset(&set, SIGUSR1);
-    pthread_sigmask(SIG_UNBLOCK, &set, nullptr);
-
-    signal(SIGUSR1, threadSignalHandler);
+    initAlgorithm();
 
     size_t size = array.getSize();
      for(size_t i = 0; i < size - 1; i++){
@@ -98,12 +92,7 @@ void SelectionSort(class Array &array){
     array.setSorted(true);
 }
 void InsertionSort(class Array &array){
-    sigset_t set;
-    sigemptyset(&set);
-    sigaddset(&set, SIGUSR1);
-    pthread_sigmask(SIG_UNBLOCK, &set, nullptr);
-
-    signal(SIGUSR1, threadSignalHandler);
+    initAlgorithm();
 
     size_t size = array.getSize();
 
@@ -120,12 +109,7 @@ void InsertionSort(class Array &array){
     array.setSorted(true);
 } 
 void QuickSortInit(class Array &array){
-    sigset_t set;
-    sigemptyset(&set);
-    sigaddset(&set, SIGUSR1);
-    pthread_sigmask(SIG_UNBLOCK, &set, nullptr);
-
-    signal(SIGUSR1, threadSignalHandler);
+    initAlgorithm();
 
     uint32_t low = 0;
     int32_t high = array.getSize() - 1;

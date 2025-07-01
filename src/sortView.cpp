@@ -35,11 +35,11 @@ size_t globalIndex = 0;
 
 //List containing all the implemented algorithms, incluiding the delay after each swap, a description, and the amount of elements to sort
 const struct Algorithm algoList[] = {
-    {"Bubble Sort", &BubbleSort,  100, 8000}, //8 ms
-    {"Cocktail Sort", &CocktailSort,  100, 8000}, // 8 ms
-    {"Insertion Sort", &InsertionSort,  100, 12000}, // 12 ms
-    {"Selection Sort", &SelectionSort,  500, 50000}, //50 ms
-    {"Quick Sort", &QuickSortInit,  5000, 1250}, // 1,25 ms
+    {"Bubble Sort", &BubbleSort,  100, "Bubble sort, sometimes referred to as sinking sort, is a simple sorting algorithm that repeatedly steps through the input list element by element, comparing the current element with the one after it, swapping their values if needed. ", 8000}, //8 ms
+    {"Cocktail Sort", &CocktailSort,  100, "que tal", 8000}, // 8 ms
+    {"Insertion Sort", &InsertionSort,  100, "Hola", 12000}, // 12 ms
+    {"Selection Sort", &SelectionSort,  500, "Hola", 50000}, //50 ms
+    {"Quick Sort", &QuickSortInit,  5000, "Bien", 1250}, // 1,25 ms
 };
 
 const size_t algoListSize = sizeof(algoList) / sizeof(algoList[0]);
@@ -469,10 +469,36 @@ int ViewObject::printSpaceToContinue(){
     nextRect.y = textRect.y + 50;
     nextRect.w = 450;
     nextRect.h = 50;
+
+    std::string fontPath = "fonts/FiraCodeNerdFont-Regular.ttf";
+    TTF_Font *descFont = TTF_OpenFont(fontPath.c_str(), 12); 
+    if(descFont == NULL){
+        std::cout << "Error trying to open font: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+    SDL_Surface *descSurface = TTF_RenderText_Blended_Wrapped(descFont, algoList[globalIndex].description.c_str(), algoList[globalIndex].description.length(), color, 300);
+    if(descSurface == NULL){
+        std::cout << "Error creating the descSurface: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    SDL_Texture *descTexture = SDL_CreateTextureFromSurface(&renderer, descSurface);
+    if(descTexture == NULL){
+        std::cout << "Error creating descTexture: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    SDL_FRect descRect;
+    descRect.x = textRect.x;
+    descRect.y = nextRect.y + 75;
+    descRect.w = 450;
+    descRect.h = 250;
+
     SDL_RenderClear(&renderer);
 
     SDL_RenderTexture(&renderer, textTexture, NULL, &textRect);
     SDL_RenderTexture(&renderer, NextTexture, NULL, &nextRect);
+    SDL_RenderTexture(&renderer, descTexture, NULL, &descRect);
 
     SDL_RenderPresent(&renderer);
 
@@ -481,5 +507,9 @@ int ViewObject::printSpaceToContinue(){
 
     SDL_DestroyTexture(NextTexture);
     SDL_DestroySurface(NextSurface);
+
+    SDL_DestroyTexture(descTexture);
+    SDL_DestroySurface(descSurface);
+
     return 0;
 }
