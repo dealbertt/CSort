@@ -191,6 +191,7 @@ int ViewObject::handleEvents(){
     }
     if(event.type == SDL_EVENT_KEY_DOWN){
 
+        //Pauses the sorting until Space is pressed again
         if(pressed[SDL_SCANCODE_SPACE]){
             //skipAlgorithm();
             //kill(getpid(), SIGUSR2);
@@ -198,6 +199,7 @@ int ViewObject::handleEvents(){
             return 0;
         }
 
+        //Closes the app
         if(pressed[SDL_SCANCODE_ESCAPE]){
             if(gIsPaused){
                 toggleSortThreadPause();
@@ -206,6 +208,7 @@ int ViewObject::handleEvents(){
             return 0;
         }
 
+        //Skips to the next algorithm in the list
         if(pressed[SDL_SCANCODE_RIGHT]){
             skipAlgorithm();
             //kill(getpid(), SIGUSR2);
@@ -213,6 +216,7 @@ int ViewObject::handleEvents(){
             return 0;
         }
 
+        //Goes to the previous algorithm in the list
         if(pressed[SDL_SCANCODE_LEFT]){
             //skipAlgorithm();
             //kill(getpid(), SIGUSR2);
@@ -221,6 +225,7 @@ int ViewObject::handleEvents(){
             return 0;
         }
 
+        //Mutes the volume until M is pressed again
         if(pressed[SDL_SCANCODE_M]){
             //In a youtube similar fashion, press M to mute the audio
             int aux = config.volume;
@@ -229,10 +234,12 @@ int ViewObject::handleEvents(){
             return 0; 
         }
 
+
         if(pressed[SDL_SCANCODE_LCTRL] && pressed[SDL_SCANCODE_UP] ){
             if(config.volume < 24000.0){
                 config.volume += 1000;
                 std::cout << "Vol increased to: " << config.volume << std::endl;
+                array.needRepaint = true;
                 return 0;
             }else{
                 std::cout << "Max volume reached: " << config.volume << std::endl;
@@ -242,6 +249,7 @@ int ViewObject::handleEvents(){
             if(config.volume > 0.0){
                 config.volume -= 1000;
                 std::cout << "Vol decreased to: " << config.volume << std::endl;
+                array.needRepaint = true;
                 return 0;
             }else{
                 std::cout << "Already at 0 volume!" << std::endl;
@@ -255,6 +263,7 @@ int ViewObject::handleEvents(){
                 delay += 1000;
                 array.sortDelay->setDelay(delay);
                 std::cout << "Duration increased to: " << array.sortDelay->getDuration() << std::endl;
+                array.needRepaint = true;
                 return 0;
             }else{
                 std::cout << "Max delay value reached!" << std::endl;
@@ -267,6 +276,7 @@ int ViewObject::handleEvents(){
             delay -= 1000;
             array.sortDelay->setDelay(delay);
             std::cout << "Duration decreased to: " << array.sortDelay->getDuration() << std::endl;
+            array.needRepaint = true;
             return 0;
         } 
     }else if(event.type == SDL_EVENT_WINDOW_RESIZED){
