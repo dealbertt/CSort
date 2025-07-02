@@ -197,14 +197,18 @@ int ViewObject::handleEvents(){
             return 0;
         }
 
+        if(pressed[SDL_SCANCODE_ESCAPE]){
+            if(gIsPaused){
+                toggleSortThreadPause();
+            }
+            cleanUp();
+            return 0;
+        }
+
         if(pressed[SDL_SCANCODE_RIGHT]){
             skipAlgorithm();
             //kill(getpid(), SIGUSR2);
             //toggleSortThreadPause();
-            return 0;
-        }
-        if(pressed[SDL_SCANCODE_ESCAPE]){
-            cleanUp();
             return 0;
         }
 
@@ -413,9 +417,11 @@ int ViewObject::skipAlgorithm(){
     //SoundReset();
     //finishArray();
     //gStopThread.store(true);
+    if(gIsPaused){
+        toggleSortThreadPause();
+    }
     array.sortDelay->setDelay(0);
     array.setSkipped(true);
-    toggleSortThreadPause();
     return 0;
 }
 
