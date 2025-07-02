@@ -411,11 +411,10 @@ int ViewObject::updateText(){
 }
 
 int ViewObject::skipAlgorithm(){
-    SoundReset();
-    finishArray();
-    gStopThread.store(true);
-    array.setSkipped(true);
-    array.clearArray();
+    //SoundReset();
+    //finishArray();
+    //gStopThread.store(true);
+    array.sortDelay->setDelay(0);
     return 0;
 }
 
