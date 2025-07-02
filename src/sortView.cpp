@@ -197,6 +197,8 @@ int ViewObject::previousAlgorithm(){
         array.sortDelay->setDelay(0);
         globalIndex --;
         std::cout << "Value of globalIndex: " << globalIndex << std::endl;
+        compareCount = 0;
+        accessesCount = 0;
         runAlgorithmAtIndex(globalIndex);
     }
     array.setSkipped(true);
@@ -255,6 +257,7 @@ int ViewObject::handleEvents(){
             int aux = config.volume;
             config.volume = auxVolume;
             auxVolume = aux;
+            array.needRepaint = true;
             return 0; 
         }
 
