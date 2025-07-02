@@ -40,9 +40,6 @@ void BubbleSort(Array &array){
     for(size_t i = 0; i < array.getSize(); i ++){
         for(size_t j = 0; j < array.getSize() - 1; j++){
             checkCondition();
-            if(gStopThread.load()){
-                return;
-            }
             if(array[j] > array[j + 1]){
                 array.swap(j, j + 1);
             }
@@ -125,6 +122,7 @@ void InsertionSort(class Array &array){
         int j = i - 1;
 
         while(j >= 0 && array[j] > item){
+            checkCondition();
             array.swap(j, j + 1);
             j--;
         } 

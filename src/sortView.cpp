@@ -35,6 +35,7 @@ extern std::mutex MtxAccess;
 
 extern std::mutex gMtx;
 extern std::condition_variable gCv;
+extern bool gIsPaused;
 
 extern std::atomic<bool> gStopThread;
 size_t globalIndex = 0;
@@ -129,18 +130,16 @@ void ViewObject::executeSort(void (*func)(class Array&)){
     textNeedsUpdate = true;
     while(!array.isSorted()){
         handleEvents();
-        if(array.isSkipped()){
-
-            break;
-        }
         if(array.needRepaint){
             paint();
             array.needRepaint = false;
         }
     }
-    if(array.isSorted()){
+    if(array.isSorted() && !array.isSkipped()){
         finishArray();
         markArrayDone();
+    }else{
+        finishArray();
     }
 }
 
@@ -415,6 +414,8 @@ int ViewObject::skipAlgorithm(){
     //finishArray();
     //gStopThread.store(true);
     array.sortDelay->setDelay(0);
+    array.setSkipped(true);
+    toggleSortThreadPause();
     return 0;
 }
 
