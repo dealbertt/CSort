@@ -271,7 +271,7 @@ void cleanUp(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    exit(1);
+    std::exit(1);
 }
 
 
