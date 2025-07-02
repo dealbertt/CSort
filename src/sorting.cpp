@@ -1,15 +1,25 @@
 #include <chrono>
+#include <condition_variable>
 #include <csignal>
 #include <iostream>
 #include <pthread.h>
-#include <thread>
+#include <mutex>
 #include "../include/array.hpp"
 #include "../include/sorting.hpp"
+std::mutex gMtx;
+std::condition_variable gCv;
+
+bool gIsPaused = true;
+
 void threadSignalHandler(int signum){
     (void)signum;
     pthread_exit(nullptr);
 }
-
+void toggleSortThreadPause(){
+    std::lock_guard<std::mutex> lock(gMtx);
+    gIsPaused = !gIsPaused;
+    gCv.notify_one();
+}
 void initAlgorithm(){
     sigset_t set;
     sigemptyset(&set);
@@ -18,7 +28,10 @@ void initAlgorithm(){
 
     signal(SIGUSR1, threadSignalHandler);
 }
-
+void checkCondition(){
+    std::unique_lock<std::mutex> lock(gMtx);
+    gCv.wait(lock, [] {return !gIsPaused;});
+}
 
 void BubbleSort(Array &array){
     initAlgorithm();
@@ -43,6 +56,7 @@ void CocktailSort(class Array &array){
     while (start < end) {
         // loop from left to right
         for (size_t i = start; i < end; i++) {
+            checkCondition();
             if (array[i] > array[i + 1]) {
 
                 array.swap(i, i + 1);
@@ -53,6 +67,7 @@ void CocktailSort(class Array &array){
 
         // loop from right to left
         for (size_t i = end; i > start; i--) {
+            checkCondition();
             if (array[i] < array[i - 1]) { // Note the change here: comparing with the element to the left
 
                 array.swap(i, i - 1); // Note the change here: swapping with the element to the left
@@ -75,6 +90,7 @@ void SelectionSort(class Array &array){
 
         for(size_t j = i + 1; j < size; j++){
             //highlightValue(window, renderer, array[j]);
+            checkCondition();
             if(array[j] < array[min]){
                 min = j;
             }
@@ -98,6 +114,7 @@ void InsertionSort(class Array &array){
 
     for(size_t i = 1; i < size; i++){
 
+        checkCondition();
         ArrayItem item = array[i];
         int j = i - 1;
 
@@ -133,7 +150,8 @@ uint32_t partition(class Array &array, uint32_t low, int32_t high){
 
     int32_t i = static_cast<int32_t>(low - 1);
     
-      for (int32_t j = static_cast<int32_t>(low); j <= high - 1; j++) {
+    for (int32_t j = static_cast<int32_t>(low); j <= high - 1; j++) {
+        checkCondition();
         if (array[j] < pivot) {
             i++;
             array.swap(i, j);

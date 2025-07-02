@@ -3,7 +3,10 @@
 #include <SDL3/SDL_timer.h>
 #include <chrono>
 #include <csignal>
+#include <condition_variable>
 #include <cstdint>
+#include <iomanip>
+#include <sstream>
 #include <unistd.h>
 #include <iostream>
 #include <string>
@@ -30,6 +33,8 @@ extern TTF_Font *font;
 
 extern std::mutex MtxAccess;
 
+extern std::mutex gMtx;
+extern std::condition_variable gCv;
 
 size_t globalIndex = 0;
 
@@ -186,7 +191,9 @@ int ViewObject::handleEvents(){
     if(event.type == SDL_EVENT_KEY_DOWN){
 
         if(pressed[SDL_SCANCODE_SPACE]){
-            skipAlgorithm();
+            //skipAlgorithm();
+            //kill(getpid(), SIGUSR2);
+            toggleSortThreadPause();
             return 0;
         }
 
@@ -278,8 +285,15 @@ int ViewObject::updateText(){
     std::string strComparison = "Comparisons: " + std::to_string(compareCount);
     std::string strAccesses = "Accesses: " + std::to_string(accessesCount);
     std::string strName = algoList[globalIndex].name; 
-    std::string strDelay =  "Delay: " +  std::to_string(this->array.sortDelay->getDuration() / 1000.f) + " ms";
-    std::string strVol = "Vol: " + std::to_string((config.volume / 24000.0) * 100) + " %";
+    //std::string strDelay =  "Delay: " +  std::to_string(this->array.sortDelay->getDuration() / 1000.f) + " ms";
+    std::string strDelay; 
+    {
+        std::stringstream ss;
+        ss << "Delay: " << std::fixed << std::setprecision(1) << (this->array.sortDelay->getDuration() / 1000.f) << " ms";
+        strDelay = ss.str();
+    }
+
+    std::string strVol = "Vol: " + std::to_string(static_cast<int>((config.volume / 24000.0) * 100)) + " %";
 
     SDL_Surface *NameSurface = TTF_RenderText_Solid(font, strName.c_str(), strName.length(), color);
     if(NameSurface == NULL){

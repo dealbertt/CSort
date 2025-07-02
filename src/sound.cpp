@@ -95,7 +95,7 @@ void SoundReset(){
 
     accessList.clear();
     if(gAudioStream){
-        SDL_FlushAudioStream(gAudioStream);
+        //SDL_FlushAudioStream(gAudioStream);
         SDL_ClearAudioStream(gAudioStream);
         SDL_PauseAudioStreamDevice(gAudioStream);
     }

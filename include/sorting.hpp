@@ -9,5 +9,6 @@ void InsertionSort(class Array &array);
 void QuickSortInit(class Array &array); 
 void QuickSort(class Array &array, uint32_t low, int32_t high);
 uint32_t partition(class Array &array, uint32_t low, int32_t high);
+void toggleSortThreadPause();
 
 #endif 
