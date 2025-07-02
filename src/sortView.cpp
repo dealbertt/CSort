@@ -155,26 +155,25 @@ void ViewObject::markArrayDone(){
         array.sortDelay->delay();
     }
 }
+void runAlgorithmAtIndex(size_t index){
+    ViewObject *object = new ViewObject(algoList[globalIndex].maxSize, config.windowHeigth, *renderer);
+    object->array.sortDelay->setDelay(algoList[globalIndex].delay);
+
+    globalObject = object;
+    object->pressSpaceToContinue();
+    object->paint();
+    object->executeSort(algoList[globalIndex].func);
+
+    delete object;
+    globalObject = nullptr;
+    compareCount = 0;
+    accessesCount = 0;
+}
 
 //This function goes throuhg each item of the algoList, creating a new ViewObject, which then creates a new array with the specified size
 void runList(SDL_Renderer *renderer){
-    ViewObject *object = nullptr;
     for(globalIndex = 0; globalIndex < algoListSize; globalIndex++){
-
-        std::cout << "Iteration of runList: " << globalIndex << std::endl;
-
-        object = new ViewObject(algoList[globalIndex].maxSize, config.windowHeigth, *renderer);
-        object->array.sortDelay->setDelay(algoList[globalIndex].delay);
-
-        globalObject = object;
-        object->pressSpaceToContinue();
-        object->paint();
-        object->executeSort(algoList[globalIndex].func);
-
-        delete object;
-        globalObject = nullptr;
-        compareCount = 0;
-        accessesCount = 0;
+        runAlgorithmAtIndex(globalIndex);
     }
 }
 
@@ -194,10 +193,11 @@ int ViewObject::previousAlgorithm(){
     if(gIsPaused){
         toggleSortThreadPause();
     }
-    array.sortDelay->setDelay(0);
     if(globalIndex > 0){
-        globalIndex -= 2;
+        array.sortDelay->setDelay(0);
+        globalIndex --;
         std::cout << "Value of globalIndex: " << globalIndex << std::endl;
+        runAlgorithmAtIndex(globalIndex);
     }
     array.setSkipped(true);
     return 0;
