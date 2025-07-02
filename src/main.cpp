@@ -13,7 +13,7 @@
 #include "../include/sortView.hpp" 
 #include "../include/sound.hpp" 
 
-//TODO: Fix the skipAlgorithm function, it sort of works, but the index in red is messed up, and the whole rendering part seems to be glithched, no idea why
+//TODO: Adjust text to the width of the screen, so when its resized, it adjusts to the new sizes accordingly
 Config config;
 SDL_Window *window = nullptr;
 SDL_Renderer *renderer = nullptr;
