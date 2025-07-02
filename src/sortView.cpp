@@ -39,6 +39,7 @@ extern bool gIsPaused;
 
 extern std::atomic<bool> gStopThread;
 size_t globalIndex = 0;
+int auxVolume = 0;
 
 //List containing all the implemented algorithms, incluiding the delay after each swap, a description, and the amount of elements to sort
 const struct Algorithm algoList[] = {
@@ -210,6 +211,22 @@ int ViewObject::handleEvents(){
             //kill(getpid(), SIGUSR2);
             //toggleSortThreadPause();
             return 0;
+        }
+
+        if(pressed[SDL_SCANCODE_LEFT]){
+            //skipAlgorithm();
+            //kill(getpid(), SIGUSR2);
+            //toggleSortThreadPause();
+            previousAlgorithm();
+            return 0;
+        }
+
+        if(pressed[SDL_SCANCODE_M]){
+            //In a youtube similar fashion, press M to mute the audio
+            int aux = config.volume;
+            config.volume = auxVolume;
+            auxVolume = aux;
+            return 0; 
         }
 
         if(pressed[SDL_SCANCODE_LCTRL] && pressed[SDL_SCANCODE_UP] ){
@@ -425,6 +442,19 @@ int ViewObject::skipAlgorithm(){
     return 0;
 }
 
+int ViewObject::previousAlgorithm(){
+    if(gIsPaused){
+        toggleSortThreadPause();
+    }
+    array.sortDelay->setDelay(0);
+    array.setSkipped(true);
+    if(globalIndex > 0){
+        globalIndex --;
+        std::cout << "Value of globalIndex: " << globalIndex << std::endl;
+    }
+    return 0;
+}
+
 int ViewObject::pressSpaceToContinue(){
     SDL_SetRenderDrawColor(&renderer, 0, 0, 0, 255);
     SDL_RenderClear(&renderer);
@@ -540,3 +570,4 @@ int ViewObject::printSpaceToContinue(){
 
     return 0;
 }
+

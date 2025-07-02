@@ -41,6 +41,7 @@ class ViewObject{
         void startArray();
         void finishArray();
         int updateText();
+        int previousAlgorithm();
         int skipAlgorithm();
         int pressSpaceToContinue();
         int printSpaceToContinue();
