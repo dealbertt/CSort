@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -Werror -std=c++17 -g -Iinclude $(shell pkg-config --cflags sdl3) -lSDL3_ttf
+CXXFLAGS = -Wall -Werror -std=c++20 -g -Iinclude $(shell pkg-config --cflags sdl3) -lSDL3_ttf
 LDFLAGS = $(shell pkg-config --libs sdl3 sdl3-ttf)
 
 SRC_DIR = src

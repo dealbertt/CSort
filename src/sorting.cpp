@@ -37,6 +37,7 @@ void BubbleSort(Array &array){
     initAlgorithm();
     for(size_t i = 0; i < array.getSize(); i ++){
         for(size_t j = 0; j < array.getSize() - 1; j++){
+            checkCondition();
             if(array[j] > array[j + 1]){
                 array.swap(j, j + 1);
             }
