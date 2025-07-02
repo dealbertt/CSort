@@ -4,12 +4,14 @@
 #include <iostream>
 #include <pthread.h>
 #include <mutex>
+#include <atomic>
 #include "../include/array.hpp"
 #include "../include/sorting.hpp"
 std::mutex gMtx;
 std::condition_variable gCv;
 
 bool gIsPaused = true;
+std::atomic<bool> gStopThread(false);
 
 void threadSignalHandler(int signum){
     (void)signum;
@@ -38,6 +40,9 @@ void BubbleSort(Array &array){
     for(size_t i = 0; i < array.getSize(); i ++){
         for(size_t j = 0; j < array.getSize() - 1; j++){
             checkCondition();
+            if(gStopThread.load()){
+                return;
+            }
             if(array[j] > array[j + 1]){
                 array.swap(j, j + 1);
             }

@@ -4,13 +4,13 @@
 #include <chrono>
 #include <csignal>
 #include <condition_variable>
-#include <cstdint>
 #include <iomanip>
 #include <sstream>
 #include <unistd.h>
 #include <iostream>
 #include <string>
 #include <thread>
+#include <atomic>
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_render.h>
@@ -36,6 +36,7 @@ extern std::mutex MtxAccess;
 extern std::mutex gMtx;
 extern std::condition_variable gCv;
 
+extern std::atomic<bool> gStopThread;
 size_t globalIndex = 0;
 
 //List containing all the implemented algorithms, incluiding the delay after each swap, a description, and the amount of elements to sort
@@ -197,6 +198,12 @@ int ViewObject::handleEvents(){
             return 0;
         }
 
+        if(pressed[SDL_SCANCODE_RIGHT]){
+            skipAlgorithm();
+            //kill(getpid(), SIGUSR2);
+            //toggleSortThreadPause();
+            return 0;
+        }
         if(pressed[SDL_SCANCODE_ESCAPE]){
             cleanUp();
             return 0;
@@ -406,9 +413,9 @@ int ViewObject::updateText(){
 int ViewObject::skipAlgorithm(){
     SoundReset();
     finishArray();
+    gStopThread.store(true);
     array.setSkipped(true);
     array.clearArray();
-    kill(getpid(), SIGUSR1);
     return 0;
 }
 
