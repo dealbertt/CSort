@@ -175,8 +175,32 @@ void runList(SDL_Renderer *renderer){
         globalObject = nullptr;
         compareCount = 0;
         accessesCount = 0;
-
     }
+}
+
+int ViewObject::skipAlgorithm(){
+    //SoundReset();
+    //finishArray();
+    //gStopThread.store(true);
+    if(gIsPaused){
+        toggleSortThreadPause();
+    }
+    array.sortDelay->setDelay(0);
+    array.setSkipped(true);
+    return 0;
+}
+
+int ViewObject::previousAlgorithm(){
+    if(gIsPaused){
+        toggleSortThreadPause();
+    }
+    array.sortDelay->setDelay(0);
+    if(globalIndex > 0){
+        globalIndex -= 2;
+        std::cout << "Value of globalIndex: " << globalIndex << std::endl;
+    }
+    array.setSkipped(true);
+    return 0;
 }
 
 //Function in charge of handling all SDL_EVENTS such as keyboard events or window events
@@ -440,30 +464,6 @@ int ViewObject::updateText(){
     return 0;
 }
 
-int ViewObject::skipAlgorithm(){
-    //SoundReset();
-    //finishArray();
-    //gStopThread.store(true);
-    if(gIsPaused){
-        toggleSortThreadPause();
-    }
-    array.sortDelay->setDelay(0);
-    array.setSkipped(true);
-    return 0;
-}
-
-int ViewObject::previousAlgorithm(){
-    if(gIsPaused){
-        toggleSortThreadPause();
-    }
-    array.sortDelay->setDelay(0);
-    array.setSkipped(true);
-    if(globalIndex > 0){
-        globalIndex --;
-        std::cout << "Value of globalIndex: " << globalIndex << std::endl;
-    }
-    return 0;
-}
 
 int ViewObject::pressSpaceToContinue(){
     SDL_SetRenderDrawColor(&renderer, 0, 0, 0, 255);
