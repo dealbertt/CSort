@@ -81,7 +81,7 @@ int initProgram(){
 
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
-    SDL_RenderPresent(renderer);
+    //SDL_RenderPresent(renderer);
 
     int numDrivers = SDL_GetNumAudioDrivers();
     if(config.debug) std::cout << "[DEBUG] Available audio drivers: " << numDrivers << std::endl;
