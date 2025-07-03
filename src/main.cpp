@@ -147,6 +147,11 @@ int initProgram(){
 
 int main(int argc, char *argv[]){
     loadConfig();
+
+    if(initProgram() == -1){
+        std::cout << "Error initializing the components of the program" << std::endl;
+        exit(1);
+    }
     static struct option long_options[] = {
         {"run", no_argument, 0, 'r'},
         {"delay", required_argument, 0, 'd'},
@@ -166,26 +171,31 @@ int main(int argc, char *argv[]){
                 break;
 
             case 'd':
-                if(atoi(optarg)){
+                if(atoi(optarg) <= 0){
                     std::cout << "Please introduce a valid number!" << std::endl;
                     break;
                 }
                 config.delay = atoi(optarg);
                 std::cout << "Command of type delay!" << std::endl;
+                if(config.delay < 0){
+                    std::cout << "Please introduce a positive number!" << std::endl;
+                    return -1;
+                }
                 break;
 
             case 'v':
-                if(atoi(optarg)){
-                    std::cout << "Please introduce a valid number!" << std::endl;
-                    break;
+                if(atoi(optarg) <= 0){
+                    std::cout << "Wrong number, falling back to default of: " << config.volume << std::endl;
+                }else{
+                    config.volume = atoi(optarg);
                 }
-                config.volume = atoi(optarg);
                 std::cout << "Command of type volume!" << std::endl;
                 break;
 
             case 'e':
-                if(atoi(optarg)){
+                if(atoi(optarg) == 0){
                     std::cout << "Please introduce a valid number!" << std::endl;
+                    std::cout << "No amount specified, falling back to the defualt amount of each algorithm" << std::endl;
                     break;
                 }
 
@@ -195,14 +205,10 @@ int main(int argc, char *argv[]){
 
             case 'l':
                 printList();
-                break;
+                return 1;
         }
     }
 
-    if(initProgram() == -1){
-        std::cout << "Error initializing the components of the program" << std::endl;
-        exit(1);
-    }
 
     //testAudioWithSimpleTone(); 
 

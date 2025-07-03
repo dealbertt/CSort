@@ -167,7 +167,12 @@ void ViewObject::markArrayDone(){
     }
 }
 void runAlgorithmAtIndex(size_t index){
-    ViewObject *object = new ViewObject(algoList[globalIndex].maxSize, config.windowHeigth, *renderer);
+    ViewObject *object = nullptr;
+    if(config.numberElements > 0){
+        object = new ViewObject(config.numberElements, config.windowHeigth, *renderer);
+    }else{
+        object = new ViewObject(algoList[globalIndex].maxSize, config.windowHeigth, *renderer);
+    }
     object->array.sortDelay->setDelay(algoList[globalIndex].delay);
 
     globalObject = object;
