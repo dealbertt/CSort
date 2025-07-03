@@ -518,7 +518,7 @@ int ViewObject::printSpaceToContinue(){
 
     SDL_FRect textRect;
     textRect.x = (config.windowWidth / 2.0) - 225;
-    textRect.y = (config.windowHeigth / 2.0) - 50;
+    textRect.y = (config.windowHeigth / 2.0) - 150;
     textRect.w = 450;
     textRect.h = 50;
 
