@@ -54,9 +54,10 @@ const size_t algoListSize = sizeof(algoList) / sizeof(algoList[0]);
 
 void printList(){
     for(size_t i = 0; i < algoListSize; i++){
+        std::cout << "Index: " << i << std::endl;
         std::cout << algoList[i].name << std::endl;
         std::cout << "Size: " << algoList[i].maxSize << std::endl;
-        std::cout << "Delay: " << algoList[i].delay << std::endl;
+        std::cout << "Delay: " << algoList[i].delay / 1000.0f << " milliseconds" << std::endl;
         std::cout << "Description: " << algoList[i].description << std::endl;
         std::cout << "---------------------" << std::endl;
     }
