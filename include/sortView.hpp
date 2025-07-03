@@ -62,5 +62,6 @@ void runList(SDL_Renderer *renderer);
 void SoundCallBack(void *udata, Uint8 *stream, int len);
 void cleanUp();
 void runAlgorithmAtIndex(size_t index);
+void printList();
 
 #endif

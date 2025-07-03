@@ -1,6 +1,7 @@
 #include <iostream>
 #include <csignal>
-#include <print>
+#include <getopt.h>
+#include <unistd.h>
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_audio.h>
@@ -25,7 +26,11 @@ SDL_AudioStream *gAudioStream = nullptr;
 ViewObject *globalObject = nullptr;
 void signalHandler(int signum);
 void cleanUp();
-
+int loadConfig();
+int loadConfig(){
+    config = *readConfiguration("config/config.txt");
+    return 0;
+}
 int initProgram(){
     signal(SIGINT, signalHandler);
     std::cout << "Inside initProgram!" << std::endl;
@@ -35,7 +40,6 @@ int initProgram(){
         return -1;
     }
 
-    config = *readConfiguration("config/config.txt");
     
 
     if(!SDL_CreateWindowAndRenderer("CSort", config.windowWidth, config.windowHeigth, SDL_WINDOW_RESIZABLE, &window, &renderer)){
@@ -141,15 +145,67 @@ int initProgram(){
 }
 
 
-int main(){
+int main(int argc, char *argv[]){
+    loadConfig();
+    static struct option long_options[] = {
+        {"run", no_argument, 0, 'r'},
+        {"delay", required_argument, 0, 'd'},
+        {"volume", required_argument, 0, 'v'},
+        {"elements", required_argument, 0, 'e'},
+        {"list", no_argument, 0, 'l'},
+         {0, 0, 0, 0}
+    };
+
+    int longIndex = 0;
+    int opt = 0;
+    while((opt = getopt_long(argc, argv, "r:d:v:e", long_options, &longIndex)) != -1){
+        switch (opt) {
+            case 'r':              
+                std::cout << "Command of type run!" << std::endl;
+                runList(renderer);
+                break;
+
+            case 'd':
+                if(atoi(optarg)){
+                    std::cout << "Please introduce a valid number!" << std::endl;
+                    break;
+                }
+                config.delay = atoi(optarg);
+                std::cout << "Command of type delay!" << std::endl;
+                break;
+
+            case 'v':
+                if(atoi(optarg)){
+                    std::cout << "Please introduce a valid number!" << std::endl;
+                    break;
+                }
+                config.volume = atoi(optarg);
+                std::cout << "Command of type volume!" << std::endl;
+                break;
+
+            case 'e':
+                if(atoi(optarg)){
+                    std::cout << "Please introduce a valid number!" << std::endl;
+                    break;
+                }
+
+                config.numberElements = atoi(optarg);
+                std::cout << "Command of type elements!" << std::endl;
+                break;
+
+            case 'l':
+                printList();
+                break;
+        }
+    }
 
     if(initProgram() == -1){
         std::cout << "Error initializing the components of the program" << std::endl;
         exit(1);
     }
+
     //testAudioWithSimpleTone(); 
 
-    runList(renderer);
 
     cleanUp();
     return 0;

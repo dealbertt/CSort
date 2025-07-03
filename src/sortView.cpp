@@ -4,6 +4,7 @@
 #include <chrono>
 #include <csignal>
 #include <condition_variable>
+#include <cstddef>
 #include <iomanip>
 #include <sstream>
 #include <unistd.h>
@@ -51,6 +52,16 @@ const struct Algorithm algoList[] = {
 };
 
 const size_t algoListSize = sizeof(algoList) / sizeof(algoList[0]);
+
+void printList(){
+    for(size_t i = 0; i < algoListSize; i++){
+        std::cout << algoList[i].name << std::endl;
+        std::cout << "Size: " << algoList[i].maxSize << std::endl;
+        std::cout << "Delay: " << algoList[i].delay << std::endl;
+        std::cout << "Description: " << algoList[i].description << std::endl;
+        std::cout << "---------------------" << std::endl;
+    }
+}
 float ViewObject::calculateWidthofBar(size_t size){
     float totalSpacing = spacing * (size - 1);
     float availableWidth = config.windowWidth - totalSpacing;
@@ -599,4 +610,5 @@ int ViewObject::printSpaceToContinue(){
 
     return 0;
 }
+
 
