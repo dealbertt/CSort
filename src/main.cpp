@@ -1,3 +1,4 @@
+#include <SDL3/SDL_log.h>
 #include <iostream>
 #include <csignal>
 #include <getopt.h>
@@ -39,38 +40,43 @@ int loadConfig(){
 }
 
 int printCommands(){
-    std::cout << "--run / --r : Run command to execute the list of algorithms" << std::endl;
+    std::cout << "--run / --r : Run command to execute the default list of algorithms" << std::endl;
     std::cout << "--delay / --d : Adjusts the delay after each swap happens in the algorithm, in order to be able to see it. Please input the delay in milliseconds" << std::endl;
     std::cout << "--volume / --v : You can adjust the volume, only accepts positive numbers up to 24000" << std::endl;
-
+    std::cout << "--elements / --e : The total amount of elements in the arrays, this number will be the same across all algorithms" << std::endl;
+    std::cout << "--list / --l : Lists all of the algorithms implemented so far, which are in a default list" << std::endl;
     return 0;
 }
 int initProgram(){
     signal(SIGINT, signalHandler);
-    std::cout << "Inside initProgram!" << std::endl;
 
     if(!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)){
-        std::cerr << "Error trying to initialize SDL: " << SDL_GetError() << std::endl;
+        //std::cerr << "Error trying to initialize SDL: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to initialize SDL: %s\n", SDL_GetError());
         return -1;
     }
 
     
 
     if(!SDL_CreateWindowAndRenderer("CSort", config.windowWidth, config.windowHeigth, SDL_WINDOW_RESIZABLE, &window, &renderer)){
-        std::cout << "Error on SDL_CreateWindowAndRenderer: " << SDL_GetError() << std::endl;
+        //std::cout << "Error on SDL_CreateWindowAndRenderer: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error on SDL_CreateWindowAndRenderer: %s\n", SDL_GetError());
     }
     if(window == NULL){
-        std::cerr << "Error trying to create SDL_Window: " << SDL_GetError() << std::endl;
+        //std::cerr << "Error trying to create SDL_Window: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create SDL_Window: %s\n", SDL_GetError());
         return -1;
     }else{
-        std::cout << "Window created successfully!" << std::endl;
+        SDL_LogInfo(SDL_LOG_PRIORITY_INFO, "Window created successfully!");
     }
 
     if(renderer == NULL){
-        std::cerr << "Error while trying to create the renderer: " << SDL_GetError() << std::endl;
+        //std::cerr << "Error while trying to create the renderer: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error while trying to create renderer: %s\n", SDL_GetError());
         return -1;
     }else{
-        std::cout << "Renderer created successfully!" << std::endl;
+        //std::cout << "Renderer created successfully!" << std::endl;
+        SDL_LogInfo(SDL_LOG_PRIORITY_INFO, "Renderer created successfully!");
     }
 
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
@@ -123,7 +129,8 @@ int initProgram(){
         SDL_Log("Could not find an SDL_AudioDeviceID for the stream");
         return -1;
     }
-    std::cout << "gAudioDeviceID:" << gAudioDevice << std::endl;
+    //std::cout << "gAudioDeviceID:" << gAudioDevice << std::endl;
+    SDL_LogInfo(SDL_LOG_PRIORITY_INFO, "gAudioDeviceID: %d\n", gAudioDevice);
     SDL_ResumeAudioDevice(gAudioDevice);
 
     /*

@@ -1,4 +1,5 @@
 #include "../include/config.hpp"
+#include <SDL3/SDL_log.h>
 
 Config *readConfiguration(const char *path){
     FILE *ptr = fopen(path, "r");
@@ -18,10 +19,14 @@ Config *readConfiguration(const char *path){
         else if(strstr(line, "DEBUG")) sscanf(line, "DEBUG=%d", &config->debug);
     }
     fclose(ptr);
-    std::cout << "Number of elements: " << config->numberElements << "\n";
-    std::cout << "Window Width: " << config->windowWidth << "\n";
-    std::cout << "Window Height: " << config->windowHeigth << "\n";
-    std::cout << "Volume: " << config->volume << "\n";
+    //std::cout << "Number of elements: " << config->numberElements << "\n";
+    SDL_LogInfo(SDL_LOG_PRIORITY_INFO, "Number of elements: %d\n", config->numberElements);
+    //std::cout << "Window Width: " << config->windowWidth << "\n";
+    SDL_LogInfo(SDL_LOG_PRIORITY_INFO, "Window Width: %d\n", config->windowWidth);
+    //std::cout << "Window Height: " << config->windowHeigth << "\n";
+    SDL_LogInfo(SDL_LOG_PRIORITY_INFO, "Window Height: %d\n", config->windowHeigth);
+    //std::cout << "Volume: " << config->volume << "\n";
+    SDL_LogInfo(SDL_LOG_PRIORITY_INFO, "Volume: %d\n", config->volume);
     if(config->volume > 24000 || config->volume < 0) config->volume = 24000;
 
     return config;
