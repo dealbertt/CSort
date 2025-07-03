@@ -323,7 +323,9 @@ int ViewObject::handleEvents(){
 
         if(pressed[SDL_SCANCODE_DOWN]){
             int delay = array.sortDelay->getDuration();
-            delay -= 1000;
+            if(delay >= 1000){
+                delay -= 1000;
+            }
             array.sortDelay->setDelay(delay);
             std::cout << "Duration decreased to: " << array.sortDelay->getDuration() << std::endl;
             array.needRepaint = true;

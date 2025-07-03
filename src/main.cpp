@@ -40,11 +40,23 @@ int loadConfig(){
 }
 
 int printCommands(){
+    std::cout << "List of all available commands: " << std::endl;
     std::cout << "--run / --r : Run command to execute the default list of algorithms" << std::endl;
     std::cout << "--delay / --d : Adjusts the delay after each swap happens in the algorithm, in order to be able to see it. Please input the delay in milliseconds" << std::endl;
     std::cout << "--volume / --v : You can adjust the volume, only accepts positive numbers up to 24000" << std::endl;
     std::cout << "--elements / --e : The total amount of elements in the arrays, this number will be the same across all algorithms" << std::endl;
     std::cout << "--list / --l : Lists all of the algorithms implemented so far, which are in a default list" << std::endl;
+    std::cout << "-----------------------------" << std::endl;
+
+    std::cout << "List of all available keyboard shortcuts/functions" << std::endl;
+    std::cout << "ESCAPE: Pressing this key will cause the program to close" << std::endl;
+    std::cout << "Arror Right: Pressing this key will skip to the next algorithm in the list" << std::endl;
+    std::cout << "Arror Left: Pressing this key will go back to the previous algorithm in the list" << std::endl;
+    std::cout << "M : Pressing this key will mute the volume of the program. Press M again to unmute the program" << std::endl;
+    std::cout << "Arrow Up: Pressing this key will increase the delay of the current algorithm by 1000 up until the max delay which is " << MAX_DELAY << std::endl;
+    std::cout << "Arrow Down: Pressing this key will decrease the delay of the current algorithm all the way down to 0" << std::endl;
+    std::cout << "CTRL + Arrow Up: Pressing this key will increase the volume by 1000 up until the max volume whic is " << MAX_VOLUME << std::endl; 
+    std::cout << "CTRL + Arrow Down: Pressing this key will decrease the volume by 1000 all the way down to 0" << std::endl; 
     return 0;
 }
 int initProgram(){
