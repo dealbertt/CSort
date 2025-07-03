@@ -64,4 +64,6 @@ void cleanUp();
 void runAlgorithmAtIndex(size_t index);
 void printList();
 
+const int64_t MAX_DELAY = 1000000;
+const int MAX_VOLUME = 24000;
 #endif

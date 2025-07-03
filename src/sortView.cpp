@@ -26,7 +26,6 @@
 #include "../include/sortView.hpp"
 #include "../include/sound.hpp"
 
-const int MAX_DELAY = 1000000;
 extern ViewObject *globalObject;
 extern SDL_Renderer *renderer;
 extern SDL_Window *window;
@@ -62,6 +61,7 @@ void printList(){
         std::cout << "---------------------" << std::endl;
     }
 }
+
 float ViewObject::calculateWidthofBar(size_t size){
     float totalSpacing = spacing * (size - 1);
     float availableWidth = config.windowWidth - totalSpacing;
@@ -173,7 +173,11 @@ void runAlgorithmAtIndex(size_t index){
     }else{
         object = new ViewObject(algoList[globalIndex].maxSize, config.windowHeigth, *renderer);
     }
-    object->array.sortDelay->setDelay(algoList[globalIndex].delay);
+    if(config.delay != 0){
+        object->array.sortDelay->setDelay(config.delay);
+    }else{
+        object->array.sortDelay->setDelay(algoList[globalIndex].delay);
+    }
 
     globalObject = object;
     object->pressSpaceToContinue();
@@ -279,8 +283,7 @@ int ViewObject::handleEvents(){
 
 
         if(pressed[SDL_SCANCODE_LCTRL] && pressed[SDL_SCANCODE_UP] ){
-            if(config.volume < 24000.0){
-                config.volume += 1000;
+            if(config.volume < MAX_VOLUME){
                 //std::cout << "Vol increased to: " << config.volume << std::endl;
                 SDL_LogInfo(SDL_LOG_PRIORITY_INFO, "Vol increased to: %d\n", config.volume);
                 array.needRepaint = true;

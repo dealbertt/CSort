@@ -19,6 +19,8 @@ Config config;
 SDL_Window *window = nullptr;
 SDL_Renderer *renderer = nullptr;
 TTF_Font *font = nullptr;
+extern const int MAX_VOLUME;
+extern const int64_t MAX_DELAY;
 
 SDL_AudioDeviceID gAudioDevice = 0;
 SDL_AudioStream *gAudioStream = nullptr;
@@ -27,8 +29,20 @@ ViewObject *globalObject = nullptr;
 void signalHandler(int signum);
 void cleanUp();
 int loadConfig();
+int printCommands();
+
+
+// ------------------------------------------
 int loadConfig(){
     config = *readConfiguration("config/config.txt");
+    return 0;
+}
+
+int printCommands(){
+    std::cout << "--run / --r : Run command to execute the list of algorithms" << std::endl;
+    std::cout << "--delay / --d : Adjusts the delay after each swap happens in the algorithm, in order to be able to see it. Please input the delay in milliseconds" << std::endl;
+    std::cout << "--volume / --v : You can adjust the volume, only accepts positive numbers up to 24000" << std::endl;
+
     return 0;
 }
 int initProgram(){
@@ -158,6 +172,7 @@ int main(int argc, char *argv[]){
         {"volume", required_argument, 0, 'v'},
         {"elements", required_argument, 0, 'e'},
         {"list", no_argument, 0, 'l'},
+        {"help", no_argument, 0, 'h'},
          {0, 0, 0, 0}
     };
 
@@ -171,20 +186,16 @@ int main(int argc, char *argv[]){
                 break;
 
             case 'd':
-                if(atoi(optarg) <= 0){
-                    std::cout << "Please introduce a valid number!" << std::endl;
+                if(atoi(optarg) <= 0 || atoi(optarg) > MAX_DELAY / 1000){
+                    std::cout << "Wrong number, falling back to default of each algoritm" << std::endl;
                     break;
                 }
-                config.delay = atoi(optarg);
+                config.delay = atoi(optarg) * 1000; //Convert from milliseconds to microseconds
                 std::cout << "Command of type delay!" << std::endl;
-                if(config.delay < 0){
-                    std::cout << "Please introduce a positive number!" << std::endl;
-                    return -1;
-                }
                 break;
 
             case 'v':
-                if(atoi(optarg) <= 0){
+                if(atoi(optarg) <= 0 || atoi(optarg) > MAX_VOLUME){
                     std::cout << "Wrong number, falling back to default of: " << config.volume << std::endl;
                 }else{
                     config.volume = atoi(optarg);
@@ -206,6 +217,11 @@ int main(int argc, char *argv[]){
             case 'l':
                 printList();
                 return 1;
+
+            case 'h':
+                printCommands();
+                break;
+
         }
     }
 
