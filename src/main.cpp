@@ -1,4 +1,3 @@
-#include <SDL3/SDL_log.h>
 #include <iostream>
 #include <csignal>
 #include <getopt.h>
@@ -16,6 +15,7 @@
 #include "../include/sound.hpp" 
 
 //TODO: Adjust text to the width of the screen, so when its resized, it adjusts to the new sizes accordingly
+
 Config config;
 SDL_Window *window = nullptr;
 SDL_Renderer *renderer = nullptr;
@@ -181,10 +181,6 @@ int initProgram(){
 int main(int argc, char *argv[]){
     loadConfig();
 
-    if(initProgram() == -1){
-        std::cout << "Error initializing the components of the program" << std::endl;
-        exit(1);
-    }
     static struct option long_options[] = {
         {"run", no_argument, 0, 'r'},
         {"delay", required_argument, 0, 'd'},
@@ -200,7 +196,10 @@ int main(int argc, char *argv[]){
     while((opt = getopt_long(argc, argv, "r:d:v:e", long_options, &longIndex)) != -1){
         switch (opt) {
             case 'r':              
-                std::cout << "Command of type run!" << std::endl;
+                if(initProgram() == -1){
+                    std::cout << "Error initializing the components of the program" << std::endl;
+                    exit(1);
+                }
                 runList(renderer);
                 break;
 
@@ -210,7 +209,6 @@ int main(int argc, char *argv[]){
                     break;
                 }
                 config.delay = atoi(optarg) * 1000; //Convert from milliseconds to microseconds
-                std::cout << "Command of type delay!" << std::endl;
                 break;
 
             case 'v':
@@ -219,7 +217,6 @@ int main(int argc, char *argv[]){
                 }else{
                     config.volume = atoi(optarg);
                 }
-                std::cout << "Command of type volume!" << std::endl;
                 break;
 
             case 'e':
@@ -230,7 +227,6 @@ int main(int argc, char *argv[]){
                 }
 
                 config.numberElements = atoi(optarg);
-                std::cout << "Command of type elements!" << std::endl;
                 break;
 
             case 'l':
@@ -248,7 +244,7 @@ int main(int argc, char *argv[]){
     //testAudioWithSimpleTone(); 
 
 
-    cleanUp();
+    //cleanUp();
     return 0;
 }
 

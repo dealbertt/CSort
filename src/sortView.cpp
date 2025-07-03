@@ -196,6 +196,7 @@ void runList(SDL_Renderer *renderer){
     for(globalIndex = 0; globalIndex < algoListSize; globalIndex++){
         runAlgorithmAtIndex(globalIndex);
     }
+    cleanUp();
 }
 
 int ViewObject::skipAlgorithm(){

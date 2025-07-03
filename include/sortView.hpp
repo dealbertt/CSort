@@ -7,6 +7,9 @@
 #include <SDL3/SDL_events.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <chrono>
+const int64_t MAX_DELAY = 1000000;
+const int MAX_VOLUME = 24000;
+
 class ViewObject{
     private:
         bool textNeedsUpdate;
@@ -64,6 +67,4 @@ void cleanUp();
 void runAlgorithmAtIndex(size_t index);
 void printList();
 
-const int64_t MAX_DELAY = 1000000;
-const int MAX_VOLUME = 24000;
 #endif
