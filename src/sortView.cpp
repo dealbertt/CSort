@@ -265,21 +265,25 @@ int ViewObject::handleEvents(){
         if(pressed[SDL_SCANCODE_LCTRL] && pressed[SDL_SCANCODE_UP] ){
             if(config.volume < 24000.0){
                 config.volume += 1000;
-                std::cout << "Vol increased to: " << config.volume << std::endl;
+                //std::cout << "Vol increased to: " << config.volume << std::endl;
+                SDL_LogInfo(SDL_LOG_PRIORITY_INFO, "Vol increased to: %d\n", config.volume);
                 array.needRepaint = true;
                 return 0;
             }else{
                 std::cout << "Max volume reached: " << config.volume << std::endl;
+                SDL_LogInfo(SDL_LOG_PRIORITY_INFO, "Max volume of %d reached\n", config.volume);
                 return -1;
             }
         }else if(pressed[SDL_SCANCODE_LCTRL] &&  pressed[SDL_SCANCODE_DOWN]){
             if(config.volume > 0.0){
                 config.volume -= 1000;
-                std::cout << "Vol decreased to: " << config.volume << std::endl;
+                //std::cout << "Vol decreased to: " << config.volume << std::endl;
+                SDL_LogInfo(SDL_LOG_PRIORITY_INFO, "Vol decreased to: %d\n", config.volume);
                 array.needRepaint = true;
                 return 0;
             }else{
-                std::cout << "Already at 0 volume!" << std::endl;
+                //std::cout << "Already at 0 volume!" << std::endl;
+                SDL_LogInfo(SDL_LOG_PRIORITY_INFO, "Already at 0 volume\n");
                 return -1;
             }
           } 
@@ -310,10 +314,6 @@ int ViewObject::handleEvents(){
         config.windowWidth = event.window.data1;
         config.windowHeigth = event.window.data2;
         SDL_LogDebug(SDL_LOG_PRIORITY_DEBUG,"New Width: %d\n New Height: %d", config.windowWidth, config.windowHeigth); 
-
-        //rerender array with the new dimensions
-
-
     }
 
     return 0;
@@ -361,13 +361,15 @@ int ViewObject::updateText(){
 
     SDL_Surface *NameSurface = TTF_RenderText_Solid(font, strName.c_str(), strName.length(), color);
     if(NameSurface == NULL){
-        std::cout << "Error trying to create NameSurface: " << SDL_GetError() << std::endl;
+        //std::cout << "Error trying to create NameSurface: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create NameSurface: %s\n", SDL_GetError());
         return -1;
     }
 
     SDL_Texture *NameTexture = SDL_CreateTextureFromSurface(&renderer, NameSurface);
     if(NameTexture == NULL){
-        std::cout << "Error creating NameTexture: " << SDL_GetError() << std::endl;
+        //std::cout << "Error creating NameTexture: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create NameTexture: %s\n", SDL_GetError());
     }
     SDL_FRect NameRect;
     NameRect.x = 0; 
@@ -377,13 +379,15 @@ int ViewObject::updateText(){
 
     SDL_Surface *AccSurface = TTF_RenderText_Solid(font, strAccesses.c_str(), strAccesses.length(), color);
     if(AccSurface == NULL){
-        std::cout << "Error creating AccSurface: " << SDL_GetError() << std::endl;
+        //std::cout << "Error creating AccSurface: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create AccSurface: %s\n", SDL_GetError());
         return -1;
     }
 
     SDL_Texture *AccTexture = SDL_CreateTextureFromSurface(&renderer, AccSurface);
     if(AccTexture == NULL){
-        std::cout << "Error creating AccTexture: " << SDL_GetError() << std::endl;
+        //std::cout << "Error creating AccTexture: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create AccTexture: %s\n", SDL_GetError());
         return -1;
     }
 
@@ -395,13 +399,15 @@ int ViewObject::updateText(){
 
     SDL_Surface *CompSurface = TTF_RenderText_Solid(font, strComparison.c_str(), strComparison.length(), color);
     if(CompSurface == NULL){
-        std::cout << "Error creating CompSurface: " << SDL_GetError() << std::endl;
+        //std::cout << "Error creating CompSurface: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create CompSurface: %s\n", SDL_GetError());
         return -1;
     }
 
     SDL_Texture *CompTexture = SDL_CreateTextureFromSurface(&renderer, CompSurface);
     if(CompTexture == NULL){
-        std::cout << "Error creating CompTexture: " << SDL_GetError() << std::endl;
+        //std::cout << "Error creating CompTexture: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create CompTexture: %s\n", SDL_GetError());
         return -1;
     }
 
@@ -419,7 +425,8 @@ int ViewObject::updateText(){
 
     SDL_Texture *DelayTexture = SDL_CreateTextureFromSurface(&renderer, DelaySurface);
     if(DelayTexture == NULL){
-        std::cout << "Error creating DelayTexture: " << SDL_GetError() << std::endl;
+        //std::cout << "Error creating DelayTexture: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create DelayTexture: %s\n", SDL_GetError());
         return -1;
     }
 
@@ -431,13 +438,15 @@ int ViewObject::updateText(){
 
     SDL_Surface *VolSurface = TTF_RenderText_Solid(font, strVol.c_str(), strVol.length(), color);
     if(VolSurface == NULL){
-        std::cout << "Error creating VolSurface: " << SDL_GetError() << std::endl;
+        //std::cout << "Error creating VolSurface: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create VolSurface: %s\n", SDL_GetError());
         return -1;
     }
 
     SDL_Texture *VolTexture = SDL_CreateTextureFromSurface(&renderer, VolSurface);
     if(VolTexture == NULL){
-        std::cout << "Error creating VolTexture: " << SDL_GetError() << std::endl;
+        //std::cout << "Error creating VolTexture: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create VolTexture: %s\n", SDL_GetError());
         return -1;
     }
     SDL_FRect VolRect;
@@ -506,13 +515,15 @@ int ViewObject::printSpaceToContinue(){
 
     SDL_Surface *textSurface = TTF_RenderText_Solid(font, text.c_str(), text.length(), color);
     if(textSurface == NULL){
-        std::cout << "Error creating the textSurface: " << SDL_GetError() << std::endl;
+        //std::cout << "Error creating the textSurface: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create textSurface: %s\n", SDL_GetError());
         return -1;
     }
 
     SDL_Texture *textTexture = SDL_CreateTextureFromSurface(&renderer, textSurface);
     if(textTexture == NULL){
-        std::cout << "Error creating textTexture: " << SDL_GetError() << std::endl;
+        //std::cout << "Error creating textTexture: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create textTexture: %s\n", SDL_GetError());
         return -1;
     }
 
@@ -524,13 +535,15 @@ int ViewObject::printSpaceToContinue(){
 
     SDL_Surface *NextSurface = TTF_RenderText_Solid(font, nextAlgo.c_str(), nextAlgo.length(), color);
     if(NextSurface == NULL){
-        std::cout << "Error creating the NextSurface: " << SDL_GetError() << std::endl;
+        //std::cout << "Error creating the NextSurface: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create NextSurface: %s\n", SDL_GetError());
         return -1;
     }
 
     SDL_Texture *NextTexture = SDL_CreateTextureFromSurface(&renderer, NextSurface);
     if(NextTexture == NULL){
-        std::cout << "Error creating NextTexture: " << SDL_GetError() << std::endl;
+        //std::cout << "Error creating NextTexture: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create NextTexture: %s\n", SDL_GetError());
         return -1;
     }
 
@@ -543,18 +556,21 @@ int ViewObject::printSpaceToContinue(){
     std::string fontPath = "fonts/FiraCodeNerdFont-Regular.ttf";
     TTF_Font *descFont = TTF_OpenFont(fontPath.c_str(), 12); 
     if(descFont == NULL){
-        std::cout << "Error trying to open font: " << SDL_GetError() << std::endl;
+        //std::cout << "Error trying to open font: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to open font: %s\n", SDL_GetError());
         return -1;
     }
     SDL_Surface *descSurface = TTF_RenderText_Blended_Wrapped(descFont, algoList[globalIndex].description.c_str(), algoList[globalIndex].description.length(), color, 300);
     if(descSurface == NULL){
-        std::cout << "Error creating the descSurface: " << SDL_GetError() << std::endl;
+        //std::cout << "Error creating the descSurface: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create descSurface: %s\n", SDL_GetError());
         return -1;
     }
 
     SDL_Texture *descTexture = SDL_CreateTextureFromSurface(&renderer, descSurface);
     if(descTexture == NULL){
-        std::cout << "Error creating descTexture: " << SDL_GetError() << std::endl;
+        //std::cout << "Error creating descTexture: " << SDL_GetError() << std::endl;
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Error trying to create descTexture: %s\n", SDL_GetError());
         return -1;
     }
 
