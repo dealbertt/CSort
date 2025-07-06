@@ -46,6 +46,7 @@ int printCommands(){
     std::cout << "--volume / --v : You can adjust the volume, only accepts positive numbers up to 24000" << std::endl;
     std::cout << "--elements / --e : The total amount of elements in the arrays, this number will be the same across all algorithms" << std::endl;
     std::cout << "--list / --l : Lists all of the algorithms implemented so far, which are in a default list" << std::endl;
+    std::cout << "--compete / --c : Introduce the index of two algorithms to compete between each other to see which algorithm is faster" << std::endl;
     std::cout << "-----------------------------" << std::endl;
 
     std::cout << "List of all available keyboard shortcuts/functions" << std::endl;
@@ -188,6 +189,7 @@ int main(int argc, char *argv[]){
         {"elements", required_argument, 0, 'e'},
         {"list", no_argument, 0, 'l'},
         {"help", no_argument, 0, 'h'},
+        {"compete", required_argument, 0, 'c'},
          {0, 0, 0, 0}
     };
 
@@ -232,6 +234,10 @@ int main(int argc, char *argv[]){
             case 'l':
                 printList();
                 return 1;
+
+            case 'c':
+                std::cout << "Welcome to Compete feature, where you can compete two algorithms in the same conditions to see which one is faster";
+                break;
 
             case 'h':
                 printCommands();
