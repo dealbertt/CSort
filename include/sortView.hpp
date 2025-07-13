@@ -9,6 +9,8 @@
 class ViewObject{
     public:
         Array array;
+        std::chrono::high_resolution_clock a;
+        std::chrono::high_resolution_clock b;
 
     public:
         ViewObject(size_t maxSize, int windowHeight, SDL_Renderer &renderer): array(maxSize, windowHeight), renderer(renderer){
