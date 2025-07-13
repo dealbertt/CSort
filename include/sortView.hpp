@@ -9,8 +9,8 @@
 class ViewObject{
     public:
         Array array;
-        std::chrono::high_resolution_clock a;
-        std::chrono::high_resolution_clock b;
+        std::chrono::steady_clock::time_point a;
+        std::chrono::steady_clock::time_point b;
 
     public:
         ViewObject(size_t maxSize, int windowHeight, SDL_Renderer &renderer): array(maxSize, windowHeight), renderer(renderer){
@@ -32,6 +32,7 @@ class ViewObject{
         SDL_Color configureColor(ArrayItem &item);
         void markArrayDone();
         int handleKeyboard(SDL_Event &event);
+        void startArray();
 
 };
 

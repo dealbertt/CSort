@@ -1,3 +1,4 @@
+#include <chrono>
 #include <climits>
 #include <cstdint>
 #include <iostream>
@@ -175,4 +176,8 @@ void cleanUp(){
     SDL_CloseAudio();
     SDL_Quit();
     exit(1);
+}
+
+void ViewObject::startArray(){
+    a = std::chrono::steady_clock::now();
 }
