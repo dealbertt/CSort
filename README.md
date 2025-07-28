@@ -5,6 +5,8 @@ This project uses SDL3 with C++
 - You can also use CTRL + Arrow Up/ Arrow Down to increase or decrease the volume  
 - When an algorithm is being executed, you can press Space to pause the algorithm  
 - You can press Arrow Right to skip to the next algorithm, although its not working properly as its an experimental feature  
-- You can also press M to mute the volume, and then M again to get the volume back
+- You can also press M to mute the volume, and then M again to get the volume back. 
+To know all the different options of the program, please use:  
+csort --help
 
 
