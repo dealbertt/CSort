@@ -9,4 +9,7 @@ This project uses SDL3 with C++
 To know all the different options of the program, please use:  
 csort --help
 
+also to run the predefined list of algorithms, simply type:  
+csort --run
+
 
